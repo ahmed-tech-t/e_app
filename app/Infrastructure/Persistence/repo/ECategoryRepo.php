@@ -17,8 +17,7 @@ class ECategoryRepo implements CategoryRepo
 
     public function create(CategoryEntity $entity): CategoryEntity
     {
-        $dataModel = CategoryMapper::entityToModel($entity);
-        $model = Category::create($dataModel)->refresh();
+        $model = Category::create($entity->toArray())->refresh();
         return CategoryMapper::modelToEntity($model);
     }
 
@@ -51,9 +50,8 @@ class ECategoryRepo implements CategoryRepo
      */
     public function update(CategoryEntity $entity, int $id): CategoryEntity
     {
-        $dataModel = CategoryMapper::entityToModel($entity);
         $model = Category::findOrFail($id);
-        $model->update($dataModel);
+        $model->update($entity->toArray());
         return CategoryMapper::modelToEntity($model);
     }
 }

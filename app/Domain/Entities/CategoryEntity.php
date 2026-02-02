@@ -11,4 +11,13 @@ class CategoryEntity
         public ?string $code = null
     ) {
     }
+
+    public function toArray()
+    {
+        return [
+            'name_ar' => $this->name_ar,
+            'name_en' => $this->name_en,
+            'code' => $this->code,
+        ];
+    }
 }

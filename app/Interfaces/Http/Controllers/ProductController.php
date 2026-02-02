@@ -4,8 +4,10 @@ namespace App\Interfaces\Http\Controllers;
 
 use App\Application\Mapper\ProductMapper;
 use App\Application\UseCases\Product\CreateProductUseCase;
+use App\Application\UseCases\Product\DeleteProductUseCase;
 use App\Application\UseCases\Product\GetAllProductUseCase;
 use App\Application\UseCases\Product\GetProductByIdUseCase;
+use App\Application\UseCases\Product\UpdateProductUseCase;
 use App\Domain\PagenatorMeta;
 use App\Interfaces\Http\Requests\CreateProductRequest;
 use App\Interfaces\Http\Requests\GetAllProductsRequest;
@@ -25,6 +27,8 @@ class ProductController extends Controller
         private CreateProductUseCase $createProductUseCase,
         private GetAllProductUseCase $getAllProductUseCase,
         private GetProductByIdUseCase $getProductByIdUseCase,
+        private UpdateProductUseCase $updateProductUseCase,
+        private DeleteProductUseCase $deleteProductUseCase
     ) {
     }
 
@@ -63,14 +67,15 @@ class ProductController extends Controller
     public function update(UpdateProductRequest $request, int $id)
     {
         $dto = $request->toDto();
-
+        $product = $this->updateProductUseCase->execute($dto, $id);
+        return $this->success(ProductResource::make($product));
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy()
+    public function destroy(int $id)
     {
-
+        return $this->success($this->deleteProductUseCase->execute($id));
     }
 }

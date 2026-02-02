@@ -18,7 +18,7 @@ class CreateProductUseCase
     } // dependency injection
     public function execute(CreateProductDto $dto): ProductEntity
     {
-        $entity = ProductMapper::createProductDtoToEntity($dto);
+        $entity = ProductEntity::create($dto->toArray());
         $entity->code = $this->getCode($entity->categoryId);
         return $this->productRepo->create($entity);
     }

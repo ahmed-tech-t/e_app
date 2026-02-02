@@ -18,17 +18,6 @@ class SaleUnitMapper implements Mapper
         );
     }
 
-    /**
-     * @inheritDoc
-     */
-    public static function entityToModel($entity)
-    {
-        return [
-            'name_ar' => $entity->name_ar,
-            'name_en' => $entity->name_en,
-            'code' => $entity->code
-        ];
-    }
 
     /**
      * @inheritDoc

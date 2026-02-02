@@ -13,6 +13,6 @@ interface ProductRepo
     public function codeExists(string $code): bool;
 
     public function create(ProductEntity $data): ProductEntity;
-    public function update(ProductEntity $data, $product);
-    public function destory(ProductEntity $product): string;
+    public function update(ProductEntity $product): ProductEntity;
+    public function destory(int $id): string;
 }

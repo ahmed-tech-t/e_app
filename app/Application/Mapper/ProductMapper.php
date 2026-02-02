@@ -3,48 +3,14 @@
 namespace App\Application\Mapper;
 
 use App\Application\DTOs\CreateProductDto;
+use App\Application\DTOs\UpdateProductDto;
 use App\Domain\Entities\ProductEntity;
+use App\Infrastructure\Persistence\Models\Product;
 
 class ProductMapper implements Mapper
 {
-    public static function createProductdtoToEntity(CreateProductDto $dto): ProductEntity
-    {
-        return new ProductEntity(
-            original_code: $dto->original_code,
-            categoryId: $dto->categoryId,
-            name_ar: $dto->name_ar,
-            name_en: $dto->name_en,
-            description: $dto->description,
-            brand: $dto->brand,
-            image: $dto->image,
-            origin: $dto->origin,
-            unitsPerCarton: $dto->unitsPerCarton,
-            saleUnitId: $dto->saleUnitId
-        );
-    }
 
-    public static function entityToModel($entity)
-    {
-        $data = [
-            'code' => $entity->code,
-            'original_code' => $entity->original_code,
-            'name_ar' => $entity->name_ar,
-            'name_en' => $entity->name_en,
-            'category_id' => $entity->categoryId,
-            'description' => $entity->description,
-            'brand' => $entity->brand,
-            'units_per_carton' => $entity->unitsPerCarton,
-            'sale_unit_id' => $entity->saleUnitId
-        ];
 
-        if ($entity->image)
-            $data['image'] = $entity->image;
-
-        if ($entity->origin)
-            $data['origin'] = $entity->origin;
-
-        return $data;
-    }
 
     public static function modelToEntity($model)
     {
@@ -79,4 +45,6 @@ class ProductMapper implements Mapper
     public static function dtoToEntity($dto)
     {
     }
+
+
 }

@@ -33,19 +33,21 @@ class EProductRepo implements ProductRepo
 
     public function create(ProductEntity $data): ProductEntity
     {
-        $dataModel = ProductMapper::entityToModel($data);
-        $model = Product::create($dataModel)->refresh();
+
+        $model = Product::create($data->toArray())->refresh();
         return ProductMapper::modelToEntity($model);
     }
 
-    public function update($data, $product)
+    public function update(ProductEntity $entity): ProductEntity
     {
-        return $product->update($data);
+
+        Product::where('id', $entity->id)->update($entity->toArray());
+        return $entity;
     }
 
-    public function destory($product): string
+    public function destory(int $id): string
     {
-        $product->delete();
+        Product::destroy($id);
         return "Product deleted successfully";
     }
 

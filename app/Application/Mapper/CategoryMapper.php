@@ -7,15 +7,7 @@ use App\Domain\Entities\CategoryEntity;
 class CategoryMapper implements Mapper
 {
 
-    public static function entityToModel($entity)
-    {
-        return [
-            'id' => $entity->id,
-            'name_ar' => $entity->name_ar,
-            'name_en' => $entity->name_en,
-            'code' => $entity->code,
-        ];
-    }
+
 
     public static function modelToEntity($model)
     {
