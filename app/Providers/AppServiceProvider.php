@@ -2,6 +2,12 @@
 
 namespace App\Providers;
 
+use App\Domain\Repo\Product\CategoryRepo;
+use App\Domain\Repo\Product\ProductRepo;
+use App\Infrastructure\Persistence\Models\Category;
+use App\Infrastructure\Persistence\repo\ECategoryRepo;
+use App\Infrastructure\Persistence\repo\EProductRepo;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -11,7 +17,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        Model::preventLazyLoading(true);
+        $this->app->bind(ProductRepo::class, EProductRepo::class);
+        $this->app->bind(CategoryRepo::class, ECategoryRepo::class);
     }
 
     /**

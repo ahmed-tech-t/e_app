@@ -12,12 +12,29 @@ return new class extends Migration {
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
+
+            $table->foreignId('category_id')->constrained();
+
             $table->string('code')->unique();
-            $table->string('name');
-            $table->string('description')->nullable();
-            $table->decimal('price', 15, 2);
-            $table->string('image')->nullable()->default('images/store.png');
+
+            $table->string('original_code')->unique();
+
+            $table->string('name_ar');
+
+            $table->string('name_en')->nullable();
+
             $table->string('origin')->nullable()->default('China');
+
+            $table->string('description')->nullable();
+
+            $table->string('brand');
+
+            $table->foreignId('sale_unit_id')->constrained();
+
+            $table->integer('units_per_carton')->default(1);
+
+            $table->string('image')->nullable()->default('images/store.png');
+
             $table->timestamps();
         });
     }

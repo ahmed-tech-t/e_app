@@ -2,6 +2,10 @@
 
 namespace Database\Factories;
 
+use App\Infrastructure\Persistence\Models\Category;
+use App\Infrastructure\Persistence\Models\Product;
+use App\Infrastructure\Persistence\Models\SaleUnit;
+use App\Traits\CodeGenerator;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -9,6 +13,10 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class ProductFactory extends Factory
 {
+
+    use CodeGenerator;
+
+    protected $model = Product::class;
     /**
      * Define the model's default state.
      *
@@ -16,14 +24,29 @@ class ProductFactory extends Factory
      */
     public function definition(): array
     {
-        $fullEan = $this->faker->ean13();
+        $name = ucfirst($this->faker->word());
+        $category = Category::get()->random();
+        do {
+            $code = $this->generateCode($category->name_en);
+        } while (Product::where('code', $code)->exists());
+
+        do {
+            $originalCode = $this->faker->ean13();
+        } while (Product::where('original_code', $originalCode)->exists());
+
+
         return [
-            'name' => ucfirst($this->faker->word()),
-            'code' => substr($fullEan, 0, 5),
-            'price' => $this->faker->randomFloat(2, 245435, 6000000),
-            'origin' => $this->faker->country(),
+            'category_id' => $category->id,
+            'name_ar' => $name,
+            'name_en' => $name,
+            'original_code' => $originalCode,
+            'code' => $code,
             'description' => $this->faker->sentence(20),
+            'brand' => $this->faker->company(),
             'image' => $this->faker->imageUrl(),
+            'origin' => $this->faker->country(),
+            'units_per_carton' => $this->faker->numberBetween(1, 10),
+            'sale_unit_id' => SaleUnit::get()->random()->id
         ];
     }
 }
