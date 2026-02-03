@@ -28,30 +28,23 @@ class ECategoryRepo implements CategoryRepo
         return 'category deleted';
     }
 
-    /**
-     * @inheritDoc
-     */
     public function findAll()
     {
-        return CategoryMapper::modelToEntity(Category::all());
+        $entities = Category::all()->map(fn($model) => CategoryMapper::modelToEntity($model));
+        return $entities;
     }
 
-    /**
-     * @inheritDoc
-     */
+
     public function findById(int $id): CategoryEntity
     {
         $model = Category::findOrFail($id);
         return CategoryMapper::modelToEntity($model);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function update(CategoryEntity $entity, int $id): CategoryEntity
+    public function update(CategoryEntity $entity): CategoryEntity
     {
-        $model = Category::findOrFail($id);
-        $model->update($entity->toArray());
-        return CategoryMapper::modelToEntity($model);
+        $model = Category::findOrFail($entity->id);
+        Category::where('id', $entity->id)->update($entity->toArray());
+        return CategoryMapper::modelToEntity($model->refresh());
     }
 }

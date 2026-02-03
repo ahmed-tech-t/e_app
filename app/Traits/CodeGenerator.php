@@ -6,7 +6,7 @@ use Illuminate\Support\Str;
 
 trait CodeGenerator
 {
-    public static function generateCode(string $name)
+    public static function generateCode(string $name): string
     {
         return strtoupper(substr($name, 0, 3))
             . '-'

@@ -20,4 +20,19 @@ class CategoryEntity
             'code' => $this->code,
         ];
     }
+
+    public static function create(array $data)
+    {
+        return new self(
+            name_ar: $data['name_ar'],
+            name_en: $data['name_en']
+        );
+    }
+
+    public function update(array $data)
+    {
+        $this->name_ar = $data['name_ar'] ?? $this->name_ar;
+        $this->name_en = $data['name_en'] ?? $this->name_en;
+        return $this;
+    }
 }

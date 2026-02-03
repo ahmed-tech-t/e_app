@@ -9,9 +9,9 @@ use App\Application\UseCases\Product\GetAllProductUseCase;
 use App\Application\UseCases\Product\GetProductByIdUseCase;
 use App\Application\UseCases\Product\UpdateProductUseCase;
 use App\Domain\PagenatorMeta;
-use App\Interfaces\Http\Requests\CreateProductRequest;
-use App\Interfaces\Http\Requests\GetAllProductsRequest;
-use App\Interfaces\Http\Requests\UpdateProductRequest;
+use App\Interfaces\Http\Requests\Product\CreateProductRequest;
+use App\Interfaces\Http\Requests\Product\GetAllProductsRequest;
+use App\Interfaces\Http\Requests\Product\UpdateProductRequest;
 use App\Interfaces\Http\Resources\ProductResource;
 use App\Traits\HttpResponses;
 

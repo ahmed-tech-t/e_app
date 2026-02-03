@@ -11,6 +11,6 @@ interface CategoryRepo
     public function codeExists(string $code): bool;
 
     public function create(CategoryEntity $entity): CategoryEntity;
-    public function update(CategoryEntity $entity, int $id): CategoryEntity;
+    public function update(CategoryEntity $entity): CategoryEntity;
     public function destory(int $id): string;
 }
