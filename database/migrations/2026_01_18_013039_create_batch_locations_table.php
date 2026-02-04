@@ -20,6 +20,9 @@ return new class extends Migration {
             $table->integer('quantity_remaining');
 
             $table->unique(['product_batch_id', 'location_id']);
+
+            $table->softDeletes();
+
             $table->timestamps();
         });
     }

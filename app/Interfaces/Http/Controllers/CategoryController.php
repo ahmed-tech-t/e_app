@@ -42,8 +42,4 @@ class CategoryController extends Controller
     {
         return $this->success($this->service->destory($id));
     }
-
-
-
-
 }

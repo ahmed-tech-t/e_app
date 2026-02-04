@@ -3,10 +3,9 @@
 namespace App\Application\UseCases\Product;
 
 use App\Application\DTOs\CreateProductDto;
-use App\Application\Mapper\ProductMapper;
 use App\Domain\Entities\ProductEntity;
-use App\Domain\Repo\Product\CategoryRepo;
-use App\Domain\Repo\Product\ProductRepo;
+use App\Domain\Repo\CategoryRepo;
+use App\Domain\Repo\ProductRepo;
 use App\Traits\CodeGenerator;
 
 class CreateProductUseCase

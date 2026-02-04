@@ -1,0 +1,80 @@
+<?php
+
+namespace App\Infrastructure\Persistence\repo;
+
+use App\Domain\Repo\BaseRepo;
+use Illuminate\Pagination\LengthAwarePaginator;
+
+class BaseERepo implements BaseRepo
+{
+
+    protected $modelClass;
+    protected $mapper;
+
+    protected array $defaultRelationships = [];
+
+    public function getPaginateditems($perPage = 5): LengthAwarePaginator
+    {
+        $items = ($this->modelClass)::paginate($perPage)
+            ->through(
+                fn($item) =>
+                ($this->mapper)::modelToEntity($item)
+            );
+        return $items;
+    }
+
+    public function codeExists(string $code): bool
+    {
+        return ($this->modelClass)::where('code', $code)->exists();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function create($entity)
+    {
+        $model = ($this->modelClass)::create($entity->toArray())->refresh();
+        return ($this->mapper)::modelToEntity($model);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function destory(int $id): string
+    {
+        ($this->modelClass)::destroy($id);
+        return 'item deleted successfully';
+    }
+
+
+    public function findAll()
+    {
+        $entities = ($this->modelClass)::all()->map(fn($model) => ($this->mapper)::modelToEntity($model));
+        return $entities;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findById(int $id)
+    {
+
+        $query = ($this->modelClass)::query();
+        if (!empty($this->defaultRelationships)) {
+            $query->with($this->defaultRelationships);
+        }
+
+        $model = $query->findOrFail($id);
+        return ($this->mapper)::modelToEntity($model);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function update($entity)
+    {
+        $model = ($this->modelClass)::findOrFail($entity->id);
+        ($this->modelClass)::where('id', $entity->id)->update($entity->toArray());
+        return ($this->mapper)::modelToEntity($model->refresh());
+    }
+}

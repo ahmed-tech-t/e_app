@@ -18,6 +18,8 @@ return new class extends Migration {
             $table->string('phone')->nullable();
             $table->enum('type', ['store', 'wharehouse'])->default('store');
 
+            $table->softDeletes();
+
             $table->timestamps();
         });
     }

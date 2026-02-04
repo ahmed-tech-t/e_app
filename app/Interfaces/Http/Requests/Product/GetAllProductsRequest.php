@@ -22,8 +22,8 @@ class GetAllProductsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'page' => 'integer|min:1',
-            'per_page' => 'integer|max:100',
+            'page' => 'sometimes|integer|min:1',
+            'per_page' => 'sometimes|integer|max:100',
         ];
     }
 }

@@ -1,25 +1,28 @@
 <?php
+
 namespace App\Application\UseCases\Product;
 
+
+use App\Application\DTOs\ProductSearchDto;
 use App\Domain\Repo\ProductRepo;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class GetAllProductUseCase
+class ProductSearchUseCase
 {
 
     public function __construct(private ProductRepo $repo)
     {
     }
 
-    public function execute($currentPage, $perPage): LengthAwarePaginator
+    public function execute(ProductSearchDto $dto)
     {
-        $products = $this->repo->getPaginatedItems($perPage);
+        $products = $this->repo->search($dto, $dto->perPage);
 
-        if ($currentPage > $products->lastPage()) {
+        if ($dto->page > $products->lastPage()) {
             throw new NotFoundHttpException("Page not found , Max page is " . $products->lastPage());
         }
 
         return $products;
     }
+
 }

@@ -20,6 +20,8 @@ return new class extends Migration {
             $table->decimal('retail_price', 15, 2);
             $table->decimal('wholesale_price', 15, 2);
 
+            $table->softDeletes();
+
             $table->timestamps();
         });
     }

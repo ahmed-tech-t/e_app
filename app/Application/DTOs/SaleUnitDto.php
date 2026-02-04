@@ -8,9 +8,6 @@ class SaleUnitDto
     public function __construct(
         public string $name_ar,
         public string $name_en,
-
-        public ?int $id = null,
-        public ?string $code = null
     ) {
     }
 
@@ -18,8 +15,7 @@ class SaleUnitDto
     {
         return [
             'name_ar' => $this->name_ar,
-            'name_en' => $this->name_en,
-            'code' => $this->code,
+            'name_en' => $this->name_en
         ];
     }
 }

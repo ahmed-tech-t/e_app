@@ -2,7 +2,7 @@
 namespace App\Application\UseCases\Product;
 
 use App\Domain\Entities\ProductEntity;
-use App\Domain\Repo\Product\ProductRepo;
+use App\Domain\Repo\ProductRepo;
 
 class GetProductByIdUseCase
 {

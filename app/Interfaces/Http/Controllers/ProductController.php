@@ -2,15 +2,19 @@
 
 namespace App\Interfaces\Http\Controllers;
 
-use App\Application\Mapper\ProductMapper;
+
+
+
 use App\Application\UseCases\Product\CreateProductUseCase;
 use App\Application\UseCases\Product\DeleteProductUseCase;
 use App\Application\UseCases\Product\GetAllProductUseCase;
 use App\Application\UseCases\Product\GetProductByIdUseCase;
+use App\Application\UseCases\Product\ProductSearchUseCase;
 use App\Application\UseCases\Product\UpdateProductUseCase;
 use App\Domain\PagenatorMeta;
 use App\Interfaces\Http\Requests\Product\CreateProductRequest;
 use App\Interfaces\Http\Requests\Product\GetAllProductsRequest;
+use App\Interfaces\Http\Requests\Product\ProductSearchRequest;
 use App\Interfaces\Http\Requests\Product\UpdateProductRequest;
 use App\Interfaces\Http\Resources\ProductResource;
 use App\Traits\HttpResponses;
@@ -28,7 +32,8 @@ class ProductController extends Controller
         private GetAllProductUseCase $getAllProductUseCase,
         private GetProductByIdUseCase $getProductByIdUseCase,
         private UpdateProductUseCase $updateProductUseCase,
-        private DeleteProductUseCase $deleteProductUseCase
+        private DeleteProductUseCase $deleteProductUseCase,
+        private ProductSearchUseCase $productSearchUseCase
     ) {
     }
 
@@ -38,6 +43,16 @@ class ProductController extends Controller
     {
         $request->validated();
         $products = $this->getAllProductUseCase->execute($request['page'], $request['per_page']);
+        $meta = new PagenatorMeta($products);
+        return $this->success(data: ProductResource::collection($products), meta: $meta->toArray());
+    }
+
+
+
+    public function search(ProductSearchRequest $request)
+    {
+        $dto = $request->toDto();
+        $products = $this->productSearchUseCase->execute($dto);
         $meta = new PagenatorMeta($products);
         return $this->success(data: ProductResource::collection($products), meta: $meta->toArray());
     }

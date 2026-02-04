@@ -18,6 +18,8 @@ return new class extends Migration {
             $table->decimal('price', 15, 2);
             $table->timestamp("valid_from");
             $table->timestamp("valid_to");
+            $table->softDeletes();
+
             $table->timestamps();
         });
     }

@@ -2,9 +2,7 @@
 namespace App\Application\UseCases\Product;
 
 use App\Application\DTOs\UpdateProductDto;
-use App\Application\Mapper\ProductMapper;
-use App\Domain\Repo\Product\ProductRepo;
-use Illuminate\Support\Facades\Log;
+use App\Domain\Repo\ProductRepo;
 
 
 

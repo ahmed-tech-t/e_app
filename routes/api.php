@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('api')->group(function () {
     Route::prefix('v1')->group(function () {
+
+        Route::get('products/search', [ProductController::class, 'search'])->name('products.search');
         Route::resource('products', ProductController::class);
         Route::resource('categories', CategoryController::class);
 

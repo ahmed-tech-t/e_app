@@ -35,6 +35,8 @@ return new class extends Migration {
 
             $table->string('image')->nullable()->default('images/store.png');
 
+            $table->softDeletes();
+
             $table->timestamps();
         });
     }

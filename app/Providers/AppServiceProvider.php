@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
-use App\Domain\Repo\Product\CategoryRepo;
-use App\Domain\Repo\Product\ProductRepo;
+use App\Domain\Repo\CategoryRepo;
+use App\Domain\Repo\ProductRepo;
 use App\Infrastructure\Persistence\Models\Category;
 use App\Infrastructure\Persistence\repo\ECategoryRepo;
 use App\Infrastructure\Persistence\repo\EProductRepo;
