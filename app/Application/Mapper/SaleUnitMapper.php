@@ -4,31 +4,16 @@ namespace App\Application\Mapper;
 
 use App\Domain\Entities\SaleUnitEntity;
 
-class SaleUnitMapper implements Mapper
+class SaleUnitMapper
 {
-
-    /**
-     * @inheritDoc
-     */
-    public static function dtoToEntity($dto)
-    {
-        return new SaleUnitEntity(
-            name_ar: $dto->name_ar,
-            name_en: $dto->name_en
-        );
-    }
-
-
-    /**
-     * @inheritDoc
-     */
     public static function modelToEntity($model)
     {
         return new SaleUnitEntity(
             id: $model['id'],
             name_ar: $model['name_ar'],
             name_en: $model['name_en'],
-            code: $model['code']
+            code: $model['code'],
+
         );
     }
 }

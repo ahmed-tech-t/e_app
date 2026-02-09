@@ -7,11 +7,8 @@ use App\Application\DTOs\UpdateProductDto;
 use App\Domain\Entities\ProductEntity;
 use App\Infrastructure\Persistence\Models\Product;
 
-class ProductMapper implements Mapper
+class ProductMapper
 {
-
-
-
     public static function modelToEntity($model)
     {
         return new ProductEntity(
@@ -37,13 +34,6 @@ class ProductMapper implements Mapper
             created_at: $model->created_at,
             updated_at: $model->updated_at
         );
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public static function dtoToEntity($dto)
-    {
     }
 
 

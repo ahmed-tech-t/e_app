@@ -4,11 +4,8 @@ namespace App\Application\Mapper;
 
 use App\Domain\Entities\CategoryEntity;
 
-class CategoryMapper implements Mapper
+class CategoryMapper
 {
-
-
-
     public static function modelToEntity($model)
     {
         return new CategoryEntity(
@@ -18,18 +15,4 @@ class CategoryMapper implements Mapper
             code: $model['code']
         );
     }
-
-    /**
-     * @inheritDoc
-     */
-    public static function dtoToEntity($dto)
-    {
-        return new CategoryEntity(
-            name_ar: $dto->name_ar,
-            name_en: $dto->name_en,
-            code: $dto->code
-        );
-    }
-
-
 }

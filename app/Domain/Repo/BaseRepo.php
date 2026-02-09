@@ -10,5 +10,5 @@ interface BaseRepo
     public function getPaginatedItems($perPage): LengthAwarePaginator;
     public function create($entity);
     public function update($entity);
-    public function destory(int $id): string;
+    public function destroy(int $id): string;
 }

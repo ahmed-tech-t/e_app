@@ -3,6 +3,7 @@
 namespace App\Interfaces\Http\Requests\Category;
 
 use App\Application\DTOs\CategoryDto;
+use App\Interfaces\Http\Utils\RequestInterface;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreateCategoryRequest extends FormRequest

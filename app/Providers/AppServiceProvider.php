@@ -18,8 +18,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         Model::preventLazyLoading(true);
-        $this->app->bind(ProductRepo::class, EProductRepo::class);
-        $this->app->bind(CategoryRepo::class, ECategoryRepo::class);
+        RepositoryServiceProvider::class;
     }
 
     /**

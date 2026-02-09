@@ -9,4 +9,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class SaleUnit extends Model
 {
     use SoftDeletes;
+
+    protected $fillable = [
+        'code',
+        'name_ar',
+        'name_en'
+    ];
 }

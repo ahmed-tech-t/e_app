@@ -3,39 +3,43 @@
 namespace App\Application\Services;
 
 use App\Traits\CodeGenerator;
+use Illuminate\Log\Logger;
+use Illuminate\Support\Facades\Log;
 abstract class BaseService
 {
     // The child class must define the repository
-    protected $repo;
+    protected object $repo;
     protected string $entityClass;
 
     use CodeGenerator;
 
     public function findAll()
     {
-        return $this->repo->findAll();
+        return ($this->repo)->findAll();
     }
 
     public function findById(int $id)
     {
-        return $this->repo->findById($id);
+        return ($this->repo)->findById($id);
     }
 
     public function destroy(int $id)
     {
-        return $this->repo->destroy($id);
+        return ($this->repo)->destroy($id);
     }
 
     public function codeExists(string $code): bool
     {
-        return $this->repo->codeExists($code);
+        return ($this->repo)->codeExists($code);
     }
 
 
     public function update($dto, int $id)
     {
-        $entity = $this->repo->findById($id);
-        return $this->repo->update($entity->update($dto->toArray()));
+        $entity = ($this->repo)->findById($id);
+        Log::info("Your message here", ['entity' => $entity]);
+        Log::info("Your message here", ['dto' => $dto]);
+        return ($this->repo)->update($entity->update($dto->toArray()));
     }
 
 
@@ -44,14 +48,14 @@ abstract class BaseService
         $entity = ($this->entityClass)::create($dto->toArray());
         $entity->code = $this->getCode($entity->name_en);
 
-        return $this->repo->create($entity);
+        return ($this->repo)->create($entity);
     }
 
     public function getCode($name): string
     {
         do {
             $code = $this->generateCode(name: $name ?? 'ABC');
-        } while ($this->repo->codeExists($code));
+        } while (($this->repo)->codeExists($code));
         return $code;
     }
 }

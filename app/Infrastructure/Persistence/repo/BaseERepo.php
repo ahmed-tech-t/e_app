@@ -3,7 +3,9 @@
 namespace App\Infrastructure\Persistence\repo;
 
 use App\Domain\Repo\BaseRepo;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Log;
 
 class BaseERepo implements BaseRepo
 {
@@ -40,9 +42,13 @@ class BaseERepo implements BaseRepo
     /**
      * @inheritDoc
      */
-    public function destory(int $id): string
+    public function destroy(int $id): string
     {
-        ($this->modelClass)::destroy($id);
+
+        $deletedCount = ($this->modelClass)::destroy($id);
+        if ($deletedCount === 0) {
+            throw new ModelNotFoundException("Item with ID $id not found.");
+        }
         return 'item deleted successfully';
     }
 
@@ -73,6 +79,7 @@ class BaseERepo implements BaseRepo
      */
     public function update($entity)
     {
+        Log::info("Your message here", ['entity' => $entity]);
         $model = ($this->modelClass)::findOrFail($entity->id);
         ($this->modelClass)::where('id', $entity->id)->update($entity->toArray());
         return ($this->mapper)::modelToEntity($model->refresh());

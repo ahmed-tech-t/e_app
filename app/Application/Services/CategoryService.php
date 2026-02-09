@@ -3,10 +3,14 @@
 namespace App\Application\Services;
 
 use App\Domain\Entities\CategoryEntity;
-use App\Domain\Repo\Product\SaleUnitRepo;
+use App\Domain\Repo\CategoryRepo;
 
 class CategoryService extends BaseService
 {
     protected string $entityClass = CategoryEntity::class;
-    protected string $repo = CategoryEntity::class;
+
+    public function __construct(CategoryRepo $categoryRepo)
+    {
+        $this->repo = $categoryRepo;
+    }
 }
