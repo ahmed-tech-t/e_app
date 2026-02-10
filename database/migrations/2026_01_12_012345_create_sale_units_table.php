@@ -12,8 +12,8 @@ return new class extends Migration {
     {
         Schema::create('sale_units', function (Blueprint $table) {
             $table->id();
-            $table->string('name_ar');
-            $table->string('name_en')->nullable();
+            $table->string('name_ar')->unique();
+            $table->string('name_en')->nullable()->unique();
             $table->string('code')->unique();
             $table->softDeletes();
             $table->timestamps();

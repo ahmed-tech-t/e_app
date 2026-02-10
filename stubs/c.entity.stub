@@ -1,0 +1,25 @@
+<?php
+
+namespace App\Domain\Entities;
+
+use Carbon\Carbon;
+
+
+class {{ name }} {
+
+    public function __construct(){
+        
+    }
+
+    public static function create(array $data)
+    {
+
+    }
+    public function update(array $data)
+    {
+    }
+
+     public function toArray()
+    {
+    }
+}

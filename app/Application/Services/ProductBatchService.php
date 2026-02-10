@@ -17,6 +17,11 @@ class ProductBatchService extends BaseService
     public function create($dto)
     {
         $entity = ($this->entityClass)::create($dto->toArray());
-        return ($this->repo)->create($entity);
+        return ($this->repo)->createBatchAndSetLocation($entity, $dto->locationId);
+    }
+
+    public function search($code)
+    {
+        return ($this->repo)->search($code);
     }
 }

@@ -17,6 +17,8 @@ class ProductBatchEntity
         public float $retailPrice,
         public float $wholesalePrice,
         public ?int $id = null,
+        public ?array $locations = null,
+        public ?array $product = null,
         public ?Carbon $created_at = null,
         public ?Carbon $updated_at = null,
     ) {
@@ -36,7 +38,6 @@ class ProductBatchEntity
     }
     public function update(array $data)
     {
-        $this->remainingQuantity = $data['remaining_quantity'] ?? $this->remainingQuantity;
         $this->costPrice = $data['cost_price'] ?? $this->costPrice;
         $this->retailPrice = $data['retail_price'] ?? $this->retailPrice;
         $this->wholesalePrice = $data['wholesale_price'] ?? $this->wholesalePrice;

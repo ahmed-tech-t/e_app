@@ -19,25 +19,25 @@ abstract class BaseController extends Controller
     protected string $updateRequest;
 
 
-    public function index()
+    public function index(Request $request)
     {
         $items = $this->service->findAll();
         return $this->success(($this->resourceClass)::collection($items));
     }
 
-    // public function getPaginateditems(Request $request)
-    // {
-    //     // Using dynamic pagination defaults
-    //     $perPage = $request->get('per_page', 10);
+    public function getPaginateditems(Request $request)
+    {
+        // Using dynamic pagination defaults
+        $perPage = $request->get('per_page', 10);
 
-    //     $items = $this->service->getPaginateditems($perPage);
-    //     $meta = new PagenatorMeta($items);
+        $items = $this->service->getPaginateditems($perPage);
+        $meta = new PagenatorMeta($items);
 
-    //     return $this->success(
-    //         data: ($this->resourceClass)::collection($items),
-    //         meta: $meta->toArray()
-    //     );
-    // }
+        return $this->success(
+            data: ($this->resourceClass)::collection($items),
+            meta: $meta->toArray()
+        );
+    }
 
     public function store()
     {
@@ -45,7 +45,7 @@ abstract class BaseController extends Controller
         // We assume the Request has a toDto() method
         $dto = $request->toDto();
         $entity = $this->service->create($dto);
-
+        Log::info("BaseController store", ['entity' => $entity]);
         return $this->success(($this->resourceClass)::make($entity));
     }
 

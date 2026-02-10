@@ -1,0 +1,17 @@
+<?php
+
+namespace App\Application\DTOs;
+
+
+
+class {{ name }} {
+
+    public function __construct(){
+        
+    }
+
+
+     public function toArray()
+    {
+    }
+}

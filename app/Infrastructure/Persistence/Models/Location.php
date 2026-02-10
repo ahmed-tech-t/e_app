@@ -16,4 +16,14 @@ class Location extends Model
         'phone',
         'type'
     ];
+
+    public function patches()
+    {
+        return $this->belongsToMany(
+            ProductBatch::class,
+            'batch_location'
+        )
+            ->withPivot('remaining_quantity')
+            ->withTimestamps();
+    }
 }

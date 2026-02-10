@@ -14,15 +14,28 @@ class ProductBatchResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return [
+        if (is_null($this->resource)) {
+            return [];
+        }
+        $data = [
             'id' => $this->id,
             'batch_code' => $this->batchCode,
-            'product_id' => $this->productId,
             'remaining_quantity' => $this->remainingQuantity,
             'initial_quantity' => $this->initialQuantity,
             'cost_price' => $this->costPrice,
             'retail_price' => $this->retailPrice,
             'wholesale_price' => $this->wholesalePrice
         ];
+
+        if ($this->product) {
+            $data['product'] = $this->product;
+        } else {
+            $data['product_id'] = $this->productId;
+        }
+
+        if ($this->locations) {
+            $data['locations'] = $this->locations;
+        }
+        return $data;
     }
 }

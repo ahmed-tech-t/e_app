@@ -23,6 +23,7 @@ class CreateProductBatchRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'location_id' => 'required|exists:locations,id',
             'batch_code' => 'required|string|max:255',
             'product_id' => 'required|exists:products,id',
             'initial_quantity' => 'required|integer|min:1',
@@ -37,6 +38,7 @@ class CreateProductBatchRequest extends FormRequest
         $data = $this->validated();
 
         return new ProductBatchDto(
+            locationId: $data['location_id'],
             batchCode: $data['batch_code'],
             productId: $data['product_id'],
             initialQuantity: $data['initial_quantity'],

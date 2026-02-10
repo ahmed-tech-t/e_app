@@ -18,6 +18,13 @@ abstract class BaseService
         return ($this->repo)->findAll();
     }
 
+
+    public function getPaginatedItems($perPage)
+    {
+        return ($this->repo)->getPaginatedItems($perPage);
+    }
+
+
     public function findById(int $id)
     {
         return ($this->repo)->findById($id);

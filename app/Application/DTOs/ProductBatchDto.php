@@ -8,6 +8,7 @@ class ProductBatchDto
 {
 
     public function __construct(
+        public ?int $locationId = null,
         public ?int $productId = null,
         public ?string $batchCode = null,
         public ?int $initialQuantity = null,
@@ -23,6 +24,7 @@ class ProductBatchDto
     public function toArray()
     {
         return [
+            'location_id' => $this->locationId,
             'batch_code' => $this->batchCode,
             'product_id' => $this->productId,
             'remaining_quantity' => $this->remainingQuantity,

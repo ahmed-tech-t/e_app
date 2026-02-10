@@ -18,4 +18,19 @@ class ProductBatch extends Model
         'retail_price',
         'wholesale_price'
     ];
+
+    public function locations()
+    {
+        return $this->belongsToMany(
+            Location::class,
+            'batch_location'
+        )
+            ->withPivot('remaining_quantity')
+            ->withTimestamps();
+    }
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
 }

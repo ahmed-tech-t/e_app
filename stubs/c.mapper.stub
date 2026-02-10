@@ -1,0 +1,13 @@
+<?php
+
+namespace App\Application\Mapper;
+
+use App\Domain\Entities\{{ model }}Entity;
+
+class {{ name }}
+{
+    public static function modelToEntity($model)
+    {
+        return new {{ model }}Entity();
+    }
+}

@@ -10,24 +10,13 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('product_batches', function (Blueprint $table) {
+        Schema::create('batch_location', function (Blueprint $table) {
             $table->id();
-            $table->string('batch_code');
-
-            $table->integer('initial_quantity');
+            $table->foreignId('product_batch_id')->constrained();
+            $table->foreignId('location_id')->constrained();
             $table->integer('remaining_quantity');
-
-            $table->foreignId('product_id')->constrained();
-
-            $table->decimal('cost_price', 15, 2);
-            $table->decimal('retail_price', 15, 2);
-            $table->decimal('wholesale_price', 15, 2);
-
             $table->softDeletes();
-
             $table->timestamps();
-
-            $table->unique(['product_id', 'batch_code']);
         });
     }
 
@@ -36,6 +25,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('product_patches');
+        Schema::dropIfExists('batch_location');
     }
 };

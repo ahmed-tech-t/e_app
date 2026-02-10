@@ -1,0 +1,16 @@
+<?php
+
+namespace App\Application\Services;
+
+use App\Domain\Entities\{{ model }}Entity;
+use App\Domain\Repo\{{ model }}Repo;
+
+class {{ name }} extends BaseService
+{
+    protected string $entityClass = {{ model }}Entity::class;
+
+    public function __construct({{ model }}Repo $repo)
+    {
+        $this->repo = $repo;
+    }
+}

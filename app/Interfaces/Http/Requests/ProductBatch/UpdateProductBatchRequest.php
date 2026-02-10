@@ -23,7 +23,6 @@ class UpdateProductBatchRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'remaining_quantity' => 'sometimes|integer|min:0',
             'cost_price' => 'sometimes|numeric|regex:/^\d+(\.\d{1,2})?$/',
             'retail_price' => 'sometimes|numeric|regex:/^\d+(\.\d{1,2})?$/',
             'wholesale_price' => 'sometimes|numeric|regex:/^\d+(\.\d{1,2})?$/',
@@ -35,7 +34,6 @@ class UpdateProductBatchRequest extends FormRequest
         $data = $this->validated();
         Log::info("UpdateProductBatchRequest", ['data' => $data]);
         return new ProductBatchDto(
-            remainingQuantity: $data['remaining_quantity'] ?? null,
             costPrice: $data['cost_price'] ?? null,
             retailPrice: $data['retail_price'] ?? null,
             wholesalePrice: $data['wholesale_price'] ?? null,

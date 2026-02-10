@@ -1,0 +1,12 @@
+<?php
+namespace App\Infrastructure\Persistence\repo;
+
+use App\Domain\Repo\{{ model }}Repo;
+use App\Infrastructure\Persistence\Models\{{ model }};
+use App\Application\Mapper\{{ model }}Mapper;
+
+
+class {{ name }} extends BaseERepo implements {{ model }}Repo {
+     protected $modelClass = {{ model }}::class;
+     protected $mapper = {{ model }}Mapper::class;
+}
