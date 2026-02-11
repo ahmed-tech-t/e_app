@@ -30,7 +30,7 @@ class ProductBatchEntity
             batchCode: $data['batch_code'],
             productId: $data['product_id'],
             initialQuantity: $data['initial_quantity'],
-            remainingQuantity: $data['remaining_quantity'],
+            remainingQuantity: $data['initial_quantity'],
             costPrice: $data['cost_price'],
             retailPrice: $data['retail_price'],
             wholesalePrice: $data['wholesale_price']
@@ -50,8 +50,6 @@ class ProductBatchEntity
         return [
             'batch_code' => $this->batchCode,
             'product_id' => $this->productId,
-            'remaining_quantity' => 0,
-            'initial_quantity' => 0,
             'cost_price' => $this->costPrice,
             'retail_price' => $this->retailPrice,
             'wholesale_price' => $this->wholesalePrice

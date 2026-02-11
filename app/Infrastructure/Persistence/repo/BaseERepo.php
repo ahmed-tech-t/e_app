@@ -79,7 +79,7 @@ class BaseERepo implements BaseRepo
      */
     public function update($entity)
     {
-        Log::info("Your message here", ['entity' => $entity]);
+        //  Log::info("Your message here", ['entity' => $entity]);
         $model = ($this->modelClass)::findOrFail($entity->id);
         ($this->modelClass)::where('id', $entity->id)->update($entity->toArray());
         return ($this->mapper)::modelToEntity($model->refresh());

@@ -44,8 +44,8 @@ abstract class BaseService
     public function update($dto, int $id)
     {
         $entity = ($this->repo)->findById($id);
-        Log::info("Your message here", ['entity' => $entity]);
-        Log::info("Your message here", ['dto' => $dto]);
+        //  Log::info("Your message here", ['entity' => $entity]);
+        //  Log::info("Your message here", ['dto' => $dto]);
         return ($this->repo)->update($entity->update($dto->toArray()));
     }
 

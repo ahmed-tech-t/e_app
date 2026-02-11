@@ -26,7 +26,7 @@ class ProductBatchController extends BaseController
 
     public function index(Request $request)
     {
-        return parent::getPaginateditems($request);
+        return parent::getPaginatedItems($request);
     }
 
     public function search(SearchProductBatchRequest $request)

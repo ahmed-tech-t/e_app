@@ -17,8 +17,7 @@ return new class extends Migration {
 
             $table->foreignId('location_id')->constrained();
 
-            $table->integer('quantity_remaining');
-
+            $table->integer('remaining_quantity')->default(0);
             $table->unique(['product_batch_id', 'location_id']);
 
             $table->softDeletes();

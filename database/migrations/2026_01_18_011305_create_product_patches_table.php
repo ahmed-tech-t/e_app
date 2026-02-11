@@ -14,8 +14,8 @@ return new class extends Migration {
             $table->id();
             $table->string('batch_code');
 
-            $table->integer('initial_quantity');
-            $table->integer('remaining_quantity');
+            $table->integer('initial_quantity')->default(0);
+            $table->integer('remaining_quantity')->default(0);
 
             $table->foreignId('product_id')->constrained();
 

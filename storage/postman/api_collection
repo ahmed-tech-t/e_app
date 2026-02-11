@@ -44,7 +44,7 @@
                                         },
                                         "body": {
                                             "mode": "raw",
-                                            "raw": "{\n    \"page\": 2,\n    \"per_page\": 58,\n    \"name_ar\": \"sample_text\",\n    \"name_en\": \"sample_text\",\n    \"brand\": \"sample_text\",\n    \"original_code\": \"sample_text\",\n    \"code\": \"sample_text\",\n    \"category_id\": 1,\n    \"sale_unit_id\": 6\n}",
+                                            "raw": "{\n    \"page\": 2,\n    \"per_page\": 3,\n    \"name_ar\": \"sample_text\",\n    \"name_en\": \"sample_text\",\n    \"brand\": \"sample_text\",\n    \"original_code\": \"sample_text\",\n    \"code\": \"sample_text\",\n    \"category_id\": 6,\n    \"sale_unit_id\": 8\n}",
                                             "options": []
                                         }
                                     }
@@ -80,7 +80,7 @@
                                 },
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n    \"page\": 8,\n    \"per_page\": 69\n}",
+                                    "raw": "{\n    \"page\": 2,\n    \"per_page\": 53\n}",
                                     "options": []
                                 }
                             }
@@ -114,7 +114,7 @@
                                 },
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n    \"category_id\": \"sample_text\",\n    \"original_code\": \"sample_text\",\n    \"name_ar\": \"sample_text\",\n    \"name_en\": \"sample_text\",\n    \"origin\": \"sample_text\",\n    \"description\": \"sample_text\",\n    \"brand\": \"sample_text\",\n    \"sale_unit_id\": \"sample_text\",\n    \"units_per_carton\": 7,\n    \"image\": \"sample_text\"\n}",
+                                    "raw": "{\n    \"category_id\": \"sample_text\",\n    \"original_code\": \"sample_text\",\n    \"name_ar\": \"sample_text\",\n    \"name_en\": \"sample_text\",\n    \"origin\": \"sample_text\",\n    \"description\": \"sample_text\",\n    \"brand\": \"sample_text\",\n    \"sale_unit_id\": \"sample_text\",\n    \"units_per_carton\": 1,\n    \"image\": \"sample_text\"\n}",
                                     "options": []
                                 }
                             }
@@ -181,7 +181,7 @@
                                 },
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n    \"name_ar\": \"sample_text\",\n    \"name_en\": \"sample_text\",\n    \"origin\": \"sample_text\",\n    \"description\": \"sample_text\",\n    \"price\": 977774,\n    \"image\": \"sample_text\",\n    \"units_per_carton\": 1,\n    \"brand\": \"sample_text\",\n    \"sale_unit_id\": \"sample_text\",\n    \"category_id\": \"sample_text\",\n    \"original_code\": \"sample_text\"\n}",
+                                    "raw": "{\n    \"name_ar\": \"sample_text\",\n    \"name_en\": \"sample_text\",\n    \"origin\": \"sample_text\",\n    \"description\": \"sample_text\",\n    \"price\": 391987,\n    \"image\": \"sample_text\",\n    \"units_per_carton\": 6,\n    \"brand\": \"sample_text\",\n    \"sale_unit_id\": \"sample_text\",\n    \"category_id\": \"sample_text\",\n    \"original_code\": \"sample_text\"\n}",
                                     "options": []
                                 }
                             }
@@ -880,6 +880,51 @@
                                     "variable": []
                                 }
                             }
+                        }
+                    ]
+                },
+                {
+                    "name": "stock-movements",
+                    "item": [
+                        {
+                            "name": "transfer",
+                            "item": [
+                                {
+                                    "name": "[POST] api/v1/stock-movements/transfer",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            },
+                                            {
+                                                "key": "Content-Type",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            }
+                                        ],
+                                        "url": {
+                                            "raw": "{{base_url}}/api/v1/stock-movements/transfer",
+                                            "host": [
+                                                "{{base_url}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "v1",
+                                                "stock-movements",
+                                                "transfer"
+                                            ]
+                                        },
+                                        "body": {
+                                            "mode": "raw",
+                                            "raw": "{\n    \"product_batch_id\": \"sample_text\",\n    \"quantity\": 25,\n    \"from_location_id\": \"sample_text\",\n    \"to_location_id\": \"sample_text\"\n}",
+                                            "options": []
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     ]
                 }

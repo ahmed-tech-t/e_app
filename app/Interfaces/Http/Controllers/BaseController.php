@@ -25,12 +25,12 @@ abstract class BaseController extends Controller
         return $this->success(($this->resourceClass)::collection($items));
     }
 
-    public function getPaginateditems(Request $request)
+    public function getPaginatedItems(Request $request)
     {
         // Using dynamic pagination defaults
         $perPage = $request->get('per_page', 10);
 
-        $items = $this->service->getPaginateditems($perPage);
+        $items = $this->service->getPaginatedItems($perPage);
         $meta = new PagenatorMeta($items);
 
         return $this->success(
@@ -45,7 +45,7 @@ abstract class BaseController extends Controller
         // We assume the Request has a toDto() method
         $dto = $request->toDto();
         $entity = $this->service->create($dto);
-        Log::info("BaseController store", ['entity' => $entity]);
+        //  Log::info("BaseController store", ['entity' => $entity]);
         return $this->success(($this->resourceClass)::make($entity));
     }
 
@@ -60,7 +60,7 @@ abstract class BaseController extends Controller
     {
         $request = app($this->updateRequest);
         $dto = $request->toDto();
-        Log::info("BaseController", ['dto' => $dto]);
+        //   Log::info("BaseController", ['dto' => $dto]);
         $item = $this->service->update($dto, $id);
         return $this->success(($this->resourceClass)::make($item));
     }

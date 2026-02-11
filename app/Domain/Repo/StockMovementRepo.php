@@ -9,9 +9,9 @@ interface StockMovementRepo
 
     public function create($productBatchId, $locationId, $quantity, $type);
     public function findAll();
-    public function updateAvilableStock(StockMovement $stockMovement);
+    public function updateAvailableStock(StockMovement $stockMovement);
     public function transfer($batchId, $fromLocationId, $toLocationId, $quantity);
-    public function adjust($batchId, $locationId, $quantity);
-    public function entry($batchId, $locationId, $quantity);
-    public function sale($batchId, $locationId, $quantity);
+    public function adjust($batchId, $locationId, $quantity, $type);
+    public function isTransferOut($batchId);
+
 }

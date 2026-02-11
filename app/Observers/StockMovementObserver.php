@@ -4,7 +4,7 @@ namespace App\Observers;
 
 use App\Domain\Repo\StockMovementRepo;
 use App\Infrastructure\Persistence\Models\StockMovement;
-
+use Illuminate\Support\Facades\Log;
 
 class StockMovementObserver
 {
@@ -16,6 +16,7 @@ class StockMovementObserver
      */
     public function created(StockMovement $stockMovement): void
     {
-        $this->repo->updateAvilableStock($stockMovement);
+        Log::info("StockMovement Observer created", ['stockMovement' => $stockMovement]);
+        $this->repo->updateAvailableStock($stockMovement);
     }
 }

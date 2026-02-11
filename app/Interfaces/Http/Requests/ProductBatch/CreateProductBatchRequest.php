@@ -42,7 +42,6 @@ class CreateProductBatchRequest extends FormRequest
             batchCode: $data['batch_code'],
             productId: $data['product_id'],
             initialQuantity: $data['initial_quantity'],
-            remainingQuantity: $data['initial_quantity'],
             costPrice: $data['cost_price'],
             retailPrice: $data['retail_price'],
             wholesalePrice: $data['wholesale_price'],

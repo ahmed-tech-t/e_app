@@ -15,7 +15,8 @@ return new class extends Migration {
             $table->foreignId('product_batch_id')->constrained();
             $table->foreignId('location_id')->constrained();
             $table->decimal('quantity', 15, 2);
-            $table->enum('type', ['entry', 'sale', 'transfer_in', 'transfer_out', 'adjustment']);
+            $table->enum('type', ['entry', 'sale', 'transfer_in', 'transfer_out', 'adjust_initial']);
+            $table->softDeletes();
             $table->timestamps();
         });
     }

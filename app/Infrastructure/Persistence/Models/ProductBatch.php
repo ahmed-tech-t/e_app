@@ -23,7 +23,7 @@ class ProductBatch extends Model
     {
         return $this->belongsToMany(
             Location::class,
-            'batch_location'
+            'batch_locations'
         )
             ->withPivot('remaining_quantity')
             ->withTimestamps();

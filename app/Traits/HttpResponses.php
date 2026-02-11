@@ -6,7 +6,7 @@ use function PHPUnit\Framework\isArray;
 
 trait HttpResponses
 {
-    public function success($data, $message = "Success", $meta = null, $code = 200)
+    public function success($data = [], $message = "Success", $meta = null, $code = 200)
     {
         if ($meta)
             return response()->json([
