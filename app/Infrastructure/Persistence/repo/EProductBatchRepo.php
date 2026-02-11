@@ -84,4 +84,28 @@ class EProductBatchRepo extends BaseERepo implements ProductBatchRepo
                     ProductBatchMapper::modelToEntity($item)
                );
      }
+
+
+     public function getTargetBatch($productId)
+     {
+          return ProductBatch::where('product_id', $productId)
+               ->where('remaining_quantity', '>', 0)
+               ->oldest()->first();
+     }
+
+     public function getProductQuantityInLocation($productId, $locationId)
+     {
+          return ProductBatch::where('product_id', $productId)
+               ->where('location_id', $locationId)
+               ->sum('remaining_quantity');
+     }
+
+     public function getProductBatchesInLocation($productId, $locationId)
+     {
+          return ProductBatch::where('product_id', $productId)
+               ->where('location_id', $locationId)
+               ->orderBy('created_at', 'asc') //FIFO
+               ->lockForUpdate()
+               ->get();
+     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Infrastructure\Persistence\repo;
 
+use App\Domain\Repo\ProductBatchRepo;
 use App\Domain\Repo\StockMovementRepo;
 use App\Infrastructure\Persistence\Models\ProductBatch;
 use App\Infrastructure\Persistence\Models\StockMovement;
@@ -11,6 +12,9 @@ use Illuminate\Support\Facades\Log;
 
 class EStockMovementRepo implements StockMovementRepo
 {
+    public function __construct(private ProductBatchRepo $productBatchRepo)
+    {
+    }
 
     public function transfer($batchId, $fromLocationId, $toLocationId, $quantity)
     {
@@ -75,4 +79,31 @@ class EStockMovementRepo implements StockMovementRepo
     }
 
 
+    public function transferByProductId($productId, $fromLocationId, $toLocationId, $quantity)
+    {
+        $totalQuantity = $this->productBatchRepo->getProductQuantityInLocation($productId, $fromLocationId);
+        if ($quantity > $totalQuantity) {
+            throw new \Exception("we don't have enough quantity");
+        }
+
+        DB::transaction(function () use ($productId, $fromLocationId, $toLocationId, $quantity) {
+            $productBatches = $this->productBatchRepo->getProductBatchesInLocation($productId, $fromLocationId);
+            foreach ($productBatches as $productBatch) {
+                if ($quantity <= 0)
+                    break;
+                if ($productBatch->remaining_quantity >= $quantity) {
+                    $this->transfer($productBatch->id, $fromLocationId, $toLocationId, $quantity);
+                    $quantity = 0;
+                    break;
+                } else {
+                    $canTake = $productBatch->remaining_quantity;
+                    $this->transfer($productBatch->id, $fromLocationId, $toLocationId, $canTake);
+                    $quantity -= $canTake;
+                }
+            }
+        });
+
+        return true;
+
+    }
 }

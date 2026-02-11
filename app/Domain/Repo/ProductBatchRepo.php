@@ -9,6 +9,8 @@ interface ProductBatchRepo extends BaseRepo
     public function search($code);
 
     public function update($entity, ?int $initialQuantity = null);
+    public function getProductBatchesInLocation($productId, $locationId);
+    public function getProductQuantityInLocation($productId, $locationId);
 
 }
 
