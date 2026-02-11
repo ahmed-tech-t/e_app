@@ -6,6 +6,7 @@ use App\Application\Mapper\ProductMapper;
 use App\Domain\Entities\ProductBatchEntity;
 use App\Domain\Repo\LocationRepo;
 use App\Domain\Repo\ProductBatchRepo;
+use App\Domain\Repo\StockMovementRepo;
 use App\Infrastructure\Persistence\Models\Location;
 use App\Infrastructure\Persistence\Models\ProductBatch;
 use App\Infrastructure\Persistence\Pipeline\Filters\ProductBatch\FilterByCode;
@@ -18,15 +19,19 @@ class EProductBatchRepo extends BaseERepo implements ProductBatchRepo
 {
      protected $modelClass = ProductBatch::class;
      protected $mapper = ProductBatchMapper::class;
+     public function __construct(private StockMovementRepo $stockMovementRepo)
+     {
+     }
 
      public function createBatchAndSetLocation(ProductBatchEntity $entity, int $locationId)
      {
-          $model = ProductBatch::create($entity->toArray())->refresh();
-          $model->locations()->attach(
-               $locationId,
-               ['remaining_quantity' => $entity->initialQuantity]
-          );
-          return ($this->mapper)::modelToEntity($model);
+          return DB::transaction(function () use ($entity, $locationId) {
+               $model = ProductBatch::create($entity->toArray());
+               $this->stockMovementRepo->entry(batchId: $model->id, locationId: $locationId, quantity: $entity->initialQuantity);
+               $model->refresh();
+               return ($this->mapper)::modelToEntity($model);
+
+          });
      }
 
      public function update($entity)
@@ -65,36 +70,5 @@ class EProductBatchRepo extends BaseERepo implements ProductBatchRepo
                     fn($item) =>
                     ProductBatchMapper::modelToEntity($item)
                );
-     }
-
-     public function transfer($batchId, $fromLocationId, $toLocationId, $quantity)
-     {
-          DB::transaction(function () use ($batchId, $fromLocationId, $toLocationId, $quantity) {
-               // 1. Find the Batch first
-               $batch = ProductBatch::findOrFail($batchId);
-               $source = $batch->locations()->where('location_id', $fromLocationId)->firstOrFail();
-               $currentQty = $source->pivot->remaining_quantity;
-
-               if ($currentQty < $quantity) {
-                    throw new \Exception("Insufficient stock in source location.");
-               }
-
-               $batch->locations()->updateExistingPivot($fromLocationId, [
-                    'remaining_quantity' => $currentQty - $quantity
-               ]);
-
-
-               $destination = $batch->locations()->where('location_id', $toLocationId)->firstOrFail();
-
-               if ($destination) {
-                    $batch->locations()->updateExistingPivot($toLocationId, [
-                         'remaining_quantity' => $destination->pivot->remaining_quantity + $quantity
-                    ]);
-               } else {
-                    $batch->locations()->attach($toLocationId, [
-                         'remaining_quantity' => $quantity
-                    ]);
-               }
-          });
      }
 }

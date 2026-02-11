@@ -5,8 +5,10 @@ namespace App\Providers;
 use App\Domain\Repo\CategoryRepo;
 use App\Domain\Repo\ProductRepo;
 use App\Infrastructure\Persistence\Models\Category;
+use App\Infrastructure\Persistence\Models\StockMovement;
 use App\Infrastructure\Persistence\repo\ECategoryRepo;
 use App\Infrastructure\Persistence\repo\EProductRepo;
+use App\Observers\StockMovementObserver;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
 
@@ -26,6 +28,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        StockMovement::observe(StockMovementObserver::class);
     }
 }

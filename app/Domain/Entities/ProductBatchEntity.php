@@ -50,8 +50,8 @@ class ProductBatchEntity
         return [
             'batch_code' => $this->batchCode,
             'product_id' => $this->productId,
-            'remaining_quantity' => $this->remainingQuantity,
-            'initial_quantity' => $this->initialQuantity,
+            'remaining_quantity' => 0,
+            'initial_quantity' => 0,
             'cost_price' => $this->costPrice,
             'retail_price' => $this->retailPrice,
             'wholesale_price' => $this->wholesalePrice
