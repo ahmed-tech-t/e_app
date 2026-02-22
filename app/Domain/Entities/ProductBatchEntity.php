@@ -14,8 +14,6 @@ class ProductBatchEntity
         public int $initialQuantity,
         public int $remainingQuantity,
         public float $costPrice,
-        public float $retailPrice,
-        public float $wholesalePrice,
         public ?int $id = null,
         public ?array $locations = null,
         public ?array $product = null,
@@ -32,15 +30,11 @@ class ProductBatchEntity
             initialQuantity: $data['initial_quantity'],
             remainingQuantity: $data['initial_quantity'],
             costPrice: $data['cost_price'],
-            retailPrice: $data['retail_price'],
-            wholesalePrice: $data['wholesale_price']
         );
     }
     public function update(array $data)
     {
         $this->costPrice = $data['cost_price'] ?? $this->costPrice;
-        $this->retailPrice = $data['retail_price'] ?? $this->retailPrice;
-        $this->wholesalePrice = $data['wholesale_price'] ?? $this->wholesalePrice;
 
         return $this;
     }
@@ -50,9 +44,7 @@ class ProductBatchEntity
         return [
             'batch_code' => $this->batchCode,
             'product_id' => $this->productId,
-            'cost_price' => $this->costPrice,
-            'retail_price' => $this->retailPrice,
-            'wholesale_price' => $this->wholesalePrice
+            'cost_price' => $this->costPrice
         ];
     }
 }

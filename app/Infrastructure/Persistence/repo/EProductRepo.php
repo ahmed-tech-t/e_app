@@ -5,7 +5,9 @@ namespace App\Infrastructure\Persistence\repo;
 use App\Application\DTOs\ProductSearchDto;
 use App\Application\Mapper\ProductMapper;
 use App\Domain\Entities\ProductEntity;
+use App\Domain\Entities\ProductPriceEntity;
 use App\Domain\Repo\ProductRepo;
+use App\Infrastructure\Persistence\Models\ProductPrice;
 use App\Infrastructure\Persistence\Pipeline\Filters\Product\FilterByBrand;
 use App\Infrastructure\Persistence\Pipeline\Filters\Product\FilterByCategoryId;
 use App\Infrastructure\Persistence\Pipeline\Filters\Product\FilterByCode;
@@ -17,6 +19,8 @@ use App\Infrastructure\Persistence\Models\Product;
 use App\Infrastructure\Persistence\Pipeline\Filters\Product\ProductQueryContext;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pipeline\Pipeline;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class EProductRepo extends BaseERepo implements ProductRepo
 {
@@ -25,7 +29,7 @@ class EProductRepo extends BaseERepo implements ProductRepo
     protected $mapper = ProductMapper::class;
     protected array $defaultRelationships = ['category', 'saleUnit'];
 
-
+    protected array $withForPaginate = ['retailPrice', 'wholesalePrice'];
     public function search(ProductSearchDto $dto, $perPage = 5): LengthAwarePaginator
     {
         $context = ProductQueryContext::create(Product::query(), $dto);

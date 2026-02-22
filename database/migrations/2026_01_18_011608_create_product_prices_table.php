@@ -14,10 +14,10 @@ return new class extends Migration {
             $table->id();
 
             $table->foreignId('product_id')->constrained();
-
+            $table->enum('type', ['retail', 'wholesale'])->default('retail');
             $table->decimal('price', 15, 2);
             $table->timestamp("valid_from");
-            $table->timestamp("valid_to");
+            $table->timestamp("valid_to")->nullable();
             $table->softDeletes();
 
             $table->timestamps();

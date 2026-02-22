@@ -27,9 +27,7 @@ class CreateProductBatchRequest extends FormRequest
             'batch_code' => 'required|string|max:255',
             'product_id' => 'required|exists:products,id',
             'initial_quantity' => 'required|integer|min:1',
-            'cost_price' => 'required|numeric|regex:/^\d+(\.\d{1,2})?$/',
-            'retail_price' => 'required|numeric|regex:/^\d+(\.\d{1,2})?$/',
-            'wholesale_price' => 'required|numeric|regex:/^\d+(\.\d{1,2})?$/',
+            'cost_price' => 'required|numeric|regex:/^\d+(\.\d{1,2})?$/'
         ];
     }
 
@@ -43,8 +41,7 @@ class CreateProductBatchRequest extends FormRequest
             productId: $data['product_id'],
             initialQuantity: $data['initial_quantity'],
             costPrice: $data['cost_price'],
-            retailPrice: $data['retail_price'],
-            wholesalePrice: $data['wholesale_price'],
+
         );
     }
 }

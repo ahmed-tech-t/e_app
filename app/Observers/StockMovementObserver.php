@@ -16,7 +16,6 @@ class StockMovementObserver
      */
     public function created(StockMovement $stockMovement): void
     {
-        Log::info("StockMovement Observer created", ['stockMovement' => $stockMovement]);
         $this->repo->updateAvailableStock($stockMovement);
     }
 }

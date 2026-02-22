@@ -9,19 +9,21 @@ class ProductEntity
     public function __construct(
         public string $name_ar,
         public string $brand,
-        public int $unitsPerCarton,
+        public int $units_per_carton,
         public string $original_code,
+        public ?float $retail_price = null,
+        public ?float $wholesale_price = null,
         public ?string $name_en = null,
         public ?string $origin = null,
         public readonly ?int $id = null,
         public ?string $code = null,
-        public ?int $categoryId = null,
+        public ?int $category_id = null,
         public ?string $description = null,
         public ?string $image = null,
-        public ?int $saleUnitId = null,
+        public ?int $sale_unit_id = null,
         public ?Carbon $created_at = null,
         public ?Carbon $updated_at = null,
-        public ?SaleUnitEntity $saleUnit = null,
+        public ?SaleUnitEntity $sale_unit = null,
         public ?CategoryEntity $category = null,
     ) {
     }
@@ -31,19 +33,21 @@ class ProductEntity
         return new self(
             name_ar: $data['name_ar'],
             brand: $data['brand'],
-            unitsPerCarton: $data['unitsPerCarton'],
+            units_per_carton: $data['units_per_carton'],
             original_code: $data['original_code'],
             name_en: $data['name_en'],
             origin: $data['origin'],
-            categoryId: $data['categoryId'],
+            category_id: $data['category_id'],
             description: $data['description'],
             image: $data['image'],
-            saleUnitId: $data['saleUnitId'],
+            sale_unit_id: $data['sale_unit_id'],
+            retail_price: $data['retail_price'],
+            wholesale_price: $data['wholesale_price'],
         );
     }
     public function update(array $data)
     {
-        $this->categoryId = $data['categoryId'] ?? $this->categoryId;
+        $this->category_id = $data['category_id'] ?? $this->category_id;
 
         $this->original_code = $data['original_code'] ?? $this->original_code;
 
@@ -59,9 +63,9 @@ class ProductEntity
 
         $this->origin = $data['origin'] ?? $this->origin;
 
-        $this->unitsPerCarton = $data['unitsPerCarton'] ?? $this->unitsPerCarton;
+        $this->units_per_carton = $data['units_per_carton'] ?? $this->units_per_carton;
 
-        $this->saleUnitId = $data['saleUnitId'] ?? $this->saleUnitId;
+        $this->sale_unit_id = $data['sale_unit_id'] ?? $this->sale_unit_id;
 
         return $this;
     }
@@ -73,11 +77,11 @@ class ProductEntity
             'original_code' => $this->original_code,
             'name_ar' => $this->name_ar,
             'name_en' => $this->name_en,
-            'category_id' => $this->categoryId,
+            'category_id' => $this->category_id,
             'description' => $this->description,
             'brand' => $this->brand,
-            'units_per_carton' => $this->unitsPerCarton,
-            'sale_unit_id' => $this->saleUnitId,
+            'units_per_carton' => $this->units_per_carton,
+            'sale_unit_id' => $this->sale_unit_id,
 
         ];
         if ($this->image)

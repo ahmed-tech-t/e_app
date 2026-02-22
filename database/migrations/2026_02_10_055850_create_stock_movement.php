@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->foreignId('location_id')->constrained();
             $table->decimal('quantity', 15, 2);
             $table->enum('type', ['entry', 'sale', 'transfer_in', 'transfer_out', 'adjust_initial']);
+            $table->string('bill_number')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

@@ -7,11 +7,12 @@ use App\Infrastructure\Persistence\Models\StockMovement;
 interface StockMovementRepo
 {
 
-    public function create($productBatchId, $locationId, $quantity, $type);
+    public function create($productBatchId, $locationId, $quantity, $type, $billNumber);
     public function findAll();
     public function updateAvailableStock(StockMovement $stockMovement);
-    public function transfer($batchId, $fromLocationId, $toLocationId, $quantity);
-    public function adjust($batchId, $locationId, $quantity, $type);
+    public function adjust($batchId, $locationId, $quantity, $type, $billNumber = null);
     public function isTransferOut($batchId);
+
+    public function transfer($batchId, $fromLocationId, $toLocationId, $quantity);
 
 }

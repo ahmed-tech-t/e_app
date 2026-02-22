@@ -16,7 +16,7 @@ class StockMovementTransferRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'product_batch_id' => 'required|exists:product_batches,id',
+            'product_id' => 'required|exists:products,id',
             'quantity' => 'required|numeric',
             'from_location_id' => 'required|exists:locations,id',
             'to_location_id' => 'required|exists:locations,id',
@@ -28,10 +28,10 @@ class StockMovementTransferRequest extends FormRequest
         $data = $this->validated();
 
         return new StockMovementTransferDto(
-            batchId: $data['product_batch_id'],
-            quantity: $data['quantity'],
+            productId: $data['product_id'],
             fromLocationId: $data['from_location_id'],
             toLocationId: $data['to_location_id'],
+            quantity: $data['quantity'],
         );
     }
 }

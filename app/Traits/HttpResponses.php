@@ -8,25 +8,26 @@ trait HttpResponses
 {
     public function success($data = [], $message = "Success", $meta = null, $code = 200)
     {
-        if ($meta)
-            return response()->json([
-                'code' => $code,
-                'status' => 'success',
-                'message' => $message,
-                'data' => [
-                    'items' => $data,
-                    'meta' => $meta
-                ]
 
-            ], $code);
-
-        return response()->json([
+        $response = [
             'code' => $code,
             'status' => 'success',
             'message' => $message,
-            'data' => $data
-        ], $code);
+        ];
 
+        if (!empty($data)) {
+            if ($meta) {
+                $response['data'] = [
+                    'items' => $data,
+                    'meta' => $meta
+                ];
+            } else {
+                $response['data'] = $data;
+            }
+
+        }
+
+        return response()->json($response, $code);
 
     }
 

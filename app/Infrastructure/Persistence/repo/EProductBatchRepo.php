@@ -16,55 +16,17 @@ use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
+use function Symfony\Component\String\s;
+
 class EProductBatchRepo extends BaseERepo implements ProductBatchRepo
 {
      protected $modelClass = ProductBatch::class;
      protected $mapper = ProductBatchMapper::class;
-     public function __construct(private StockMovementRepo $stockMovementRepo)
+     public function __construct()
      {
      }
 
-     public function createBatchAndSetLocation(ProductBatchEntity $entity, int $locationId)
-     {
-          return DB::transaction(function () use ($entity, $locationId) {
-               $model = ProductBatch::create($entity->toArray());
-               $this->stockMovementRepo->adjust(batchId: $model->id, locationId: $locationId, quantity: $entity->initialQuantity, type: StockMovementType::ENTRY);
-               $model->refresh();
-               return ($this->mapper)::modelToEntity($model);
 
-          });
-     }
-
-     public function update($entity, ?int $initialQuantity = null)
-     {
-          return DB::transaction(function () use ($entity, $initialQuantity) {
-
-               $model = ProductBatch::
-                    lockForUpdate()
-                    ->findOrFail($entity->id);
-
-               if (
-                    $initialQuantity
-                    //   && $model->initialQuantity != $initialQuantity
-                    && $model->remaining_quantity == $model->initial_quantity
-               ) {
-                    if (!$this->stockMovementRepo->isTransferOut($model->id)) {
-                         $diff = (float) $initialQuantity - (float) $model->initial_quantity;
-                         $locationId = $model->locations()->first()->id;
-                         $this->stockMovementRepo->adjust(
-                              batchId: $entity->id,
-                              locationId: $locationId,
-                              quantity: $diff,
-                              type: StockMovementType::ADJUST_INITIAL
-                         );
-                    } else
-                         throw new \Exception("Cannot update initial quantity after stock movement");
-               }
-
-               $model->update($entity->toArray());
-               return ($this->mapper)::modelToEntity($model->refresh());
-          });
-     }
      public function search($code)
      {
           $context = ProductBatchQueryContext::create(ProductBatch::query(), $code);
@@ -86,12 +48,14 @@ class EProductBatchRepo extends BaseERepo implements ProductBatchRepo
      }
 
 
-     public function getTargetBatch($productId)
+     public function getBatchByProductIdFIFO($productId)
      {
           return ProductBatch::where('product_id', $productId)
                ->where('remaining_quantity', '>', 0)
                ->oldest()->first();
      }
+
+
 
      public function getProductQuantityInLocation($productId, $locationId)
      {
@@ -99,6 +63,8 @@ class EProductBatchRepo extends BaseERepo implements ProductBatchRepo
                ->where('location_id', $locationId)
                ->sum('remaining_quantity');
      }
+
+
 
      public function getProductBatchesInLocation($productId, $locationId)
      {

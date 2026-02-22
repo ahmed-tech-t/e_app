@@ -23,8 +23,6 @@ class ProductBatchResource extends JsonResource
             'remaining_quantity' => $this->remainingQuantity,
             'initial_quantity' => $this->initialQuantity,
             'cost_price' => $this->costPrice,
-            'retail_price' => $this->retailPrice,
-            'wholesale_price' => $this->wholesalePrice
         ];
 
         if ($this->product) {

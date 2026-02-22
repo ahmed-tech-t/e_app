@@ -12,8 +12,7 @@ class ProductBatchDto
         public ?string $batchCode = null,
         public ?int $initialQuantity = null,
         public ?float $costPrice = null,
-        public ?float $retailPrice = null,
-        public ?float $wholesalePrice = null
+
     ) {
 
     }
@@ -26,9 +25,7 @@ class ProductBatchDto
             'batch_code' => $this->batchCode,
             'product_id' => $this->productId,
             'initial_quantity' => $this->initialQuantity,
-            'cost_price' => $this->costPrice,
-            'retail_price' => $this->retailPrice,
-            'wholesale_price' => $this->wholesalePrice
+            'cost_price' => $this->costPrice
         ];
     }
 }

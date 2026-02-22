@@ -5,6 +5,7 @@ namespace App\Infrastructure\Persistence\repo;
 use App\Domain\Repo\BaseRepo;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class BaseERepo implements BaseRepo
@@ -15,9 +16,17 @@ class BaseERepo implements BaseRepo
 
     protected array $defaultRelationships = [];
 
-    public function getPaginateditems($perPage = 5): LengthAwarePaginator
+    protected array $withForPaginate = [];
+
+
+    public function getPaginatedItems($perPage = 5): LengthAwarePaginator
     {
-        $items = ($this->modelClass)::paginate($perPage)
+        $query = ($this->modelClass)::query();
+        if (!empty($this->withForPaginate)) {
+            $query->with($this->withForPaginate);
+        }
+
+        $items = $query->paginate($perPage)
             ->through(
                 fn($item) =>
                 ($this->mapper)::modelToEntity($item)
@@ -35,8 +44,10 @@ class BaseERepo implements BaseRepo
      */
     public function create($entity)
     {
-        $model = ($this->modelClass)::create($entity->toArray())->refresh();
-        return ($this->mapper)::modelToEntity($model);
+        return DB::transaction(function () use ($entity) {
+            $model = ($this->modelClass)::create($entity->toArray())->refresh();
+            return ($this->mapper)::modelToEntity($model);
+        });
     }
 
     /**

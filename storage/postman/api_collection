@@ -12,6 +12,48 @@
                     "name": "products",
                     "item": [
                         {
+                            "name": "price",
+                            "item": [
+                                {
+                                    "name": "[POST] api/v1/products/{id}/price",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            },
+                                            {
+                                                "key": "Content-Type",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            }
+                                        ],
+                                        "url": {
+                                            "raw": "{{base_url}}/api/v1/products/:id/price",
+                                            "host": [
+                                                "{{base_url}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "v1",
+                                                "products",
+                                                ":id",
+                                                "price"
+                                            ],
+                                            "variable": []
+                                        },
+                                        "body": {
+                                            "mode": "raw",
+                                            "raw": "{\n    \"product_id\": 6,\n    \"price\": 23,\n    \"type\": \"sample_text\"\n}",
+                                            "options": []
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        {
                             "name": "search",
                             "item": [
                                 {
@@ -44,7 +86,7 @@
                                         },
                                         "body": {
                                             "mode": "raw",
-                                            "raw": "{\n    \"page\": 2,\n    \"per_page\": 3,\n    \"name_ar\": \"sample_text\",\n    \"name_en\": \"sample_text\",\n    \"brand\": \"sample_text\",\n    \"original_code\": \"sample_text\",\n    \"code\": \"sample_text\",\n    \"category_id\": 6,\n    \"sale_unit_id\": 8\n}",
+                                            "raw": "{\n    \"page\": 10,\n    \"per_page\": 41,\n    \"name_ar\": \"sample_text\",\n    \"name_en\": \"sample_text\",\n    \"brand\": \"sample_text\",\n    \"original_code\": \"sample_text\",\n    \"code\": \"sample_text\",\n    \"category_id\": 6,\n    \"sale_unit_id\": 10\n}",
                                             "options": []
                                         }
                                     }
@@ -80,7 +122,7 @@
                                 },
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n    \"page\": 2,\n    \"per_page\": 53\n}",
+                                    "raw": "{\n    \"page\": 5,\n    \"per_page\": 72\n}",
                                     "options": []
                                 }
                             }
@@ -114,7 +156,7 @@
                                 },
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n    \"category_id\": \"sample_text\",\n    \"original_code\": \"sample_text\",\n    \"name_ar\": \"sample_text\",\n    \"name_en\": \"sample_text\",\n    \"origin\": \"sample_text\",\n    \"description\": \"sample_text\",\n    \"brand\": \"sample_text\",\n    \"sale_unit_id\": \"sample_text\",\n    \"units_per_carton\": 1,\n    \"image\": \"sample_text\"\n}",
+                                    "raw": "{\n    \"category_id\": \"sample_text\",\n    \"original_code\": \"sample_text\",\n    \"name_ar\": \"sample_text\",\n    \"name_en\": \"sample_text\",\n    \"origin\": \"sample_text\",\n    \"description\": \"sample_text\",\n    \"brand\": \"sample_text\",\n    \"sale_unit_id\": \"sample_text\",\n    \"units_per_carton\": 5,\n    \"image\": \"sample_text\",\n    \"retail_price\": 97,\n    \"wholesale_price\": 41\n}",
                                     "options": []
                                 }
                             }
@@ -181,7 +223,7 @@
                                 },
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n    \"name_ar\": \"sample_text\",\n    \"name_en\": \"sample_text\",\n    \"origin\": \"sample_text\",\n    \"description\": \"sample_text\",\n    \"price\": 391987,\n    \"image\": \"sample_text\",\n    \"units_per_carton\": 6,\n    \"brand\": \"sample_text\",\n    \"sale_unit_id\": \"sample_text\",\n    \"category_id\": \"sample_text\",\n    \"original_code\": \"sample_text\"\n}",
+                                    "raw": "{\n    \"name_ar\": \"sample_text\",\n    \"name_en\": \"sample_text\",\n    \"origin\": \"sample_text\",\n    \"description\": \"sample_text\",\n    \"price\": 862890,\n    \"image\": \"sample_text\",\n    \"units_per_carton\": 3,\n    \"brand\": \"sample_text\",\n    \"sale_unit_id\": \"sample_text\",\n    \"category_id\": \"sample_text\",\n    \"original_code\": \"sample_text\"\n}",
                                     "options": []
                                 }
                             }
@@ -684,247 +726,6 @@
                                     "variable": []
                                 }
                             }
-                        }
-                    ]
-                },
-                {
-                    "name": "product-batches",
-                    "item": [
-                        {
-                            "name": "search",
-                            "item": [
-                                {
-                                    "name": "[GET] api/v1/product-batches/search",
-                                    "request": {
-                                        "method": "GET",
-                                        "header": [
-                                            {
-                                                "key": "Accept",
-                                                "value": "application/json",
-                                                "type": "text"
-                                            },
-                                            {
-                                                "key": "Content-Type",
-                                                "value": "application/json",
-                                                "type": "text"
-                                            }
-                                        ],
-                                        "url": {
-                                            "raw": "{{base_url}}/api/v1/product-batches/search",
-                                            "host": [
-                                                "{{base_url}}"
-                                            ],
-                                            "path": [
-                                                "api",
-                                                "v1",
-                                                "product-batches",
-                                                "search"
-                                            ]
-                                        },
-                                        "body": {
-                                            "mode": "raw",
-                                            "raw": "{\n    \"batch_code\": \"sample_text\"\n}",
-                                            "options": []
-                                        }
-                                    }
-                                }
-                            ]
-                        },
-                        {
-                            "name": "[GET] api/v1/product-batches",
-                            "request": {
-                                "method": "GET",
-                                "header": [
-                                    {
-                                        "key": "Accept",
-                                        "value": "application/json",
-                                        "type": "text"
-                                    },
-                                    {
-                                        "key": "Content-Type",
-                                        "value": "application/json",
-                                        "type": "text"
-                                    }
-                                ],
-                                "url": {
-                                    "raw": "{{base_url}}/api/v1/product-batches",
-                                    "host": [
-                                        "{{base_url}}"
-                                    ],
-                                    "path": [
-                                        "api",
-                                        "v1",
-                                        "product-batches"
-                                    ]
-                                }
-                            }
-                        },
-                        {
-                            "name": "[POST] api/v1/product-batches",
-                            "request": {
-                                "method": "POST",
-                                "header": [
-                                    {
-                                        "key": "Accept",
-                                        "value": "application/json",
-                                        "type": "text"
-                                    },
-                                    {
-                                        "key": "Content-Type",
-                                        "value": "application/json",
-                                        "type": "text"
-                                    }
-                                ],
-                                "url": {
-                                    "raw": "{{base_url}}/api/v1/product-batches",
-                                    "host": [
-                                        "{{base_url}}"
-                                    ],
-                                    "path": [
-                                        "api",
-                                        "v1",
-                                        "product-batches"
-                                    ]
-                                }
-                            }
-                        },
-                        {
-                            "name": "[GET] api/v1/product-batches/{product_batch}",
-                            "request": {
-                                "method": "GET",
-                                "header": [
-                                    {
-                                        "key": "Accept",
-                                        "value": "application/json",
-                                        "type": "text"
-                                    },
-                                    {
-                                        "key": "Content-Type",
-                                        "value": "application/json",
-                                        "type": "text"
-                                    }
-                                ],
-                                "url": {
-                                    "raw": "{{base_url}}/api/v1/product-batches/:product_batch",
-                                    "host": [
-                                        "{{base_url}}"
-                                    ],
-                                    "path": [
-                                        "api",
-                                        "v1",
-                                        "product-batches",
-                                        ":product_batch"
-                                    ],
-                                    "variable": []
-                                }
-                            }
-                        },
-                        {
-                            "name": "[PUT] api/v1/product-batches/{product_batch}",
-                            "request": {
-                                "method": "PUT",
-                                "header": [
-                                    {
-                                        "key": "Accept",
-                                        "value": "application/json",
-                                        "type": "text"
-                                    },
-                                    {
-                                        "key": "Content-Type",
-                                        "value": "application/json",
-                                        "type": "text"
-                                    }
-                                ],
-                                "url": {
-                                    "raw": "{{base_url}}/api/v1/product-batches/:product_batch",
-                                    "host": [
-                                        "{{base_url}}"
-                                    ],
-                                    "path": [
-                                        "api",
-                                        "v1",
-                                        "product-batches",
-                                        ":product_batch"
-                                    ],
-                                    "variable": []
-                                }
-                            }
-                        },
-                        {
-                            "name": "[DELETE] api/v1/product-batches/{product_batch}",
-                            "request": {
-                                "method": "DELETE",
-                                "header": [
-                                    {
-                                        "key": "Accept",
-                                        "value": "application/json",
-                                        "type": "text"
-                                    },
-                                    {
-                                        "key": "Content-Type",
-                                        "value": "application/json",
-                                        "type": "text"
-                                    }
-                                ],
-                                "url": {
-                                    "raw": "{{base_url}}/api/v1/product-batches/:product_batch",
-                                    "host": [
-                                        "{{base_url}}"
-                                    ],
-                                    "path": [
-                                        "api",
-                                        "v1",
-                                        "product-batches",
-                                        ":product_batch"
-                                    ],
-                                    "variable": []
-                                }
-                            }
-                        }
-                    ]
-                },
-                {
-                    "name": "stock-movements",
-                    "item": [
-                        {
-                            "name": "transfer",
-                            "item": [
-                                {
-                                    "name": "[POST] api/v1/stock-movements/transfer",
-                                    "request": {
-                                        "method": "POST",
-                                        "header": [
-                                            {
-                                                "key": "Accept",
-                                                "value": "application/json",
-                                                "type": "text"
-                                            },
-                                            {
-                                                "key": "Content-Type",
-                                                "value": "application/json",
-                                                "type": "text"
-                                            }
-                                        ],
-                                        "url": {
-                                            "raw": "{{base_url}}/api/v1/stock-movements/transfer",
-                                            "host": [
-                                                "{{base_url}}"
-                                            ],
-                                            "path": [
-                                                "api",
-                                                "v1",
-                                                "stock-movements",
-                                                "transfer"
-                                            ]
-                                        },
-                                        "body": {
-                                            "mode": "raw",
-                                            "raw": "{\n    \"product_batch_id\": \"sample_text\",\n    \"quantity\": 25,\n    \"from_location_id\": \"sample_text\",\n    \"to_location_id\": \"sample_text\"\n}",
-                                            "options": []
-                                        }
-                                    }
-                                }
-                            ]
                         }
                     ]
                 }

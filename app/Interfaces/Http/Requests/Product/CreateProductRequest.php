@@ -32,7 +32,10 @@ class CreateProductRequest extends FormRequest
             'brand' => 'required|string|max:255',
             'sale_unit_id' => 'required|exists:sale_units,id',
             'units_per_carton' => 'required|integer|min:1',
-            'image' => 'sometimes|image|mimes:jpeg,png,jpg,svg|max:2048'
+            'image' => 'sometimes|image|mimes:jpeg,png,jpg,svg|max:2048',
+
+            'retail_price' => 'required|numeric|regex:/^\d+(\.\d{1,2})?$/',
+            'wholesale_price' => 'required|numeric|regex:/^\d+(\.\d{1,2})?$/|lt:retail_price',
         ];
     }
 
@@ -41,16 +44,18 @@ class CreateProductRequest extends FormRequest
         $data = $this->validated();
 
         return new CreateProductDto(
-            categoryId: $data['category_id'],
+            category_id: $data['category_id'],
             original_code: $data['original_code'],
             name_ar: $data['name_ar'],
             name_en: $data['name_en'] ?? null,
             origin: $data['origin'] ?? null,
             description: $data['description'] ?? null,
             brand: $data['brand'],
-            saleUnitId: $data['sale_unit_id'],
-            unitsPerCarton: $data['units_per_carton'],
+            sale_unit_id: $data['sale_unit_id'],
+            units_per_carton: $data['units_per_carton'],
             image: $data['image'] ?? null,
+            retail_price: $data['retail_price'],
+            wholesale_price: $data['wholesale_price'],
         );
     }
 }

@@ -15,8 +15,6 @@ class ProductBatch extends Model
         'remaining_quantity',
         'initial_quantity',
         'cost_price',
-        'retail_price',
-        'wholesale_price'
     ];
 
     public function locations()

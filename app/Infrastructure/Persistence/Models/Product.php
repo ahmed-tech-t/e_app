@@ -2,6 +2,7 @@
 
 namespace App\Infrastructure\Persistence\Models;
 
+use App\Infrastructure\Persistence\utils\PriceType;
 use Database\Factories\ProductFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -35,6 +36,24 @@ class Product extends Model
     public function saleUnit(): BelongsTo
     {
         return $this->belongsTo(SaleUnit::class);
+    }
+
+
+    public function prices()
+    {
+        return $this->hasMany(ProductPrice::class);
+    }
+    public function retailPrice()
+    {
+        return $this->hasOne(ProductPrice::class)
+            ->where('type', PriceType::RETAIL)
+            ->whereNull('valid_to');
+    }
+    public function wholesalePrice()
+    {
+        return $this->hasOne(ProductPrice::class)
+            ->where('type', PriceType::WHOLESALE)
+            ->whereNull('valid_to');
     }
     // override factory
     protected static function newFactory()

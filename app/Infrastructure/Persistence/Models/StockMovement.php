@@ -10,6 +10,7 @@ class StockMovement extends Model
         'product_batch_id',
         'location_id',
         'quantity',
-        'type'
+        'type',
+        'bill_number',
     ];
 }
