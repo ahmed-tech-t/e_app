@@ -2,17 +2,15 @@
 
 namespace App\Application\Mapper;
 
-use App\Application\DTOs\CreateProductDto;
-use App\Application\DTOs\UpdateProductDto;
 use App\Domain\Entities\ProductEntity;
-use App\Infrastructure\Persistence\Models\Product;
-use App\Infrastructure\Persistence\Models\ProductPrice;
+
 use Illuminate\Support\Facades\Log;
 
 class ProductMapper
 {
     public static function modelToEntity($model)
     {
+        Log::info("ProductMapper modelToEntity", ['model' => $model]);
         return new ProductEntity(
             id: $model->id,
             code: $model->code,
@@ -24,8 +22,11 @@ class ProductMapper
             category: $model->relationLoaded('category')
             ? CategoryMapper::modelToEntity($model->category) : null,
 
-            retail_price: $model->retailPrice->price ?? null,
-            wholesale_price: $model->wholesalePrice->price ?? null,
+            retail_price: $model->relationLoaded('retailPrice')
+            ? $model->retailPrice->price : null,
+
+            wholesale_price: $model->relationLoaded('wholesalePrice')
+            ? $model->wholesalePrice->price : null,
 
             description: $model->description,
             brand: $model->brand,

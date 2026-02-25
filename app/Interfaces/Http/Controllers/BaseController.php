@@ -2,7 +2,7 @@
 
 namespace App\Interfaces\Http\Controllers;
 
-use App\Domain\PagenatorMeta;
+use App\Domain\PaginatorMeta;
 use App\Interfaces\Http\Utils\RequestInterface;
 use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
@@ -31,7 +31,7 @@ abstract class BaseController extends Controller
         $perPage = $request->get('per_page', 10);
 
         $items = $this->service->getPaginatedItems($perPage);
-        $meta = new PagenatorMeta($items);
+        $meta = new PaginatorMeta($items);
 
         return $this->success(
             data: ($this->resourceClass)::collection($items),

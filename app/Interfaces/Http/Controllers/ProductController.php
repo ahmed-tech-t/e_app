@@ -11,7 +11,7 @@ use App\Application\UseCases\Product\GetAllProductUseCase;
 use App\Application\UseCases\Product\GetProductByIdUseCase;
 use App\Application\UseCases\Product\ProductSearchUseCase;
 use App\Application\UseCases\Product\UpdateProductUseCase;
-use App\Domain\PagenatorMeta;
+use App\Domain\PaginatorMeta;
 use App\Interfaces\Http\Requests\Product\CreateProductRequest;
 use App\Interfaces\Http\Requests\Product\GetAllProductsRequest;
 use App\Interfaces\Http\Requests\Product\ProductSearchRequest;
@@ -43,7 +43,7 @@ class ProductController extends Controller
     {
         $request->validated();
         $products = $this->getAllProductUseCase->execute($request['page'], $request['per_page']);
-        $meta = new PagenatorMeta($products);
+        $meta = new PaginatorMeta($products);
         return $this->success(data: ProductResource::collection($products), meta: $meta->toArray());
     }
 
@@ -53,7 +53,7 @@ class ProductController extends Controller
     {
         $dto = $request->toDto();
         $products = $this->productSearchUseCase->execute($dto);
-        $meta = new PagenatorMeta($products);
+        $meta = new PaginatorMeta($products);
         return $this->success(data: ProductResource::collection($products), meta: $meta->toArray());
     }
 

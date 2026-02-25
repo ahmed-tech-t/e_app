@@ -2,11 +2,9 @@
 
 use App\Interfaces\Http\Controllers\CategoryController;
 use App\Interfaces\Http\Controllers\LocationController;
-use App\Interfaces\Http\Controllers\ProductBatchController;
 use App\Interfaces\Http\Controllers\ProductController;
 use App\Interfaces\Http\Controllers\ProductPriceController;
 use App\Interfaces\Http\Controllers\SaleUnitController;
-use App\Interfaces\Http\Controllers\StockMovementController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('api')->group(function () {
@@ -17,6 +15,14 @@ Route::prefix('api')->group(function () {
             [ProductPriceController::class, 'setNewPrice']
         )->name('products.setNewPrice');
 
+
+
+        Route::get(
+            'products/{id}/price',
+            [ProductPriceController::class, 'getProductPriceHistory']
+        )->name('products.prices.history');
+
+
         Route::get(
             'products/search',
             [ProductController::class, 'search']
@@ -26,7 +32,6 @@ Route::prefix('api')->group(function () {
         Route::resource('categories', CategoryController::class);
         Route::resource('sale-units', SaleUnitController::class);
         Route::resource('locations', LocationController::class);
-
 
     });
 });

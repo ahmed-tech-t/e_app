@@ -44,5 +44,20 @@ class EProductPriceRepo extends BaseERepo implements ProductPriceRepo
           return $oldProductPrice->update(['valid_to' => now()]);
      }
 
-     
+
+
+     /**
+      * @inheritDoc
+      */
+     public function getProductPriceHistory(int $productId, ?PriceType $type)
+     {
+          $query = ProductPrice::where('product_id', $productId);
+
+          if ($type) {
+               $query->where('type', $type);
+          }
+          return $query
+               ->get()
+               ->map(fn($model) => ProductPriceMapper::modelToEntity($model));
+     }
 }

@@ -3,7 +3,7 @@ namespace App\Domain;
 
 use Illuminate\Pagination\LengthAwarePaginator;
 
-class PagenatorMeta
+class PaginatorMeta
 {
     private $total;
     private $current_page;

@@ -27,9 +27,10 @@ class EProductRepo extends BaseERepo implements ProductRepo
 
     protected $modelClass = Product::class;
     protected $mapper = ProductMapper::class;
-    protected array $defaultRelationships = ['category', 'saleUnit'];
 
     protected array $withForPaginate = ['retailPrice', 'wholesalePrice'];
+    protected array $defaultRelationships = ['category', 'saleUnit', 'retailPrice', 'wholesalePrice'];
+
     public function search(ProductSearchDto $dto, $perPage = 5): LengthAwarePaginator
     {
         $context = ProductQueryContext::create(Product::query(), $dto);
