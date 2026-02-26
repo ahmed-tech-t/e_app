@@ -13,4 +13,14 @@ class ValidationRules
     {
         return 'required|integer|exists:products,id';
     }
+
+    public static function locationId(): string
+    {
+        return 'required|integer|exists:locations,id';
+    }
+
+    public static function quantity(): string
+    {
+        return 'required|integer|min:1';
+    }
 }

@@ -28,19 +28,19 @@ class StockService
 
         });
     }
-    public function transferProduct($productId, $fromLocationId, $toLocationId, $quantity)
+    public function transferProduct($dto)
     {
         DB::transaction(
-            function () use ($productId, $fromLocationId, $toLocationId, $quantity) {
-                $this->$this->isQuantityAvailable($productId, $fromLocationId, $quantity);
+            function () use ($dto) {
+                $this->$this->isQuantityAvailable($dto->productId, $dto->fromLocationId, $dto->quantity);
 
                 $this->$this
                     ->getTargetBatchByLocation(
-                        $productId,
-                        $fromLocationId,
-                        $quantity,
-                        function ($productBatchId, $fromLocationId, $quantity) use ($toLocationId) {
-                            $this->stockMovementRepo->transfer($productBatchId, $fromLocationId, $toLocationId, $quantity);
+                        $dto->productId,
+                        $dto->fromLocationId,
+                        $dto->quantity,
+                        function ($productBatchId, $fromLocationId, $quantity) use ($dto) {
+                            $this->stockMovementRepo->transfer($productBatchId, $fromLocationId, $dto->toLocationId, $quantity);
                         }
                     );
                 return true;

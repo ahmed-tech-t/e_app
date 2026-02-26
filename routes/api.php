@@ -5,6 +5,7 @@ use App\Interfaces\Http\Controllers\LocationController;
 use App\Interfaces\Http\Controllers\ProductController;
 use App\Interfaces\Http\Controllers\ProductPriceController;
 use App\Interfaces\Http\Controllers\SaleUnitController;
+use App\Interfaces\Http\Controllers\StockMovementController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('api')->group(function () {
@@ -25,7 +26,13 @@ Route::prefix('api')->group(function () {
 
         Route::get(
             'products/search',
-            [ProductController::class, 'search']
+            [ProductController::class, 'products.search']
+        )->name('products.search');
+
+
+        Route::post(
+            'products/transfer',
+            [StockMovementController::class, 'products.transfer']
         )->name('products.search');
 
         Route::resource('products', ProductController::class);
