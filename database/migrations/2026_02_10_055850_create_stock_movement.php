@@ -12,10 +12,10 @@ return new class extends Migration {
     {
         Schema::create('stock_movements', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('product_batch_id')->constrained();
-            $table->foreignId('location_id')->constrained();
+            $table->foreignId('product_batch_id')->index()->constrained();
+            $table->foreignId('location_id')->index()->constrained();
             $table->decimal('quantity', 15, 2);
-            $table->enum('type', ['entry', 'sale', 'transfer_in', 'transfer_out', 'adjust_initial']);
+            $table->enum('type', ['entry', 'sale', 'transfer_in', 'transfer_out', 'adjust_initial'])->index();
             $table->string('bill_number')->nullable();
             $table->softDeletes();
             $table->timestamps();

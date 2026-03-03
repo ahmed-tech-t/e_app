@@ -2,95 +2,46 @@
 
 namespace App\Interfaces\Http\Controllers;
 
-
-
-
-use App\Application\UseCases\Product\CreateProductUseCase;
-use App\Application\UseCases\Product\DeleteProductUseCase;
-use App\Application\UseCases\Product\GetAllProductUseCase;
-use App\Application\UseCases\Product\GetProductByIdUseCase;
-use App\Application\UseCases\Product\ProductSearchUseCase;
-use App\Application\UseCases\Product\UpdateProductUseCase;
+use App\Application\Services\ProductService;
 use App\Domain\PaginatorMeta;
+use App\Infrastructure\Persistence\utils\Constants;
 use App\Interfaces\Http\Requests\Product\CreateProductRequest;
-use App\Interfaces\Http\Requests\Product\GetAllProductsRequest;
 use App\Interfaces\Http\Requests\Product\ProductSearchRequest;
 use App\Interfaces\Http\Requests\Product\UpdateProductRequest;
 use App\Interfaces\Http\Resources\ProductResource;
-use App\Traits\HttpResponses;
+use Illuminate\Http\Request;
 
-class ProductController extends Controller
+class ProductController extends BaseController
 {
 
-    use HttpResponses;
-    /**
-     * Display a listing of the resource.
-     */
+    protected string $resourceClass = ProductResource::class;
+    protected string $searchRequest = ProductSearchRequest::class;
+    protected string $storeRequest = CreateProductRequest::class;
+    protected string $updateRequest = UpdateProductRequest::class;
 
     public function __construct(
-        private CreateProductUseCase $createProductUseCase,
-        private GetAllProductUseCase $getAllProductUseCase,
-        private GetProductByIdUseCase $getProductByIdUseCase,
-        private UpdateProductUseCase $updateProductUseCase,
-        private DeleteProductUseCase $deleteProductUseCase,
-        private ProductSearchUseCase $productSearchUseCase
+        private ProductService $productService,
     ) {
+        $this->service = $productService;
     }
 
 
-
-    public function index(GetAllProductsRequest $request)
+    public function findAllByLocation(Request $request, int $locationId)
     {
-        $request->validated();
-        $products = $this->getAllProductUseCase->execute($request['page'], $request['per_page']);
-        $meta = new PaginatorMeta($products);
-        return $this->success(data: ProductResource::collection($products), meta: $meta->toArray());
+        $perPage = $request->input('per_page', Constants::DEFAULT_PER_PAGE);
+        $items = $this->service->findAllByLocation($locationId, $perPage);
+        $meta = new PaginatorMeta($items);
+        return $this->success(
+            data: ($this->resourceClass)::collection($items),
+            meta: $meta->toArray()
+        );
     }
 
-
-
-    public function search(ProductSearchRequest $request)
+    public function findByLocation(int $productId, int $locationId)
     {
-        $dto = $request->toDto();
-        $products = $this->productSearchUseCase->execute($dto);
-        $meta = new PaginatorMeta($products);
-        return $this->success(data: ProductResource::collection($products), meta: $meta->toArray());
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(CreateProductRequest $request)
-    {
-        $dto = $request->toDto();
-        $productEntity = $this->createProductUseCase->execute($dto);
-        return $this->success(ProductResource::make($productEntity));
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(int $id)
-    {
-        $product = $this->getProductByIdUseCase->execute($id);
-        return $this->success(ProductResource::make($product));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateProductRequest $request, int $id)
-    {
-        $dto = $request->toDto();
-        $product = $this->updateProductUseCase->execute($dto, $id);
-        return $this->success(ProductResource::make($product));
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(int $id)
-    {
-        return $this->success($this->deleteProductUseCase->execute($id));
+        $product = $this->service->findByLocation($productId, $locationId);
+        return $this->success(
+            data: ($this->resourceClass)::make($product)
+        );
     }
 }

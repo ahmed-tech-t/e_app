@@ -2,25 +2,21 @@
 
 namespace App\Infrastructure\Persistence\repo;
 
-use App\Application\DTOs\ProductSearchDto;
 use App\Application\Mapper\ProductMapper;
-use App\Domain\Entities\ProductEntity;
-use App\Domain\Entities\ProductPriceEntity;
+
 use App\Domain\Repo\ProductRepo;
-use App\Infrastructure\Persistence\Models\ProductPrice;
 use App\Infrastructure\Persistence\Pipeline\Filters\Product\FilterByBrand;
 use App\Infrastructure\Persistence\Pipeline\Filters\Product\FilterByCategoryId;
 use App\Infrastructure\Persistence\Pipeline\Filters\Product\FilterByCode;
+use App\Infrastructure\Persistence\Pipeline\Filters\Product\FilterByLocation;
 use App\Infrastructure\Persistence\Pipeline\Filters\Product\FilterByNameAr;
 use App\Infrastructure\Persistence\Pipeline\Filters\Product\FilterByNameEn;
 use App\Infrastructure\Persistence\Pipeline\Filters\Product\FilterByOriginalCode;
 use App\Infrastructure\Persistence\Pipeline\Filters\Product\FilterBySaleUnitId;
 use App\Infrastructure\Persistence\Models\Product;
 use App\Infrastructure\Persistence\Pipeline\Filters\Product\ProductQueryContext;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pipeline\Pipeline;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
+use App\Infrastructure\Persistence\utils\Constants;
+
 
 class EProductRepo extends BaseERepo implements ProductRepo
 {
@@ -28,32 +24,39 @@ class EProductRepo extends BaseERepo implements ProductRepo
     protected $modelClass = Product::class;
     protected $mapper = ProductMapper::class;
 
+    protected $queryContext = ProductQueryContext::class;
+
+    protected array $searchFilters = [
+        FilterByLocation::class,
+        FilterByCode::class,
+        FilterByBrand::class,
+        FilterByCategoryId::class,
+        FilterByNameEn::class,
+        FilterByNameAr::class,
+        FilterByOriginalCode::class,
+        FilterBySaleUnitId::class,
+    ];
+
     protected array $withForPaginate = ['retailPrice', 'wholesalePrice'];
+    protected array $withSearch = [];
     protected array $defaultRelationships = ['category', 'saleUnit', 'retailPrice', 'wholesalePrice'];
 
-    public function search(ProductSearchDto $dto, $perPage = 5): LengthAwarePaginator
+    public function __construct()
     {
-        $context = ProductQueryContext::create(Product::query(), $dto);
+        $this->withSearch = $this->withForPaginate;
+    }
+    public function findAllByLocation(int $locationId, int $perPage)
+    {
+        return Product::withLocationStock($locationId)->
+            paginate($perPage)
+            ->through(fn($item) => ProductMapper::modelToEntity($item));
+    }
+    public function findByLocation(int $productId, int $locationId)
+    {
+        $product = Product::withLocationStock($locationId)
+            ->where('products.id', $productId)
+            ->first();
+        return $product ? ProductMapper::modelToEntity($product) : null;
 
-        $context = app(Pipeline::class)
-            ->send($context)
-            ->through([
-                FilterByCode::class,
-                FilterByBrand::class,
-                FilterByCategoryId::class,
-                FilterByNameEn::class,
-                FilterByNameAr::class,
-                FilterByOriginalCode::class,
-                FilterBySaleUnitId::class,
-            ])
-
-            ->thenReturn();
-
-        return $context->query
-            ->paginate($perPage)
-            ->through(
-                fn($item) =>
-                ProductMapper::modelToEntity($item)
-            );
     }
 }

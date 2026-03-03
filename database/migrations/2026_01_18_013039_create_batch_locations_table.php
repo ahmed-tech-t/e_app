@@ -13,9 +13,9 @@ return new class extends Migration {
         Schema::create('batch_locations', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('product_batch_id')->constrained();
+            $table->foreignId('product_batch_id')->index()->constrained();
 
-            $table->foreignId('location_id')->constrained();
+            $table->foreignId('location_id')->index()->constrained();
 
             $table->integer('remaining_quantity')->default(0);
             $table->unique(['product_batch_id', 'location_id']);

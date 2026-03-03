@@ -2,6 +2,7 @@
 
 namespace App\Domain\Repo;
 
+use App\Application\DTOs\StockMovementSearchDto;
 use App\Infrastructure\Persistence\Models\StockMovement;
 
 interface StockMovementRepo
@@ -14,5 +15,7 @@ interface StockMovementRepo
     public function isTransferOut($batchId);
 
     public function transfer($batchId, $fromLocationId, $toLocationId, $quantity);
+
+    public function search(StockMovementSearchDto $dto);
 
 }

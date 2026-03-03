@@ -3,6 +3,7 @@
 namespace App\Interfaces\Http\Controllers;
 
 use App\Domain\PaginatorMeta;
+use App\Infrastructure\Persistence\utils\Constants;
 use App\Interfaces\Http\Utils\RequestInterface;
 use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
@@ -18,6 +19,8 @@ abstract class BaseController extends Controller
     protected string $storeRequest;
     protected string $updateRequest;
 
+    protected string $searchRequest;
+
 
     public function index(Request $request)
     {
@@ -28,7 +31,7 @@ abstract class BaseController extends Controller
     public function getPaginatedItems(Request $request)
     {
         // Using dynamic pagination defaults
-        $perPage = $request->get('per_page', 10);
+        $perPage = $request->input('per_page', Constants::DEFAULT_PER_PAGE);
 
         $items = $this->service->getPaginatedItems($perPage);
         $meta = new PaginatorMeta($items);
@@ -39,13 +42,23 @@ abstract class BaseController extends Controller
         );
     }
 
+    public function search(Request $request)
+    {
+        $request = app($this->searchRequest);
+
+        $dto = $request->toDto();
+        $perPage = $request->input('per_page', Constants::DEFAULT_PER_PAGE);
+        $items = $this->service->search($dto, $perPage);
+        $meta = new PaginatorMeta($items);
+        return $this->success(data: ($this->resourceClass)::collection($items), meta: $meta->toArray());
+    }
+
     public function store()
     {
         $request = app($this->storeRequest);
         // We assume the Request has a toDto() method
         $dto = $request->toDto();
         $entity = $this->service->create($dto);
-        //  Log::info("BaseController store", ['entity' => $entity]);
         return $this->success(($this->resourceClass)::make($entity));
     }
 

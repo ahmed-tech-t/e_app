@@ -4,6 +4,8 @@ namespace App\Domain\Repo;
 use Illuminate\Pagination\LengthAwarePaginator;
 interface BaseRepo
 {
+
+    public function search($dto, $perPage);
     public function findAll();
     public function findById(int $id);
     public function codeExists(string $code): bool;

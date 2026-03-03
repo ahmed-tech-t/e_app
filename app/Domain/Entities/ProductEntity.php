@@ -11,6 +11,7 @@ class ProductEntity
         public string $brand,
         public int $units_per_carton,
         public string $original_code,
+        public ?int $total_remaining_quantity = null,
         public ?float $retail_price = null,
         public ?float $wholesale_price = null,
         public ?string $name_en = null,

@@ -2,12 +2,14 @@
 
 namespace App\Infrastructure\Persistence\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Testing\Fluent\Concerns\Has;
 
 class ProductBatch extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, HasFactory;
 
     protected $fillable = [
         'batch_code',
@@ -30,5 +32,14 @@ class ProductBatch extends Model
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function scopeWithLocationStock($query, $locationId, $productId)
+    {
+        return $query->join('batch_locations', 'product_batches.id', '=', 'batch_locations.product_batch_id')
+            ->where('batch_locations.location_id', $locationId)
+            ->where('product_batches.product_id', $productId)
+            ->where('batch_locations.remaining_quantity', '>', 0)
+        ;
     }
 }

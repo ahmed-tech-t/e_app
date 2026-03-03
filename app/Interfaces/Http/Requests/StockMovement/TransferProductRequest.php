@@ -28,7 +28,7 @@ class TransferProductRequest extends FormRequest
         return [
             'product_id' => ValidationRules::productId(),
             'from_location_id' => ValidationRules::locationId(),
-            'to_location_id' => [ValidationRules::locationId(), 'different:from_location_id'],
+            'to_location_id' => ValidationRules::locationId() . '|different:from_location_id',
             'quantity' => ValidationRules::quantity(),
         ];
     }

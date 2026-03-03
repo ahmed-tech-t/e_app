@@ -3,6 +3,7 @@
 namespace App\Interfaces\Http\Requests\Product;
 
 use App\Application\DTOs\ProductSearchDto;
+use App\Utils\ValidationRules;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ProductSearchRequest extends FormRequest
@@ -17,13 +18,14 @@ class ProductSearchRequest extends FormRequest
         return [
             'page' => 'sometimes|integer|min:1',
             'per_page' => 'sometimes|integer|max:100',
-            'name_ar' => 'sometimes|string|max:255',
-            'name_en' => 'sometimes|string|max:255',
-            'brand' => 'sometimes|string|max:255',
-            'original_code' => 'sometimes|string|max:255',
-            'code' => 'sometimes|string|max:255',
-            'category_id' => 'sometimes|integer|exists:categories,id',
-            'sale_unit_id' => 'sometimes|integer|exists:sale_units,id',
+            'name_ar' => ValidationRules::name(false),
+            'name_en' => ValidationRules::name(false),
+            'brand' => ValidationRules::name(false),
+            'original_code' => ValidationRules::name(false),
+            'code' => ValidationRules::name(false),
+            'category_id' => ValidationRules::categoryId(false),
+            'sale_unit_id' => ValidationRules::saleUnitId(false),
+            'location_id' => ValidationRules::locationId(false),
         ];
     }
 
@@ -41,6 +43,7 @@ class ProductSearchRequest extends FormRequest
             $data['code'] ?? null,
             $data['category_id'] ?? null,
             $data['sale_unit_id'] ?? null,
+            $data['location_id'] ?? null
         );
     }
 

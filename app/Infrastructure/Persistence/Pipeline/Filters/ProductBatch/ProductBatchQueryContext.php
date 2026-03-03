@@ -2,9 +2,10 @@
 
 namespace App\Infrastructure\Persistence\Pipeline\Filters\ProductBatch;
 
+use App\Infrastructure\Persistence\Pipeline\Filters\QueryContext;
 use Illuminate\Database\Eloquent\Builder;
 
-class ProductBatchQueryContext
+class ProductBatchQueryContext implements QueryContext
 {
     private function __construct(
         public Builder $query,

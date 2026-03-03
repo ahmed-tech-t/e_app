@@ -1,23 +1,22 @@
 <?php
 
-namespace App\Infrastructure\Persistence\Pipeline\Filters\Product;
+namespace App\Infrastructure\Persistence\Pipeline\Filters\StockMovement;
 
-use App\Application\DTOs\ProductSearchDto;
+use App\Application\DTOs\StockMovementSearchDto;
 use App\Infrastructure\Persistence\Pipeline\Filters\QueryContext;
 use Illuminate\Database\Eloquent\Builder;
-use League\Uri\Contracts\QueryInterface;
 
-class ProductQueryContext implements QueryContext
+class StockMovementQueryContext implements QueryContext
 {
-    private function __construct(
+    public function __construct(
         public Builder $query,
-        public ProductSearchDto $dto
+        public StockMovementSearchDto $dto
     ) {
     }
 
     public static function create(
         Builder $query,
-        ProductSearchDto $dto
+        StockMovementSearchDto $dto
     ) {
         return new self(
             query: $query,

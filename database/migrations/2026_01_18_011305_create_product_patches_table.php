@@ -17,11 +17,10 @@ return new class extends Migration {
             $table->integer('initial_quantity')->default(0);
             $table->integer('remaining_quantity')->default(0);
 
-            $table->foreignId('product_id')->constrained();
+            $table->foreignId('product_id')->index()->constrained();
 
             $table->decimal('cost_price', 15, 2);
-            $table->decimal('retail_price', 15, 2);
-            $table->decimal('wholesale_price', 15, 2);
+
 
             $table->softDeletes();
 

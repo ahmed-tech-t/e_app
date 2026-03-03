@@ -19,11 +19,16 @@ abstract class BaseService
     }
 
 
+
     public function getPaginatedItems($perPage)
     {
         return ($this->repo)->getPaginatedItems($perPage);
     }
 
+    public function search($dto, $perPage)
+    {
+        return ($this->repo)->search($dto, $perPage);
+    }
 
     public function findById(int $id)
     {
@@ -44,8 +49,6 @@ abstract class BaseService
     public function update($dto, int $id)
     {
         $entity = ($this->repo)->findById($id);
-        //  Log::info("Your message here", ['entity' => $entity]);
-        //  Log::info("Your message here", ['dto' => $dto]);
         return ($this->repo)->update($entity->update($dto->toArray()));
     }
 

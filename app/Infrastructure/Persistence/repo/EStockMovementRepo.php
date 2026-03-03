@@ -2,12 +2,19 @@
 
 namespace App\Infrastructure\Persistence\repo;
 
+use App\Application\DTOs\StockMovementSearchDto;
 use App\Application\Mapper\StockMovementMapper;
-use App\Domain\Repo\ProductBatchRepo;
 use App\Domain\Repo\StockMovementRepo;
 use App\Infrastructure\Persistence\Models\ProductBatch;
 use App\Infrastructure\Persistence\Models\StockMovement;
+use App\Infrastructure\Persistence\Pipeline\Filters\StockMovement\FilterByBillNumber;
+use App\Infrastructure\Persistence\Pipeline\Filters\StockMovement\FilterByLocationId;
+use App\Infrastructure\Persistence\Pipeline\Filters\StockMovement\FilterByProductBatchId;
+use App\Infrastructure\Persistence\Pipeline\Filters\StockMovement\FilterByProductId;
+use App\Infrastructure\Persistence\Pipeline\Filters\StockMovement\FilterByType;
+use App\Infrastructure\Persistence\Pipeline\Filters\StockMovement\StockMovementQueryContext;
 use App\Infrastructure\Persistence\utils\StockMovementType;
+use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -31,6 +38,7 @@ class EStockMovementRepo implements StockMovementRepo
 
     public function updateAvailableStock(StockMovement $stockMovement)
     {
+        Log::debug("EStockMovementRepo updateAvailableStock", ['stockMovement' => $stockMovement]);
         DB::transaction(function () use ($stockMovement) {
 
             $batch = ProductBatch::findOrFail($stockMovement->product_batch_id);
@@ -41,19 +49,15 @@ class EStockMovementRepo implements StockMovementRepo
             }
 
             $batch->increment('remaining_quantity', $stockMovement->quantity);
-            //   Log::info("EStockMovementRepo updateAvailableStock ", ['productBatch' => $batch]);
 
             $exists = $batch->locations()
                 ->where('location_id', $stockMovement->location_id)
                 ->exists();
 
             if ($exists) {
-                $batch
-                    ->locations()
-                    ->updateExistingPivot(
-                        $stockMovement->location_id,
-                        ['remaining_quantity' => DB::raw('remaining_quantity + ' . $stockMovement->quantity)]
-                    );
+                $batch->locations()
+                    ->wherePivot('location_id', $stockMovement->location_id)
+                    ->increment('remaining_quantity', $stockMovement->quantity);
             } else {
                 $batch
                     ->locations()
@@ -91,5 +95,38 @@ class EStockMovementRepo implements StockMovementRepo
         return StockMovement::where('product_batch_id', $batchId)
             ->where('type', StockMovementType::TRANSFER_OUT)
             ->exists();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function search(StockMovementSearchDto $dto, $perPage = 5)
+    {
+
+        $context = StockMovementQueryContext::create(StockMovement::query(), $dto);
+
+        $context = app(Pipeline::class)
+            ->send($context)
+            ->through([
+                FilterByProductId::class,
+                FilterByProductBatchId::class,
+                FilterByLocationId::class,
+                FilterByType::class,
+                FilterByBillNumber::class,
+            ])
+            ->thenReturn();
+
+        $result = $context->query
+            ->with('batch')
+            ->with('location')
+
+            ->paginate($perPage)
+            ->through(
+                fn($item) => StockMovementMapper::toEntity($item)
+
+            );
+
+        return $result;
+
     }
 }

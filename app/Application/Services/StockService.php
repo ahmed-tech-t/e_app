@@ -2,6 +2,7 @@
 
 namespace App\Application\Services;
 
+use App\Application\DTOs\StockMovementSearchDto;
 use App\Application\Mapper\ProductBatchMapper;
 use App\Domain\Entities\ProductBatchEntity;
 use App\Domain\Repo\ProductBatchRepo;
@@ -9,6 +10,7 @@ use App\Domain\Repo\StockMovementRepo;
 use App\Infrastructure\Persistence\Models\ProductBatch;
 use App\Infrastructure\Persistence\utils\StockMovementType;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class StockService
 {
@@ -18,13 +20,19 @@ class StockService
     ) {
     }
 
+    public function search(StockMovementSearchDto $dto)
+    {
+        return $this->stockMovementRepo->search($dto);
+    }
+
+
     public function createProductBatch(ProductBatchEntity $entity, int $locationId)
     {
         return DB::transaction(function () use ($entity, $locationId) {
             $model = ProductBatch::create($entity->toArray());
             $this->stockMovementRepo->adjust(batchId: $model->id, locationId: $locationId, quantity: $entity->initialQuantity, type: StockMovementType::ENTRY);
             $model->refresh();
-            return ProductBatchMapper::modelToEntity($model);
+            return ProductBatchMapper::toEntity($model);
 
         });
     }
@@ -32,26 +40,33 @@ class StockService
     {
         DB::transaction(
             function () use ($dto) {
-                $this->$this->isQuantityAvailable($dto->productId, $dto->fromLocationId, $dto->quantity);
 
-                $this->$this
-                    ->getTargetBatchByLocation(
-                        $dto->productId,
+
+                $batches = $this->productBatchRepo->getBatchesInLocation($dto->productId, $dto->fromLocationId);
+
+                $this->isQuantityAvailable($batches, $dto->quantity);
+
+                $remainingToTake = $dto->quantity;
+
+                foreach ($batches as $batch) {
+                    $canTake = min($batch->quantity, $remainingToTake);
+
+                    $this->stockMovementRepo->transfer(
+                        $batch->batch_id,
                         $dto->fromLocationId,
-                        $dto->quantity,
-                        function ($productBatchId, $fromLocationId, $quantity) use ($dto) {
-                            $this->stockMovementRepo->transfer($productBatchId, $fromLocationId, $dto->toLocationId, $quantity);
-                        }
+                        $dto->toLocationId,
+                        $canTake
                     );
+                    $remainingToTake -= $canTake;
+                    if ($remainingToTake <= 0)
+                        break;
+                }
                 return true;
             }
         );
     }
 
-    public function stockMovementHistory()
-    {
-        return $this->stockMovementRepo->findAll();
-    }
+
     public function sale($productId, $locationId, $quantity, $billNumber)
     {
 
@@ -108,27 +123,13 @@ class StockService
             }
 
             $model->update($entity->toArray());
-            return ProductBatchMapper::modelToEntity($model->refresh());
+            return ProductBatchMapper::toEntity($model->refresh());
         });
     }
 
-
-    private function getTargetBatchByLocation($productId, $locationId, $quantity, callable $callback)
+    private function isQuantityAvailable($batches, $quantity): bool
     {
-        $productBatches = $this->productBatchRepo->getProductBatchesInLocation($productId, $locationId);
-
-        foreach ($productBatches as $productBatch) {
-            $canTake = min($productBatch->remaining_quantity, $quantity);
-            $callback($productBatch->id, $locationId, $canTake);
-            $quantity -= $canTake;
-            if ($quantity <= 0)
-                break;
-        }
-    }
-
-    private function isQuantityAvailable($productId, $locationId, $quantity): bool
-    {
-        $totalQuantity = $this->productBatchRepo->getProductQuantityInLocation($productId, $locationId);
+        $totalQuantity = $batches->sum('quantity');
         if ($quantity > $totalQuantity) {
             throw new \Exception("we don't have enough quantity");
         }

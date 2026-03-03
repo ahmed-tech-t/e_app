@@ -10,7 +10,6 @@ class ProductMapper
 {
     public static function modelToEntity($model)
     {
-        Log::info("ProductMapper modelToEntity", ['model' => $model]);
         return new ProductEntity(
             id: $model->id,
             code: $model->code,
@@ -27,6 +26,8 @@ class ProductMapper
 
             wholesale_price: $model->relationLoaded('wholesalePrice')
             ? $model->wholesalePrice->price : null,
+
+            total_remaining_quantity: $model->total_remaining_quantity ?? null,
 
             description: $model->description,
             brand: $model->brand,

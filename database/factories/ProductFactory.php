@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Infrastructure\Persistence\Models\Category;
 use App\Infrastructure\Persistence\Models\Product;
+use App\Infrastructure\Persistence\Models\ProductPrice;
 use App\Infrastructure\Persistence\Models\SaleUnit;
 use App\Traits\CodeGenerator;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -25,7 +26,7 @@ class ProductFactory extends Factory
     public function definition(): array
     {
         $name = ucfirst($this->faker->word());
-        $category = Category::get()->random();
+        $category = Category::inRandomOrder()->first();
         do {
             $code = $this->generateCode($category->name_en);
         } while (Product::where('code', $code)->exists());
@@ -48,5 +49,21 @@ class ProductFactory extends Factory
             'units_per_carton' => $this->faker->numberBetween(1, 10),
             'sale_unit_id' => SaleUnit::get()->random()->id
         ];
+    }
+
+    // Inside ProductFactory class
+    public function configure(): static
+    {
+        return $this->afterCreating(function (Product $product) {
+            ProductPrice::factory()->create([
+                'product_id' => $product->id,
+                'type' => 'retail',
+            ]);
+
+            ProductPrice::factory()->create([
+                'product_id' => $product->id,
+                'type' => 'wholesale',
+            ]);
+        });
     }
 }

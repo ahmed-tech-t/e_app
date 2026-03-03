@@ -6,7 +6,7 @@ use App\Domain\Entities\LocationEntity;
 
 class LocationMapper
 {
-    public static function modelToEntity($model)
+    public static function toEntity($model)
     {
         return new LocationEntity(
             id: $model['id'],

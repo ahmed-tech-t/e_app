@@ -26,19 +26,35 @@ Route::prefix('api')->group(function () {
 
         Route::get(
             'products/search',
-            [ProductController::class, 'products.search']
+            [ProductController::class, 'search']
         )->name('products.search');
 
 
-        Route::post(
-            'products/transfer',
-            [StockMovementController::class, 'products.transfer']
-        )->name('products.search');
+        Route::get(
+            'products/locations/{id}',
+            [ProductController::class, 'findAllByLocation']
+        )->name('products.locations.index');
+
+        Route::get(
+            'products/{product_id}/locations/{location_id}',
+            [ProductController::class, 'findByLocation']
+        )->name('products.locations.show');
 
         Route::resource('products', ProductController::class);
         Route::resource('categories', CategoryController::class);
         Route::resource('sale-units', SaleUnitController::class);
         Route::resource('locations', LocationController::class);
 
+
+        Route::post(
+            'stock/transfer',
+            [StockMovementController::class, 'transfer']
+        )->name('stock.transfer');
+
+
+        Route::post(
+            'stock/search',
+            [StockMovementController::class, 'search']
+        )->name('stock.search');
     });
 });

@@ -3,8 +3,11 @@
 namespace App\Infrastructure\Persistence\repo;
 
 use App\Domain\Repo\BaseRepo;
+use App\Infrastructure\Persistence\Pipeline\Filters\QueryContext;
+use App\Infrastructure\Persistence\utils\Constants;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -14,12 +17,18 @@ class BaseERepo implements BaseRepo
     protected $modelClass;
     protected $mapper;
 
+    protected $queryContext;
     protected array $defaultRelationships = [];
 
     protected array $withForPaginate = [];
 
+    protected array $searchFilters = [];
 
-    public function getPaginatedItems($perPage = 5): LengthAwarePaginator
+    protected array $withSearch = [];
+
+
+
+    public function getPaginatedItems($perPage): LengthAwarePaginator
     {
         $query = ($this->modelClass)::query();
         if (!empty($this->withForPaginate)) {
@@ -94,5 +103,25 @@ class BaseERepo implements BaseRepo
         $model = ($this->modelClass)::findOrFail($entity->id);
         ($this->modelClass)::where('id', $entity->id)->update($entity->toArray());
         return ($this->mapper)::modelToEntity($model->refresh());
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function search($dto, $perPage)
+    {
+        $context = ($this->queryContext)::create($this->modelClass::query(), $dto);
+        $context = app(Pipeline::class)
+            ->send($context)
+            ->through($this->searchFilters)
+            ->thenReturn();
+
+        return $context->query
+            ->with($this->withSearch)
+            ->paginate($perPage)
+            ->through(
+                fn($item) => ($this->mapper)::modelToEntity($item)
+            );
+
     }
 }

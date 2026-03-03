@@ -3,11 +3,15 @@
 namespace App\Application\Mapper;
 
 use App\Domain\Entities\ProductBatchEntity;
+use Illuminate\Support\Facades\Log;
 
 class ProductBatchMapper
 {
-    public static function modelToEntity($model)
+    public static function toEntity($model)
     {
+        if (!$model) {
+            return;
+        }
         return new ProductBatchEntity(
             id: $model['id'],
             batchCode: $model['batch_code'],

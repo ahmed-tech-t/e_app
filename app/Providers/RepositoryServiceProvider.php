@@ -26,7 +26,6 @@ class RepositoryServiceProvider extends ServiceProvider
 
                 // 3. Bind them if the implementation class actually exists
                 if (class_exists($implementationNamespace)) {
-                    logger()->info('Binding ' . $interfaceName . ' to ' . $implementationNamespace);
                     $this->app->bind($interfaceNamespace, $implementationNamespace);
                 }
             }

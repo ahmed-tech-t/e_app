@@ -2,8 +2,10 @@
 
 namespace App\Interfaces\Http\Resources;
 
+use App\Interfaces\Http\Resources\utils\TimeFormate;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Log;
 
 class ProductResource extends JsonResource
 {
@@ -42,8 +44,14 @@ class ProductResource extends JsonResource
             $data['sale_unit_id'] = $this->sale_unit_id;
         }
 
-        $data['created_at'] = $this->created_at->format('Y-m-d h:i a');
-        $data['updated_at'] = $this->updated_at->format('Y-m-d h:i a');
+
+        if ($this->total_remaining_quantity) {
+            $data['total_remaining_quantity'] = $this->total_remaining_quantity;
+        }
+
+
+        $data['created_at'] = $this->created_at->format(TimeFormate::formate());
+        $data['updated_at'] = $this->updated_at->format(TimeFormate::formate());
 
         return $data;
     }

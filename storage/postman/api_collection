@@ -46,7 +46,44 @@
                                         },
                                         "body": {
                                             "mode": "raw",
-                                            "raw": "{\n    \"product_id\": 6,\n    \"price\": 23,\n    \"type\": \"sample_text\"\n}",
+                                            "raw": "{\n    \"product_id\": 9,\n    \"price\": 46,\n    \"type\": \"sample_text\"\n}",
+                                            "options": []
+                                        }
+                                    }
+                                },
+                                {
+                                    "name": "[GET] api/v1/products/{id}/price",
+                                    "request": {
+                                        "method": "GET",
+                                        "header": [
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            },
+                                            {
+                                                "key": "Content-Type",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            }
+                                        ],
+                                        "url": {
+                                            "raw": "{{base_url}}/api/v1/products/:id/price",
+                                            "host": [
+                                                "{{base_url}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "v1",
+                                                "products",
+                                                ":id",
+                                                "price"
+                                            ],
+                                            "variable": []
+                                        },
+                                        "body": {
+                                            "mode": "raw",
+                                            "raw": "{\n    \"product_id\": 9,\n    \"type\": \"sample_text\"\n}",
                                             "options": []
                                         }
                                     }
@@ -86,7 +123,7 @@
                                         },
                                         "body": {
                                             "mode": "raw",
-                                            "raw": "{\n    \"page\": 10,\n    \"per_page\": 41,\n    \"name_ar\": \"sample_text\",\n    \"name_en\": \"sample_text\",\n    \"brand\": \"sample_text\",\n    \"original_code\": \"sample_text\",\n    \"code\": \"sample_text\",\n    \"category_id\": 6,\n    \"sale_unit_id\": 10\n}",
+                                            "raw": "{\n    \"page\": 8,\n    \"per_page\": 66,\n    \"name_ar\": \"sample_text\",\n    \"name_en\": \"sample_text\",\n    \"brand\": \"sample_text\",\n    \"original_code\": \"sample_text\",\n    \"code\": \"sample_text\",\n    \"category_id\": 8,\n    \"sale_unit_id\": 1\n}",
                                             "options": []
                                         }
                                     }
@@ -122,7 +159,7 @@
                                 },
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n    \"page\": 5,\n    \"per_page\": 72\n}",
+                                    "raw": "{\n    \"page\": 1,\n    \"per_page\": 88\n}",
                                     "options": []
                                 }
                             }
@@ -156,7 +193,7 @@
                                 },
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n    \"category_id\": \"sample_text\",\n    \"original_code\": \"sample_text\",\n    \"name_ar\": \"sample_text\",\n    \"name_en\": \"sample_text\",\n    \"origin\": \"sample_text\",\n    \"description\": \"sample_text\",\n    \"brand\": \"sample_text\",\n    \"sale_unit_id\": \"sample_text\",\n    \"units_per_carton\": 5,\n    \"image\": \"sample_text\",\n    \"retail_price\": 97,\n    \"wholesale_price\": 41\n}",
+                                    "raw": "{\n    \"category_id\": 7,\n    \"original_code\": \"sample_text\",\n    \"name_ar\": \"sample_text\",\n    \"name_en\": \"sample_text\",\n    \"origin\": \"sample_text\",\n    \"description\": \"sample_text\",\n    \"brand\": \"sample_text\",\n    \"sale_unit_id\": 9,\n    \"units_per_carton\": 8,\n    \"image\": \"sample_text\",\n    \"retail_price\": 86,\n    \"wholesale_price\": 50\n}",
                                     "options": []
                                 }
                             }
@@ -223,7 +260,7 @@
                                 },
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n    \"name_ar\": \"sample_text\",\n    \"name_en\": \"sample_text\",\n    \"origin\": \"sample_text\",\n    \"description\": \"sample_text\",\n    \"price\": 862890,\n    \"image\": \"sample_text\",\n    \"units_per_carton\": 3,\n    \"brand\": \"sample_text\",\n    \"sale_unit_id\": \"sample_text\",\n    \"category_id\": \"sample_text\",\n    \"original_code\": \"sample_text\"\n}",
+                                    "raw": "{\n    \"name_ar\": \"sample_text\",\n    \"name_en\": \"sample_text\",\n    \"origin\": \"sample_text\",\n    \"description\": \"sample_text\",\n    \"price\": 499662,\n    \"image\": \"sample_text\",\n    \"units_per_carton\": 5,\n    \"brand\": \"sample_text\",\n    \"sale_unit_id\": \"sample_text\",\n    \"category_id\": \"sample_text\",\n    \"original_code\": \"sample_text\"\n}",
                                     "options": []
                                 }
                             }
@@ -258,6 +295,91 @@
                                     "variable": []
                                 }
                             }
+                        }
+                    ]
+                },
+                {
+                    "name": "stock",
+                    "item": [
+                        {
+                            "name": "transfer",
+                            "item": [
+                                {
+                                    "name": "[POST] api/v1/stock/transfer",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            },
+                                            {
+                                                "key": "Content-Type",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            }
+                                        ],
+                                        "url": {
+                                            "raw": "{{base_url}}/api/v1/stock/transfer",
+                                            "host": [
+                                                "{{base_url}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "v1",
+                                                "stock",
+                                                "transfer"
+                                            ]
+                                        },
+                                        "body": {
+                                            "mode": "raw",
+                                            "raw": "{\n    \"product_id\": 6,\n    \"from_location_id\": 7,\n    \"to_location_id\": \"sample_text\",\n    \"quantity\": 6\n}",
+                                            "options": []
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "name": "search",
+                            "item": [
+                                {
+                                    "name": "[POST] api/v1/stock/search",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            },
+                                            {
+                                                "key": "Content-Type",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            }
+                                        ],
+                                        "url": {
+                                            "raw": "{{base_url}}/api/v1/stock/search",
+                                            "host": [
+                                                "{{base_url}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "v1",
+                                                "stock",
+                                                "search"
+                                            ]
+                                        },
+                                        "body": {
+                                            "mode": "raw",
+                                            "raw": "{\n    \"product_id\": 1,\n    \"location_id\": 7,\n    \"product_batch_id\": 1,\n    \"type\": \"sample_text\",\n    \"bill_number\": \"sample_text\"\n}",
+                                            "options": []
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     ]
                 },

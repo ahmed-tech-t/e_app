@@ -14,6 +14,7 @@ class ProductSearchDto
         public readonly ?string $code = null,
         public readonly ?int $categoryId = null,
         public readonly ?int $saleUnitId = null,
+        public readonly ?int $locationId = null
     ) {
     }
 
