@@ -22,14 +22,20 @@ class ProductResource extends JsonResource
             'original_code' => $this->original_code,
             'name_ar' => $this->name_ar,
             'name_en' => $this->name_en,
-            'retail_price' => $this->retail_price,
-            'wholesale_price' => $this->wholesale_price,
             'description' => $this->description,
             'image' => $this->image,
             'origin' => $this->origin,
             'brand' => $this->brand,
             'units_per_carton' => $this->units_per_carton,
         ];
+
+        if ($this->retail_price) {
+            $data['retail_price'] = $this->retail_price;
+        }
+
+        if ($this->wholesale_price) {
+            $data['wholesale_price'] = $this->wholesale_price;
+        }
 
         // Only add category if it exists
         if ($this->category) {

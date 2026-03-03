@@ -48,18 +48,7 @@ class Product extends Model
     {
         return $this->hasMany(ProductPrice::class);
     }
-    public function retailPrice()
-    {
-        return $this->hasOne(ProductPrice::class)
-            ->where('type', PriceType::RETAIL)
-            ->whereNull('valid_to');
-    }
-    public function wholesalePrice()
-    {
-        return $this->hasOne(ProductPrice::class)
-            ->where('type', PriceType::WHOLESALE)
-            ->whereNull('valid_to');
-    }
+
 
 
     // override factory
@@ -74,6 +63,7 @@ class Product extends Model
             ->join('product_batches', 'products.id', '=', 'product_batches.product_id')
             ->join('batch_locations', 'product_batches.id', '=', 'batch_locations.product_batch_id')
             ->join('product_prices', 'products.id', '=', 'product_prices.product_id')
+
             ->whereNull('product_prices.valid_to')
 
             ->where('batch_locations.location_id', $locationId)
@@ -83,9 +73,12 @@ class Product extends Model
 
             ->select([
                 'products.*',
-                'product_prices.price where product_prices.type = "retail" as retail_price',
-                'product_prices.price where product_prices.type = "wholesale" as wholesale_price'
+
             ])
-            ->selectRaw('SUM(batch_locations.remaining_quantity) as total_remaining_quantity');
+            ->selectRaw("
+                MAX(CASE WHEN product_prices.type = 'retail' THEN product_prices.price END) as retail_price,
+                MAX(CASE WHEN product_prices.type = 'wholesale' THEN product_prices.price END) as wholesale_price,
+                SUM(batch_locations.remaining_quantity) as total_remaining_quantity
+            ");
     }
 }

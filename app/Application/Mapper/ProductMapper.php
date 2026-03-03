@@ -21,11 +21,9 @@ class ProductMapper
             category: $model->relationLoaded('category')
             ? CategoryMapper::modelToEntity($model->category) : null,
 
-            retail_price: $model->relationLoaded('retailPrice')
-            ? $model->retailPrice->price : null,
+            retail_price: $model->retail_price ?? null,
 
-            wholesale_price: $model->relationLoaded('wholesalePrice')
-            ? $model->wholesalePrice->price : null,
+            wholesale_price: $model->wholesale_price ?? null,
 
             total_remaining_quantity: $model->total_remaining_quantity ?? null,
 

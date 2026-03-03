@@ -37,9 +37,9 @@ class EProductRepo extends BaseERepo implements ProductRepo
         FilterBySaleUnitId::class,
     ];
 
-    protected array $withForPaginate = ['retailPrice', 'wholesalePrice'];
+    //protected array $withForPaginate = ['retailPrice', 'wholesalePrice'];
     protected array $withSearch = [];
-    protected array $defaultRelationships = ['category', 'saleUnit', 'retailPrice', 'wholesalePrice'];
+    protected array $defaultRelationships = ['category', 'saleUnit'];
 
     public function __construct()
     {
@@ -47,13 +47,14 @@ class EProductRepo extends BaseERepo implements ProductRepo
     }
     public function findAllByLocation(int $locationId, int $perPage)
     {
-        return Product::withLocationStock($locationId)->
-            paginate($perPage)
+        return Product::withLocationStock($locationId)
+            ->paginate($perPage)
             ->through(fn($item) => ProductMapper::modelToEntity($item));
     }
     public function findByLocation(int $productId, int $locationId)
     {
-        $product = Product::withLocationStock($locationId)
+        $product = Product::with($this->defaultRelationships)
+            ->withLocationStock($locationId)
             ->where('products.id', $productId)
             ->first();
         return $product ? ProductMapper::modelToEntity($product) : null;
