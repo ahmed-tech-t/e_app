@@ -14,12 +14,18 @@ class LocationResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return [
+        $data = [
             'id' => $this->id,
             'name' => $this->name,
             'address' => $this->address,
             'phone' => $this->phone,
             'type' => $this->type
         ];
+
+        if ($this->quantity) {
+            $data['quantity'] = $this->quantity;
+        }
+
+        return $data;
     }
 }

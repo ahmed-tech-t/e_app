@@ -111,17 +111,15 @@ class BaseERepo implements BaseRepo
     public function search($dto, $perPage)
     {
         $context = ($this->queryContext)::create($this->modelClass::query(), $dto);
-        $context = app(Pipeline::class)
+        return app(Pipeline::class)
             ->send($context)
             ->through($this->searchFilters)
-            ->thenReturn();
-
-        return $context->query
+            ->thenReturn()
+            ->query
             ->with($this->withSearch)
             ->paginate($perPage)
             ->through(
                 fn($item) => ($this->mapper)::modelToEntity($item)
             );
-
     }
 }

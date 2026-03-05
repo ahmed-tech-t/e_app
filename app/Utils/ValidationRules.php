@@ -4,6 +4,14 @@
 namespace App\Utils;
 class ValidationRules
 {
+    public static function code(bool $required = true): string
+    {
+        return self::base(
+            validation: 'string|max:8',
+            required: $required
+        );
+    }
+
     public static function price(bool $required = true): string
     {
         return self::base(

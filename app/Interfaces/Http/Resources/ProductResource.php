@@ -26,15 +26,13 @@ class ProductResource extends JsonResource
             'image' => $this->image,
             'origin' => $this->origin,
             'brand' => $this->brand,
+
+            'retail_price' => $this->retail_price,
+            'wholesale_price' => $this->wholesale_price,
             'units_per_carton' => $this->units_per_carton,
         ];
-
-        if ($this->retail_price) {
-            $data['retail_price'] = $this->retail_price;
-        }
-
-        if ($this->wholesale_price) {
-            $data['wholesale_price'] = $this->wholesale_price;
+        if ($this->quantity) {
+            $data['quantity'] = $this->quantity;
         }
 
         // Only add category if it exists
@@ -51,9 +49,7 @@ class ProductResource extends JsonResource
         }
 
 
-        if ($this->total_remaining_quantity) {
-            $data['total_remaining_quantity'] = $this->total_remaining_quantity;
-        }
+
 
 
         $data['created_at'] = $this->created_at->format(TimeFormate::formate());

@@ -15,6 +15,7 @@ class LocationMapper
             phone: $model['phone'],
             type: $model['type'],
             code: $model['code'],
+            quantity: $model['total_qty'] ?? null,
             created_at: $model['created_at'],
             updated_at: $model['updated_at']
         );

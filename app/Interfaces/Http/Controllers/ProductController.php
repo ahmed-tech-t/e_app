@@ -25,6 +25,11 @@ class ProductController extends BaseController
         $this->service = $productService;
     }
 
+    public function index(Request $request)
+    {
+        return $this->getPaginatedItems($request);
+    }
+
 
     public function findAllByLocation(Request $request, int $locationId)
     {

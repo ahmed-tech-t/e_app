@@ -13,4 +13,9 @@ class LocationService extends BaseService
     {
         $this->repo = $repo;
     }
+
+    public function productLocations(string $code)
+    {
+        return $this->repo->productLocations($code);
+    }
 }

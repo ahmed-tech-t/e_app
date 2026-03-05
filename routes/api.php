@@ -43,7 +43,16 @@ Route::prefix('api')->group(function () {
         Route::resource('products', ProductController::class);
         Route::resource('categories', CategoryController::class);
         Route::resource('sale-units', SaleUnitController::class);
+
+        Route::get(
+            'locations/products/{code}',
+            [
+                LocationController::class,
+                'productLocations'
+            ]
+        )->name('locations.products.show');
         Route::resource('locations', LocationController::class);
+
 
 
         Route::post(

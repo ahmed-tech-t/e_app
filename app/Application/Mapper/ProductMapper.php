@@ -25,7 +25,7 @@ class ProductMapper
 
             wholesale_price: $model->wholesale_price ?? null,
 
-            total_remaining_quantity: $model->total_remaining_quantity ?? null,
+            quantity: $model->quantity ?? null,
 
             description: $model->description,
             brand: $model->brand,
