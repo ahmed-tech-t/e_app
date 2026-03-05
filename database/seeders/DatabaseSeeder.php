@@ -19,7 +19,8 @@ class DatabaseSeeder extends Seeder
             SaleUnitSeeder::class,
             LocationSeeder::class,
             ProductSeeder::class,
-            ProductBatchSeeder::class
+            ProductBatchSeeder::class,
+            SupplierSeeder::class
         ]);
     }
 }

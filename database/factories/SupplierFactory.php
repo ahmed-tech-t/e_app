@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Infrastructure\Persistence\Models\Supplier;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -14,6 +15,8 @@ class SupplierFactory extends Factory
      *
      * @return array<string, mixed>
      */
+
+    protected $model = Supplier::class;
     public function definition(): array
     {
         $code = $this->faker->ean13();
@@ -23,7 +26,6 @@ class SupplierFactory extends Factory
             'email' => $this->faker->email(),
             'phone' => $this->faker->phoneNumber(),
             'address' => $this->faker->streetAddress(),
-            'country' => $this->faker->country(),
         ];
     }
 }

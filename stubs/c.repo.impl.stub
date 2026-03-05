@@ -15,6 +15,5 @@ class {{ name }} extends BaseERepo implements {{ model }}Repo {
     protected array $searchFilters = [];
 
     protected array $withForPaginate = [];
-    protected array $withSearch = self::$withForPaginate;
     protected array $defaultRelationships = [];
 }

@@ -6,6 +6,7 @@ use App\Interfaces\Http\Controllers\ProductController;
 use App\Interfaces\Http\Controllers\ProductPriceController;
 use App\Interfaces\Http\Controllers\SaleUnitController;
 use App\Interfaces\Http\Controllers\StockMovementController;
+use App\Interfaces\Http\Controllers\SupplierController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('api')->group(function () {
@@ -52,7 +53,7 @@ Route::prefix('api')->group(function () {
             ]
         )->name('locations.products.show');
         Route::resource('locations', LocationController::class);
-
+        Route::resource('suppliers', SupplierController::class);
 
 
         Route::post(
