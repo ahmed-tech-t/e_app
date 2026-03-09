@@ -57,6 +57,7 @@ class EProductRepo extends BaseERepo implements ProductRepo
     {
         return Product::
             allProducts()
+            ->orderBy('products.created_at', 'desc')
             ->paginate($perPage)
             ->through(fn($item) => ProductMapper::modelToEntity($item));
     }

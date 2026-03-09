@@ -5,5 +5,5 @@ namespace App\Infrastructure\Persistence\utils;
 class Constants
 {
     public const DEFAULT_PER_PAGE = 5;
-    public const TAX = 0.15;
+    public const TAX = 15;
 }

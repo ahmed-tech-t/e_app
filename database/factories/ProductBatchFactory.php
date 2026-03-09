@@ -24,7 +24,7 @@ class ProductBatchFactory extends Factory
     protected $model = ProductBatch::class;
     public function definition(): array
     {
-        $quantity = $this->faker->numberBetween(1, 100);
+        $quantity = $this->faker->numberBetween(1, 10);
 
 
         return [
@@ -32,7 +32,7 @@ class ProductBatchFactory extends Factory
             'batch_code' => null,
             'initial_quantity' => $quantity,
             'remaining_quantity' => $quantity,
-            'cost_price' => $this->faker->randomFloat(2, 1, 1000)
+            'cost_price' => $this->faker->randomFloat(2, 1, 100)
         ];
     }
 

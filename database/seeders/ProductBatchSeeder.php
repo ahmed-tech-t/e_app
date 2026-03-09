@@ -17,15 +17,15 @@ class ProductBatchSeeder extends Seeder
      */
     public function run(): void
     {
-        // 500 total / 10 per group = 50 iterations
-        for ($i = 1; $i <= 50; $i++) {
+        // 8 total / 2 per group = 4 iterations
+        for ($i = 1; $i <= 4; $i++) {
 
-            $products = Product::inRandomOrder()->limit(10)->get();
+            $products = Product::inRandomOrder()->limit(3)->get();
 
             // Generate the code once for this group
             $currentBatchCode = $this->generateCode('BAT');
 
-            ProductBatch::factory(10)
+            ProductBatch::factory(2)
                 ->state(new Sequence(
                     fn($sequence) => [
                         'product_id' => $products[$sequence->index]->id

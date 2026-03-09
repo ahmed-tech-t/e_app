@@ -4,6 +4,7 @@ use App\Interfaces\Http\Controllers\CategoryController;
 use App\Interfaces\Http\Controllers\LocationController;
 use App\Interfaces\Http\Controllers\ProductController;
 use App\Interfaces\Http\Controllers\ProductPriceController;
+use App\Interfaces\Http\Controllers\SalesController;
 use App\Interfaces\Http\Controllers\SaleUnitController;
 use App\Interfaces\Http\Controllers\StockMovementController;
 use App\Interfaces\Http\Controllers\SupplierController;
@@ -66,5 +67,16 @@ Route::prefix('api')->group(function () {
             'stock/search',
             [StockMovementController::class, 'search']
         )->name('stock.search');
+
+        Route::get(
+            'sales/preview',
+            [SalesController::class, 'preSale']
+        )->name('sales.preSale');
+        Route::post(
+            'sales',
+            [SalesController::class, 'store']
+        )->name('sales.store');
     });
+
+
 });

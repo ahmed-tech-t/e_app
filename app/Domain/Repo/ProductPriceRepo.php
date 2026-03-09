@@ -10,5 +10,6 @@ interface ProductPriceRepo extends BaseRepo
     public function invalidateOldPrice(ProductPrice $productPrice): bool;
 
     public function getProductPriceHistory(int $productId, ?PriceType $type);
+    public function getByProductIdAndType(int $productId, PriceType $type);
 }
 

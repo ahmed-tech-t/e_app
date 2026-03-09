@@ -6,18 +6,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Sales extends Model
+class SalesItem extends Model
 {
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'code',
-        'store_id',
-        'customer_name',
-        'customer_phone',
-        'total',
-        'discount',
-        'tax',
-        'grand_total',
+        'bill_id',
+        'product_id',
+        'quantity',
+        'price',
+        'total'
     ];
 }

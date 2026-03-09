@@ -63,4 +63,17 @@ class EProductBatchRepo extends BaseERepo implements ProductBatchRepo
                ->lockForUpdate()
                ->get();
      }
+
+     /**
+      * @inheritDoc
+      */
+     public function isAvailableInOtherLocation($productId, $locationId)
+     {
+          return ProductBatch::where('product_id', $productId)
+               ->where('remaining_quantity', '>', 0)
+               ->whereHas('locations', function ($query) use ($locationId) {
+                    $query->where('location_id', '!=', $locationId);
+               })
+               ->exists();
+     }
 }

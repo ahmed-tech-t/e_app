@@ -15,6 +15,7 @@ class SalesEntity
         public ?float $discount,
         public ?float $tax,
         public ?float $grand_total,
+        /** @var SalesItemEntity[] */
         public array $items = [],
         public ?int $id = null,
         public ?Carbon $created_at = null,
@@ -25,11 +26,14 @@ class SalesEntity
     ) {
     }
 
-    public static function create(array $data)
+    public static function create(array $data, $items)
     {
         $discount = $data['discount'] ?? 0;
-        $total = self::getTotal($data['items']);
+
+        $total = self::getTotal($items);
+
         $grandTotal = self::getGrandTotal($total, $discount);
+
         return new self(
             customer_name: $data['customer_name'],
             customer_phone: $data['customer_phone'] ?? null,
@@ -38,7 +42,7 @@ class SalesEntity
             tax: Constants::TAX,
             grand_total: $grandTotal,
             store_id: $data['store_id'],
-            items: $data['items'],
+            items: $items,
         );
 
     }
@@ -46,18 +50,31 @@ class SalesEntity
 
     public function toArray()
     {
-
+        return [
+            'code' => $this->code,
+            'store_id' => $this->store_id,
+            'customer_name' => $this->customer_name,
+            'customer_phone' => $this->customer_phone,
+            'total' => $this->total,
+            'discount' => $this->discount,
+            'tax' => $this->tax,
+            'grand_total' => $this->grand_total,
+        ];
     }
 
     private static function getTotal(array $items)
     {
-        return 0;
+        $total = 0;
+        foreach ($items as $item) {
+            $total += $item->total;
+        }
+        return round($total, 2);
     }
 
     private static function getGrandTotal(float $total, float $discount)
     {
         $discount = $discount * $total;
-        $tax = Constants::TAX * $total;
-        return $total - $discount + $tax;
+        $tax = (Constants::TAX / 100) * $total;
+        return round($total - ($discount / 100) + $tax, 2);
     }
 }

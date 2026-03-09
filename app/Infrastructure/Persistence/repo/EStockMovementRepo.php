@@ -119,7 +119,7 @@ class EStockMovementRepo implements StockMovementRepo
         $result = $context->query
             ->with('batch')
             ->with('location')
-
+            ->orderBy('created_at', 'desc')
             ->paginate($perPage)
             ->through(
                 fn($item) => StockMovementMapper::toEntity($item)

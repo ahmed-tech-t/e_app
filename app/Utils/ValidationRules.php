@@ -4,6 +4,22 @@
 namespace App\Utils;
 class ValidationRules
 {
+
+    public static function percentage(bool $required = true): string
+    {
+        return self::base(
+            validation: 'numeric|min:0|max:100|regex:/^\d+(\.\d{1,2})?$/',
+            required: $required
+        );
+    }
+
+    public static function array(bool $required = true): string
+    {
+        return self::base(
+            validation: 'array|min:1',
+            required: $required
+        );
+    }
     public static function code(bool $required = true): string
     {
         return self::base(

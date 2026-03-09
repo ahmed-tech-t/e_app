@@ -35,7 +35,9 @@ class BaseERepo implements BaseRepo
             $query->with($this->withForPaginate);
         }
 
-        $items = $query->paginate($perPage)
+        $items = $query::
+            orderBy('created_at', 'desc')
+            ->paginate($perPage)
             ->through(
                 fn($item) =>
                 ($this->mapper)::modelToEntity($item)
@@ -117,6 +119,7 @@ class BaseERepo implements BaseRepo
             ->thenReturn()
             ->query
             ->with($this->withSearch)
+            ->orderBy('created_at', 'desc')
             ->paginate($perPage)
             ->through(
                 fn($item) => ($this->mapper)::modelToEntity($item)

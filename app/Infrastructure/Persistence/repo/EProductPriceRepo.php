@@ -60,4 +60,16 @@ class EProductPriceRepo extends BaseERepo implements ProductPriceRepo
                ->get()
                ->map(fn($model) => ProductPriceMapper::modelToEntity($model));
      }
+
+     /**
+      * @inheritDoc
+      */
+     public function getByProductIdAndType(int $productId, PriceType $type)
+     {
+          $model = ProductPrice::where('product_id', $productId)
+               ->where('type', $type)
+               ->whereNull('valid_to')
+               ->first();
+          return ProductPriceMapper::modelToEntity($model);
+     }
 }

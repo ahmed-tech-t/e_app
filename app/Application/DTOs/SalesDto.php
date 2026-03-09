@@ -2,15 +2,17 @@
 
 namespace App\Application\DTOs;
 
-
+use App\Infrastructure\Persistence\utils\PriceType;
 
 class SalesDto
 {
 
     public function __construct(
         public string $customer_name,
-        public array $items,
         public int $store_id,
+        /** @var SalesItemDto[] */
+        public array $items,
+        public PriceType $type,
         public ?float $discount = null,
         public ?string $customer_phone = null,
     ) {
@@ -25,7 +27,8 @@ class SalesDto
             'items' => $this->items,
             'store_id' => $this->store_id,
             'discount' => $this->discount,
-            'customer_phone' => $this->customer_phone
+            'customer_phone' => $this->customer_phone,
+            'type' => $this->type
         ];
     }
 }

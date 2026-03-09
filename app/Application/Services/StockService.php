@@ -6,6 +6,7 @@ use App\Application\DTOs\StockMovementSearchDto;
 use App\Application\Mapper\ProductBatchMapper;
 use App\Domain\Entities\ProductBatchEntity;
 use App\Domain\Repo\ProductBatchRepo;
+use App\Domain\Repo\ProductRepo;
 use App\Domain\Repo\StockMovementRepo;
 use App\Infrastructure\Persistence\Models\ProductBatch;
 use App\Infrastructure\Persistence\utils\StockMovementType;
@@ -16,7 +17,8 @@ class StockService
 {
     public function __construct(
         private StockMovementRepo $stockMovementRepo,
-        private ProductBatchRepo $productBatchRepo
+        private ProductBatchRepo $productBatchRepo,
+        private ProductRepo $productRepo
     ) {
     }
 
@@ -41,26 +43,23 @@ class StockService
         DB::transaction(
             function () use ($dto) {
 
-
                 $batches = $this->productBatchRepo->getBatchesInLocation($dto->productId, $dto->fromLocationId);
 
-                $this->isQuantityAvailable($batches, $dto->quantity);
+                $this->isQuantityAvailable($batches, $dto->quantity, $dto->productId, $dto->fromLocationId);
 
-                $remainingToTake = $dto->quantity;
+                $this->handelBatchesMovement(
+                    batches: $batches,
+                    quantity: $dto->quantity,
+                    callBack: function ($batch, $canTake) use ($dto) {
+                        $this->stockMovementRepo->transfer(
+                            $batch->batch_id,
+                            $dto->fromLocationId,
+                            $dto->toLocationId,
+                            $canTake
+                        );
+                    }
+                );
 
-                foreach ($batches as $batch) {
-                    $canTake = min($batch->quantity, $remainingToTake);
-
-                    $this->stockMovementRepo->transfer(
-                        $batch->batch_id,
-                        $dto->fromLocationId,
-                        $dto->toLocationId,
-                        $canTake
-                    );
-                    $remainingToTake -= $canTake;
-                    if ($remainingToTake <= 0)
-                        break;
-                }
                 return true;
             }
         );
@@ -73,25 +72,22 @@ class StockService
         DB::transaction(
             function () use ($billNumber, $productId, $locationId, $quantity) {
 
-                $this->isQuantityAvailable(
-                    $productId,
-                    $locationId,
-                    $quantity
-                );
-                $this->getTargetBatchByLocation(
-                    $productId,
-                    $locationId,
-                    $quantity,
-                    function ($productBatchId, $fromLocationId, $quantity) use ($billNumber) {
+                $batches = $this->productBatchRepo->getBatchesInLocation($productId, $locationId);
+                $this->isQuantityAvailable($batches, $quantity, $productId, $locationId);
+                $this->handelBatchesMovement(
+                    batches: $batches,
+                    quantity: $quantity,
+                    callBack: function ($batch, $canTake) use ($billNumber, $locationId) {
                         $this->stockMovementRepo->adjust(
-                            $productBatchId,
-                            $fromLocationId,
-                            -$quantity,
+                            $batch->batch_id,
+                            $locationId,
+                            -$canTake,
                             StockMovementType::SALE,
                             $billNumber
                         );
                     }
                 );
+
                 return true;
             }
         );
@@ -127,14 +123,37 @@ class StockService
         });
     }
 
-    private function isQuantityAvailable($batches, $quantity): bool
+    private function isQuantityAvailable($batches, $quantity, $productId, $currentLocationId): bool
     {
-        $totalQuantity = $batches->sum('quantity');
-        if ($quantity > $totalQuantity) {
-            throw new \Exception("we don't have enough quantity");
+        $inStock = $batches->sum('quantity');
+        if (!$inStock || $inStock <= 0 || $inStock < $quantity) {
+            $product = $this->productRepo->findById($productId);
+            $availableInOtherLocations = $this->productBatchRepo->isAvailableInOtherLocation($productId, $currentLocationId);
+
+            $isOutOfStock = (!$inStock || $inStock <= 0);
+            $statusMessage = $isOutOfStock
+                ? "Product '{$product->name_ar}' is out of stock"
+                : "Product '{$product->name_ar}' has insufficient quantity, available quantity is $inStock";
+
+            if ($availableInOtherLocations) {
+                $statusMessage .= ", but available in other locations";
+            }
+
+            throw new \Exception($statusMessage);
         }
+
         return true;
     }
 
-
+    private function handelBatchesMovement($batches, $quantity, callable $callBack)
+    {
+        $remainingToTake = $quantity;
+        foreach ($batches as $batch) {
+            $canTake = min($batch->quantity, $remainingToTake);
+            $callBack($batch, $canTake);
+            $remainingToTake -= $canTake;
+            if ($remainingToTake <= 0)
+                break;
+        }
+    }
 }

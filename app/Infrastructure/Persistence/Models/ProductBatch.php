@@ -39,7 +39,7 @@ class ProductBatch extends Model
         return $query->join('batch_locations', 'product_batches.id', '=', 'batch_locations.product_batch_id')
             ->where('batch_locations.location_id', $locationId)
             ->where('product_batches.product_id', $productId)
-            ->where('batch_locations.remaining_quantity', '>', 0)
-        ;
+            ->where('product_batches.remaining_quantity', '>', 0)
+            ->where('batch_locations.remaining_quantity', '>', 0);
     }
 }
