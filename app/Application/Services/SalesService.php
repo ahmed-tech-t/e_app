@@ -34,11 +34,7 @@ class SalesService extends BaseService
             return SalesItemEntity::create(data: $item->toArray(), price: $price);
         });
 
-        $entity = SalesEntity::create($dto->toArray(), $items->toArray());
-
-        $entity->items = $items->toArray();
-
-        return $entity;
+        return SalesEntity::create($dto->toArray(), $items->all());
     }
 
 

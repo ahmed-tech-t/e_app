@@ -7,19 +7,18 @@ use Illuminate\Support\Facades\Log;
 
 class ProductBatchMapper
 {
-    public static function toEntity($model)
+    public static function modelToEntity($model)
     {
         if (!$model) {
             return;
         }
         return new ProductBatchEntity(
             id: $model['id'],
-            batchCode: $model['batch_code'],
-            productId: $model['product_id'],
-            initialQuantity: $model['initial_quantity'],
-            remainingQuantity: $model['remaining_quantity'],
-            costPrice: $model['cost_price'],
-
+            batch_code: $model['batch_code'],
+            product_id: $model['product_id'],
+            initial_quantity: $model['initial_quantity'],
+            remaining_quantity: $model['remaining_quantity'],
+            cost_price: $model['cost_price'],
             product: $model->relationLoaded('product')
             ? self::mapProduct($model->product) : null,
 

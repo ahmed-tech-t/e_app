@@ -9,8 +9,8 @@ class ProductEntity
     public function __construct(
         public string $name_ar,
         public string $brand,
-        public int $units_per_carton,
-        public string $original_code,
+        public ?int $units_per_carton = null,
+        public ?string $original_code = null,
         public ?int $quantity = null,
         public ?float $retail_price = null,
         public ?float $wholesale_price = null,

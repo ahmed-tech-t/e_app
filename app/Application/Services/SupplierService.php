@@ -8,6 +8,7 @@ use App\Domain\Repo\SupplierRepo;
 class SupplierService extends BaseService
 {
     protected string $entityClass = SupplierEntity::class;
+    protected $defaultCodeChar = "SUP";
 
     public function __construct(SupplierRepo $repo)
     {

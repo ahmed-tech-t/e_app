@@ -4,6 +4,7 @@ use App\Interfaces\Http\Controllers\CategoryController;
 use App\Interfaces\Http\Controllers\LocationController;
 use App\Interfaces\Http\Controllers\ProductController;
 use App\Interfaces\Http\Controllers\ProductPriceController;
+use App\Interfaces\Http\Controllers\PurchaseController;
 use App\Interfaces\Http\Controllers\SalesController;
 use App\Interfaces\Http\Controllers\SaleUnitController;
 use App\Interfaces\Http\Controllers\StockMovementController;
@@ -54,6 +55,8 @@ Route::prefix('api')->group(function () {
             ]
         )->name('locations.products.show');
         Route::resource('locations', LocationController::class);
+
+
         Route::resource('suppliers', SupplierController::class);
 
 
@@ -76,6 +79,15 @@ Route::prefix('api')->group(function () {
             'sales',
             [SalesController::class, 'store']
         )->name('sales.store');
+
+        Route::get(
+            'purchases/preview',
+            [PurchaseController::class, 'prePurchase']
+        )->name('purchases.prePurchase');
+        Route::post(
+            'purchases',
+            [PurchaseController::class, 'store']
+        )->name('purchases.store');
     });
 
 

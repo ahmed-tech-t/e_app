@@ -2,13 +2,14 @@
 
 namespace App\Observers;
 
+use App\Application\Services\StockService;
 use App\Domain\Repo\StockMovementRepo;
 use App\Infrastructure\Persistence\Models\StockMovement;
 use Illuminate\Support\Facades\Log;
 
 class StockMovementObserver
 {
-    public function __construct(private StockMovementRepo $repo)
+    public function __construct(private StockService $stockService)
     {
     }
     /**
@@ -16,6 +17,6 @@ class StockMovementObserver
      */
     public function created(StockMovement $stockMovement): void
     {
-        $this->repo->updateAvailableStock($stockMovement);
+        $this->stockService->updateInventory($stockMovement);
     }
 }

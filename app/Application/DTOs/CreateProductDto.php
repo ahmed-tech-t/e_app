@@ -4,13 +4,13 @@ class CreateProductDto
 {
     public function __construct(
         public string $category_id,
-        public string $original_code,
         public string $name_ar,
         public string $brand,
         public int $sale_unit_id,
-        public int $units_per_carton,
         public float $retail_price,
         public float $wholesale_price,
+        public ?int $units_per_carton = null,
+        public ?string $original_code = null,
         public ?string $name_en = null,
         public ?string $origin = null,
         public ?string $description = null,

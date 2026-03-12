@@ -9,14 +9,13 @@ class LocationEntity
 {
 
     public function __construct(
+        public string $name,
         public ?int $id = null,
         public ?string $code = null,
-        public string $name,
         public ?string $address = null,
         public ?string $phone = null,
         public ?string $type = null,
         public ?int $quantity = null,
-
         public ?Carbon $created_at = null,
         public ?Carbon $updated_at = null
     ) {

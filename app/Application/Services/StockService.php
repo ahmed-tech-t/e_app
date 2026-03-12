@@ -9,6 +9,7 @@ use App\Domain\Repo\ProductBatchRepo;
 use App\Domain\Repo\ProductRepo;
 use App\Domain\Repo\StockMovementRepo;
 use App\Infrastructure\Persistence\Models\ProductBatch;
+use App\Infrastructure\Persistence\Models\StockMovement;
 use App\Infrastructure\Persistence\utils\StockMovementType;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -32,9 +33,9 @@ class StockService
     {
         return DB::transaction(function () use ($entity, $locationId) {
             $model = ProductBatch::create($entity->toArray());
-            $this->stockMovementRepo->adjust(batchId: $model->id, locationId: $locationId, quantity: $entity->initialQuantity, type: StockMovementType::ENTRY);
+            $this->stockMovementRepo->adjust(batchId: $model->id, locationId: $locationId, quantity: $entity->initial_quantity, type: StockMovementType::ENTRY);
             $model->refresh();
-            return ProductBatchMapper::toEntity($model);
+            return ProductBatchMapper::modelToEntity($model);
 
         });
     }
@@ -65,6 +66,21 @@ class StockService
         );
     }
 
+
+    public function updateInventory(StockMovement $stockMovement)
+    {
+        DB::transaction(function () use ($stockMovement) {
+
+            $batchEntity = $this->productBatchRepo->findById($stockMovement->product_batch_id);
+            $batchEntity->updateQuantity($stockMovement->type, $stockMovement->quantity);
+            $this->productBatchRepo->updateStock(
+                entity: $batchEntity,
+                quantity: $stockMovement->quantity,
+                type: $stockMovement->type,
+                locationId: $stockMovement->location_id
+            );
+        });
+    }
 
     public function sale($productId, $locationId, $quantity, $billNumber)
     {
@@ -119,7 +135,7 @@ class StockService
             }
 
             $model->update($entity->toArray());
-            return ProductBatchMapper::toEntity($model->refresh());
+            return ProductBatchMapper::modelToEntity($model->refresh());
         });
     }
 

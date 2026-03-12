@@ -11,6 +11,7 @@ use App\Infrastructure\Persistence\utils\PriceType;
 class ProductService extends BaseService
 {
     protected string $entityClass = ProductEntity::class;
+    protected $defaultCodeChar = "PRO";
 
     public function __construct(ProductRepo $repo, private ProductPriceRepo $productPriceRepo)
     {

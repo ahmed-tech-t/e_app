@@ -6,15 +6,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Supplier extends Model
+class PurchaseItem extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = [
-        'name',
-        'code',
-        'email',
-        'phone',
-        'address',
+    public $fillable = [
+        'purchase_id',
+        'product_id',
+        'quantity',
+        'price',
+        'total',
     ];
 }

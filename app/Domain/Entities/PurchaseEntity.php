@@ -7,23 +7,22 @@ use App\Traits\TotalCalc;
 use Carbon\Carbon;
 
 
-class SalesEntity
+class PurchaseEntity
 {
     use TotalCalc;
+
     public function __construct(
-        public string $customer_name,
-        public ?float $total,
-        public ?float $discount,
-        public ?float $tax,
-        public ?float $grand_total,
-        /** @var SalesItemEntity[] */
-        public array $items = [],
         public ?int $id = null,
-        public ?Carbon $created_at = null,
-        public ?string $customer_phone = null,
         public ?string $code = null,
-        public ?LocationEntity $store = null,
         public ?int $store_id = null,
+        public ?int $supplier_id = null,
+        public ?float $total = null,
+        public ?float $discount = null,
+        public ?float $tax = null,
+        public ?float $grand_total = null,
+        /** @var PurchaseItemEntity[] */
+        public ?array $items = [],
+        public ?Carbon $created_at = null
     ) {
     }
 
@@ -33,34 +32,37 @@ class SalesEntity
 
         $total = self::getTotal($items);
 
-        $grandTotal = self::getGrandTotal($total, $discount);
+        $grandTotal = self::getGrandTotal($total, $discount, $data['tax']);
 
+        if (isset($data['paper_total']) && abs($data['paper_total'] - $grandTotal) > 0.01) {
+            throw new \DomainException("Error: The paper invoice total does not match the system calculations. the system total is {$grandTotal} and the paper total is {$data['paper_total']}");
+        }
         return new self(
-            customer_name: $data['customer_name'],
-            customer_phone: $data['customer_phone'] ?? null,
+            store_id: $data['store_id'],
+            supplier_id: $data['supplier_id'],
             total: $total,
             discount: $discount,
-            tax: Constants::TAX,
+            tax: $data['tax'],
             grand_total: $grandTotal,
-            store_id: $data['store_id'],
             items: $items,
         );
 
     }
+    public function update(array $data)
+    {
 
+    }
 
     public function toArray()
     {
         return [
             'code' => $this->code,
             'store_id' => $this->store_id,
-            'customer_name' => $this->customer_name,
-            'customer_phone' => $this->customer_phone,
+            'supplier_id' => $this->supplier_id,
             'total' => $this->total,
             'discount' => $this->discount,
             'tax' => $this->tax,
             'grand_total' => $this->grand_total,
         ];
     }
-
 }

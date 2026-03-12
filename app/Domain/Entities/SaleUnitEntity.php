@@ -11,6 +11,14 @@ class SaleUnitEntity
     ) {
     }
 
+    public static function create(array $data)
+    {
+        return new self(
+            name_ar: $data['name_ar'],
+            name_en: $data['name_en'],
+        );
+    }
+
     public function toArray()
     {
         return [

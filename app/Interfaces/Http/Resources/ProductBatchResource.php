@@ -19,16 +19,16 @@ class ProductBatchResource extends JsonResource
         }
         $data = [
             'id' => $this->id,
-            'batch_code' => $this->batchCode,
-            'remaining_quantity' => $this->remainingQuantity,
-            'initial_quantity' => $this->initialQuantity,
-            'cost_price' => $this->costPrice,
+            'batch_code' => $this->batch_code,
+            'remaining_quantity' => $this->remaining_quantity,
+            'initial_quantity' => $this->initial_quantity,
+            'cost_price' => $this->cost_price,
         ];
 
         if ($this->product) {
             $data['product'] = $this->product;
         } else {
-            $data['product_id'] = $this->productId;
+            $data['product_id'] = $this->product_id;
         }
 
         if ($this->locations) {

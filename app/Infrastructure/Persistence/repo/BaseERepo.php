@@ -35,7 +35,7 @@ class BaseERepo implements BaseRepo
             $query->with($this->withForPaginate);
         }
 
-        $items = $query::
+        $items = $query->
             orderBy('created_at', 'desc')
             ->paginate($perPage)
             ->through(

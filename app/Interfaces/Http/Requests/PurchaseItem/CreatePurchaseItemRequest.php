@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Interfaces\Http\Requests\Location;
+namespace App\Interfaces\Http\Requests\PurchaseItem;
 
-use App\Application\DTOs\LocationDto;
+use App\Application\DTOs\PurchaseItemDto;
 use App\Utils\ValidationRules;
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateLocationRequest extends FormRequest
+class CreatePurchaseItemRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,21 +24,19 @@ class CreateLocationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ValidationRules::name(),
-            'address' => ['nullable', 'string', 'max:255'],
-            'phone' => ['nullable', 'string', 'max:255'],
-            'type' => ['required', 'string', 'max:255', 'in:store,warehouse'],
+            'product_id' => ValidationRules::productId(),
+            'quantity' => ValidationRules::quantity(),
+            'price' => ValidationRules::price(),
         ];
     }
 
     public function toDto()
     {
         $data = $this->validated();
-        return new LocationDto(
-            name: $data['name'],
-            address: $data['address'] ?? null,
-            phone: $data['phone'] ?? null,
-            type: $data['type'] ?? null,
+        return new PurchaseItemDto(
+            product_id: $data['product_id'],
+            quantity: $data['quantity'],
+            price: $data['price']
         );
     }
 }

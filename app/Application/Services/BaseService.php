@@ -11,6 +11,8 @@ abstract class BaseService
     protected object $repo;
     protected string $entityClass;
 
+    protected $defaultCodeChar;
+
     use CodeGenerator;
 
     public function findAll()
@@ -56,7 +58,7 @@ abstract class BaseService
     public function create($dto)
     {
         $entity = ($this->entityClass)::create($dto->toArray());
-        $entity->code = $this->getCode($entity->name_en);
+        $entity->code = $this->getCode($this->defaultCodeChar ?? $entity->name_en ?? $entity->name);
 
         return ($this->repo)->create($entity);
     }

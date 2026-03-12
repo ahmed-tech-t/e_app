@@ -4,7 +4,9 @@ namespace App\Infrastructure\Persistence\repo;
 
 use App\Application\DTOs\StockMovementSearchDto;
 use App\Application\Mapper\StockMovementMapper;
+use App\Domain\Repo\ProductBatchRepo;
 use App\Domain\Repo\StockMovementRepo;
+use App\Infrastructure\Persistence\Models\Product;
 use App\Infrastructure\Persistence\Models\ProductBatch;
 use App\Infrastructure\Persistence\Models\StockMovement;
 use App\Infrastructure\Persistence\Pipeline\Filters\StockMovement\FilterByBillNumber;
@@ -20,8 +22,9 @@ use Illuminate\Support\Facades\Log;
 
 class EStockMovementRepo implements StockMovementRepo
 {
-    public function __construct()
-    {
+    public function __construct(
+        private ProductBatchRepo $productBatchRepo
+    ) {
     }
 
     public function transfer($batchId, $fromLocationId, $toLocationId, $quantity, $billNumber = null)
@@ -36,38 +39,7 @@ class EStockMovementRepo implements StockMovementRepo
     }
 
 
-    public function updateAvailableStock(StockMovement $stockMovement)
-    {
-        Log::debug("EStockMovementRepo updateAvailableStock", ['stockMovement' => $stockMovement]);
-        DB::transaction(function () use ($stockMovement) {
 
-            $batch = ProductBatch::findOrFail($stockMovement->product_batch_id);
-
-            if ($stockMovement->type == StockMovementType::ADJUST_INITIAL || $stockMovement->type == StockMovementType::ENTRY) {
-                //  Log::info("EStockMovementRepo updateAvailableStock  Entry", ['stockMovement' => $stockMovement->type]);
-                $batch->increment('initial_quantity', $stockMovement->quantity);
-            }
-
-            $batch->increment('remaining_quantity', $stockMovement->quantity);
-
-            $exists = $batch->locations()
-                ->where('location_id', $stockMovement->location_id)
-                ->exists();
-
-            if ($exists) {
-                $batch->locations()
-                    ->wherePivot('location_id', $stockMovement->location_id)
-                    ->increment('remaining_quantity', $stockMovement->quantity);
-            } else {
-                $batch
-                    ->locations()
-                    ->attach(
-                        $stockMovement->location_id,
-                        ['remaining_quantity' => $stockMovement->quantity]
-                    );
-            }
-        });
-    }
 
     public function findAll()
     {

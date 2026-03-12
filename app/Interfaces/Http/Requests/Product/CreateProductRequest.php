@@ -25,14 +25,14 @@ class CreateProductRequest extends FormRequest
     {
         return [
             'category_id' => ValidationRules::categoryId(),
-            'original_code' => ValidationRules::name() . 'unique:products,original_code',
+            'original_code' => ValidationRules::name(false) . 'unique:products,original_code',
             'name_ar' => ValidationRules::name(),
             'name_en' => ValidationRules::name(false),
             'origin' => ValidationRules::name(false),
             'description' => 'sometimes|string|max:2000',
             'brand' => ValidationRules::name(),
             'sale_unit_id' => ValidationRules::saleUnitId(),
-            'units_per_carton' => ValidationRules::quantity(),
+            'units_per_carton' => ValidationRules::quantity(false),
             'image' => ValidationRules::image(false),
             'retail_price' => ValidationRules::price(),
             'wholesale_price' => ValidationRules::price(),
@@ -45,14 +45,14 @@ class CreateProductRequest extends FormRequest
 
         return new CreateProductDto(
             category_id: $data['category_id'],
-            original_code: $data['original_code'],
+            original_code: $data['original_code'] ?? null,
             name_ar: $data['name_ar'],
             name_en: $data['name_en'] ?? null,
             origin: $data['origin'] ?? null,
             description: $data['description'] ?? null,
             brand: $data['brand'],
             sale_unit_id: $data['sale_unit_id'],
-            units_per_carton: $data['units_per_carton'],
+            units_per_carton: $data['units_per_carton'] ?? null,
             image: $data['image'] ?? null,
             retail_price: $data['retail_price'],
             wholesale_price: $data['wholesale_price'],

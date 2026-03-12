@@ -5,6 +5,28 @@ namespace App\Utils;
 class ValidationRules
 {
 
+    public static function phone(bool $required = true): string
+    {
+        return self::base(
+            validation: 'string|min:11|max:11|regex:/^(01)(0|1|2|5)[0-9]{8}$/',
+            required: $required
+        );
+    }
+
+    public static function email(bool $required = true): string
+    {
+        return self::base(
+            validation: 'email',
+            required: $required
+        );
+    }
+    public static function supplier(bool $required = true): string
+    {
+        return self::base(
+            validation: 'integer|exists:suppliers,id',
+            required: $required
+        );
+    }
     public static function percentage(bool $required = true): string
     {
         return self::base(

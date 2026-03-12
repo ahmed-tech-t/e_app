@@ -7,11 +7,11 @@ class ProductBatchDto
 {
 
     public function __construct(
-        public ?int $locationId = null,
-        public ?int $productId = null,
-        public ?string $batchCode = null,
-        public ?int $initialQuantity = null,
-        public ?float $costPrice = null,
+        public ?int $location_id = null,
+        public ?int $product_id = null,
+        public ?string $batch_code = null,
+        public ?int $initial_quantity = null,
+        public ?float $cost_price = null,
 
     ) {
 
@@ -21,11 +21,11 @@ class ProductBatchDto
     public function toArray()
     {
         return [
-            'location_id' => $this->locationId,
-            'batch_code' => $this->batchCode,
-            'product_id' => $this->productId,
-            'initial_quantity' => $this->initialQuantity,
-            'cost_price' => $this->costPrice
+            'location_id' => $this->location_id,
+            'batch_code' => $this->batch_code,
+            'product_id' => $this->product_id,
+            'initial_quantity' => $this->initial_quantity,
+            'cost_price' => $this->cost_price
         ];
     }
 }

@@ -5,7 +5,7 @@ namespace App\Interfaces\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class LocationResource extends JsonResource
+class PurchaseResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,11 +16,12 @@ class LocationResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'code' => $this->code,
-            'name' => $this->name,
-            'address' => $this->address,
-            'phone' => $this->phone,
-            'type' => $this->type,
+            'supplier_id' => $this->supplier_id,
+            'total' => $this->total,
+            'discount' => $this->discount,
+            'tax' => $this->tax,
+            'grand_total' => $this->grand_total,
+            'items' => PurchaseItemResource::collection($this->items),
         ];
     }
 }

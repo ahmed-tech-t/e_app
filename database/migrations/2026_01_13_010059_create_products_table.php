@@ -17,7 +17,7 @@ return new class extends Migration {
 
             $table->string('code')->unique();
 
-            $table->string('original_code')->unique();
+            $table->string('original_code')->unique()->nullable();
 
             $table->string('name_ar');
 
@@ -31,7 +31,7 @@ return new class extends Migration {
 
             $table->foreignId('sale_unit_id')->constrained();
 
-            $table->integer('units_per_carton')->default(1);
+            $table->integer('units_per_carton')->nullable();
 
             $table->string('image')->nullable()->default('images/store.png');
 
