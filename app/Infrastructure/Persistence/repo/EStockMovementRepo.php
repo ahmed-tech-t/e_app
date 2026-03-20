@@ -94,7 +94,7 @@ class EStockMovementRepo implements StockMovementRepo
             ->orderBy('created_at', 'desc')
             ->paginate($perPage)
             ->through(
-                fn($item) => StockMovementMapper::toEntity($item)
+                fn($item) => StockMovementMapper::modelToEntity($item)
 
             );
 

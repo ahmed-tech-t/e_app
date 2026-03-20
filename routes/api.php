@@ -66,7 +66,7 @@ Route::prefix('api')->group(function () {
         )->name('stock.transfer');
 
 
-        Route::post(
+        Route::get(
             'stock/search',
             [StockMovementController::class, 'search']
         )->name('stock.search');

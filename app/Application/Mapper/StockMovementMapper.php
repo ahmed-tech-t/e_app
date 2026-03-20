@@ -6,7 +6,7 @@ use App\Domain\Entities\StockMovementEntity;
 
 class StockMovementMapper
 {
-    public static function toEntity($data)
+    public static function modelToEntity($data)
     {
         return new StockMovementEntity(
             id: $data->id,
@@ -14,12 +14,12 @@ class StockMovementMapper
             product_batch_id: $data->product_batch_id,
             location_id: $data->location_id,
 
-            product_batch: $data->relationLoaded('batch') ? ProductBatchMapper::toEntity(
+            product_batch: $data->relationLoaded('batch') ? ProductBatchMapper::modelToEntity(
                 $data->batch
             ) : null,
 
             location: $data->relationLoaded('location') ?
-            LocationMapper::toEntity(
+            LocationMapper::modelToEntity(
                 $data->location
             ) : null,
 

@@ -15,6 +15,6 @@ class ELocationRepo extends BaseERepo implements LocationRepo
      //fifo
      public function ProductLocations($productCode)
      {
-          return Location::findProductLocations($productCode)->get()->map(fn($model) => ($this->mapper)::toEntity($model));
+          return Location::findProductLocations($productCode)->get()->map(fn($model) => ($this->mapper)::modelToEntity($model));
      }
 }
