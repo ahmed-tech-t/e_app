@@ -2,7 +2,6 @@
 
 namespace App\Traits;
 
-use function PHPUnit\Framework\isArray;
 
 trait HttpResponses
 {

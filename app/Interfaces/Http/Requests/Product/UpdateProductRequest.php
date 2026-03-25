@@ -27,7 +27,6 @@ class UpdateProductRequest extends FormRequest
             'name_en' => 'sometimes|string|max:255',
             'origin' => 'sometimes|string|max:255',
             'description' => 'sometimes|string|max:2000',
-            'price' => 'sometimes|numeric|min:0|max:1000000|decimal:0,2',
             'image' => 'sometimes|image|mimes:jpeg,png,jpg,svg|max:2048',
             'units_per_carton' => 'sometimes|integer|min:1',
             'brand' => 'sometimes|string|max:255',

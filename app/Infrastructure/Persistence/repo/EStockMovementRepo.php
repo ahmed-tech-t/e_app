@@ -45,7 +45,7 @@ class EStockMovementRepo implements StockMovementRepo
     {
         return StockMovement::paginate()->through(
             fn($item) =>
-            StockMovementMapper::toEntity($item)
+            StockMovementMapper::modelToEntity($item)
         );
     }
 

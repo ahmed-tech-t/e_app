@@ -11,7 +11,7 @@ use App\Interfaces\Http\Controllers\StockMovementController;
 use App\Interfaces\Http\Controllers\SupplierController;
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('api')->group(function () {
+Route::prefix('e_app/api')->group(function () {
     Route::prefix('v1')->group(function () {
 
         Route::post(
