@@ -13,6 +13,8 @@ use App\Infrastructure\Persistence\Pipeline\Filters\ProductBatch\ProductBatchQue
 
 use App\Infrastructure\Persistence\utils\StockMovementType;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+
 use function Symfony\Component\String\s;
 
 class EProductBatchRepo extends BaseERepo implements ProductBatchRepo
@@ -85,6 +87,7 @@ class EProductBatchRepo extends BaseERepo implements ProductBatchRepo
 
      public function addToLocation(ProductBatch $batchModel, int $locationId, float $quantity)
      {
+          Log::info("Attaching batch {$batchModel->id} to location {$locationId} with quantity {$quantity}");
           $batchModel->locations()->syncWithoutDetaching([
                $locationId => [
                     'remaining_quantity' => DB::raw("remaining_quantity + $quantity")
@@ -96,6 +99,7 @@ class EProductBatchRepo extends BaseERepo implements ProductBatchRepo
      public function updateStock($entity, $quantity, $type, $locationId)
      {
 
+          Log::info("Updating stock for batch {$entity->id} with quantity {$quantity} and type {$type->name} at location ID {$locationId}");
           $model = ProductBatch::findOrFail($entity->id);
 
           $updateData = [

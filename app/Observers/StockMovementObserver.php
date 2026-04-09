@@ -17,6 +17,7 @@ class StockMovementObserver
      */
     public function created(StockMovement $stockMovement): void
     {
+        Log::info("Iam Observer Stock movement created with ID {$stockMovement->id}");
         $this->stockService->updateInventory($stockMovement);
     }
 }

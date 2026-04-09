@@ -31,6 +31,7 @@ class StockService
 
     public function createProductBatch(ProductBatchEntity $entity, int $locationId)
     {
+        Log::info("Creating product batch for product ID {$entity->product_id} with initial quantity {$entity->initial_quantity} at location ID {$locationId}");
         return DB::transaction(function () use ($entity, $locationId) {
             $model = ProductBatch::create($entity->toArray());
             $this->stockMovementRepo->adjust(batchId: $model->id, locationId: $locationId, quantity: $entity->initial_quantity, type: StockMovementType::ENTRY);
@@ -41,6 +42,7 @@ class StockService
     }
     public function transferProduct($dto)
     {
+        Log::info("Transferring product ID {$dto->productId} from location ID {$dto->fromLocationId} to location ID {$dto->toLocationId} with quantity {$dto->quantity}");
         DB::transaction(
             function () use ($dto) {
 
@@ -70,7 +72,7 @@ class StockService
     public function updateInventory(StockMovement $stockMovement)
     {
         DB::transaction(function () use ($stockMovement) {
-
+            Log::info("Updating inventory for stock movement ID {$stockMovement->id} with type {$stockMovement->type->name} and quantity {$stockMovement->quantity}");
             $batchEntity = $this->productBatchRepo->findById($stockMovement->product_batch_id);
             $batchEntity->updateQuantity($stockMovement->type, $stockMovement->quantity);
             $this->productBatchRepo->updateStock(
@@ -84,7 +86,7 @@ class StockService
 
     public function sale($productId, $locationId, $quantity, $billNumber)
     {
-
+        Log::info("Processing sale for product ID {$productId} at location ID {$locationId} for quantity {$quantity} with bill number {$billNumber}");
         DB::transaction(
             function () use ($billNumber, $productId, $locationId, $quantity) {
 
@@ -141,6 +143,7 @@ class StockService
 
     private function isQuantityAvailable($batches, $quantity, $productId, $currentLocationId): bool
     {
+        Log::info("Checking quantity availability for product ID {$productId} at location ID {$currentLocationId} for requested quantity {$quantity}");
         $inStock = $batches->sum('quantity');
         if (!$inStock || $inStock <= 0 || $inStock < $quantity) {
             $product = $this->productRepo->findById($productId);
@@ -163,6 +166,7 @@ class StockService
 
     private function handelBatchesMovement($batches, $quantity, callable $callBack)
     {
+        Log::info("Handling batches movement for quantity {$quantity}");
         $remainingToTake = $quantity;
         foreach ($batches as $batch) {
             $canTake = min($batch->quantity, $remainingToTake);
