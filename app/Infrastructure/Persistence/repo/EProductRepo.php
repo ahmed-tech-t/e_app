@@ -8,7 +8,6 @@ use App\Domain\Repo\ProductRepo;
 use App\Infrastructure\Persistence\Pipeline\Filters\Product\FilterByBrand;
 use App\Infrastructure\Persistence\Pipeline\Filters\Product\FilterByCategoryId;
 use App\Infrastructure\Persistence\Pipeline\Filters\Product\FilterByCode;
-use App\Infrastructure\Persistence\Pipeline\Filters\Product\FilterByLocation;
 use App\Infrastructure\Persistence\Pipeline\Filters\Product\FilterByNameAr;
 use App\Infrastructure\Persistence\Pipeline\Filters\Product\FilterByNameEn;
 use App\Infrastructure\Persistence\Pipeline\Filters\Product\FilterByOriginalCode;
@@ -47,9 +46,11 @@ class EProductRepo extends BaseERepo implements ProductRepo
 
     public function findById(int $id)
     {
-        return Product::allProducts()
+        $item = Product::allProducts()
             ->where('products.id', $id)
             ->first();
+
+        return $item ? ProductMapper::modelToEntity($item) : null;
     }
 
 

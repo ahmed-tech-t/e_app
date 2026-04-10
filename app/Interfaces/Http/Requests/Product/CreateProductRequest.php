@@ -25,11 +25,11 @@ class CreateProductRequest extends FormRequest
     {
         return [
             'category_id' => ValidationRules::categoryId(),
-            'original_code' => ValidationRules::name(false) . 'unique:products,original_code',
+            'original_code' => ValidationRules::name(false) . '|unique:products,original_code',
             'name_ar' => ValidationRules::name(),
             'name_en' => ValidationRules::name(false),
             'origin' => ValidationRules::name(false),
-            'description' => 'sometimes|string|max:2000',
+            'description' => 'nullable|string|max:2000',
             'brand' => ValidationRules::name(),
             'sale_unit_id' => ValidationRules::saleUnitId(),
             'units_per_carton' => ValidationRules::quantity(false),

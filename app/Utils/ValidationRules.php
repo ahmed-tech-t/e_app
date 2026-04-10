@@ -128,6 +128,6 @@ class ValidationRules
         if ($required) {
             return 'required|' . $validation;
         }
-        return 'sometimes|' . $validation;
+        return 'nullable|' . $validation;
     }
 }

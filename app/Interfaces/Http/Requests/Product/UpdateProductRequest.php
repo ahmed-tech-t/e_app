@@ -24,15 +24,15 @@ class UpdateProductRequest extends FormRequest
     {
         return [
             'name_ar' => 'sometimes|string|max:255',
-            'name_en' => 'sometimes|string|max:255',
-            'origin' => 'sometimes|string|max:255',
-            'description' => 'sometimes|string|max:2000',
-            'image' => 'sometimes|image|mimes:jpeg,png,jpg,svg|max:2048',
+            'name_en' => 'nullable|string|max:255',
+            'origin' => 'nullable|string|max:255',
+            'description' => 'nullable|string|max:2000',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048',
             'units_per_carton' => 'sometimes|integer|min:1',
             'brand' => 'sometimes|string|max:255',
             'sale_unit_id' => 'sometimes|exists:sale_units,id',
             'category_id' => 'sometimes|exists:categories,id',
-            'original_code' => 'sometimes|string|max:255,unique:products,original_code',
+            'original_code' => 'nullable|string|max:255,unique:products,original_code',
         ];
     }
 

@@ -7,10 +7,7 @@ use App\Domain\Entities\SalesItemEntity;
 use App\Domain\Repo\ProductPriceRepo;
 use App\Domain\Repo\SalesItemRepo;
 use App\Domain\Repo\SalesRepo;
-use App\Domain\Repo\ProductBatchRepo;
-use App\Domain\Repo\ProductRepo;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class SalesService extends BaseService
 {
@@ -25,23 +22,23 @@ class SalesService extends BaseService
         $this->repo = $repo;
     }
 
-
     public function preCreate($dto)
     {
         $items = collect($dto->items)->map(function ($item) use ($dto) {
             $price = $this->productPriceRepo->
                 getByProductIdAndType(productId: $item->product_id, type: $dto->type)->price;
+
             return SalesItemEntity::create(data: $item->toArray(), price: $price);
         });
 
         return SalesEntity::create($dto->toArray(), $items->all());
     }
 
-
     public function create($dto)
     {
         $entity = $this->preCreate($dto);
-        $entity->code = $this->getCode("SAL");
+        $entity->code = $this->getCode('SAL');
+
         return DB::transaction(
             function () use ($entity) {
 
@@ -66,5 +63,26 @@ class SalesService extends BaseService
         );
     }
 
+    public function getTodaySalesCount(): int
+    {
+        return collect($this->repo->findAll())
+            ->filter(fn ($sale) => $sale->created_at?->isToday() ?? false)
+            ->count();
+    }
 
+    public function getTodaySalesTotal(): float
+    {
+        return collect($this->repo->findAll())
+            ->filter(fn ($sale) => $sale->created_at?->isToday() ?? false)
+            ->sum(fn ($sale) => $sale->grand_total ?? 0);
+    }
+
+    public function getRecentSales(int $limit = 5): array
+    {
+        return collect($this->repo->findAll())
+            ->reverse()
+            ->take($limit)
+            ->values()
+            ->all();
+    }
 }

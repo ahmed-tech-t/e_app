@@ -1,18 +1,17 @@
 <?php
 
-namespace App\Application\DTOs;
+namespace App\Application\DTOs\Stock;
 
-use App\Infrastructure\Persistence\Models\StockMovement;
 use App\Infrastructure\Persistence\utils\StockMovementType;
 
-class StockMovementSearchDto
+class StockMovementSearchDto implements StockSearchInterfaceDto
 {
     public function __construct(
         public ?int $product_id,
         public ?int $location_id,
-        public ?int $product_batch_id,
         public ?StockMovementType $type,
         public ?string $bill_number,
+        public ?int $product_batch_id = null,
     ) {
     }
     public function toArray()

@@ -2,8 +2,8 @@
 
 namespace App\Domain\Repo;
 
-use App\Application\DTOs\StockMovementSearchDto;
-use App\Infrastructure\Persistence\Models\StockMovement;
+use App\Application\DTOs\Stock\StockMovementSearchDto;
+
 
 interface StockMovementRepo
 {

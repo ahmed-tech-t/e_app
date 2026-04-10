@@ -2,6 +2,15 @@
 
 namespace App\Infrastructure\Persistence\Models;
 
+use App\Infrastructure\Persistence\Pipeline\Filters\Product\FilterByBrand;
+use App\Infrastructure\Persistence\Pipeline\Filters\Product\FilterByCategoryId;
+use App\Infrastructure\Persistence\Pipeline\Filters\Product\FilterByCode;
+use App\Infrastructure\Persistence\Pipeline\Filters\Product\FilterByLocation;
+use App\Infrastructure\Persistence\Pipeline\Filters\Product\FilterByNameAr;
+use App\Infrastructure\Persistence\Pipeline\Filters\Product\FilterByNameEn;
+use App\Infrastructure\Persistence\Pipeline\Filters\Product\FilterByOriginalCode;
+use App\Infrastructure\Persistence\Pipeline\Filters\Product\FilterBySaleUnitId;
+use App\Infrastructure\Persistence\Pipeline\Filters\Product\ProductQueryContext;
 use App\Infrastructure\Persistence\utils\PriceType;
 use Database\Factories\ProductFactory;
 use Illuminate\Bus\Batch;
@@ -11,6 +20,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Pipeline\Pipeline;
+use SebastianBergmann\CodeCoverage\Filter;
 
 class Product extends Model
 {
@@ -122,8 +133,9 @@ class Product extends Model
     }
 
 
-    public function scopeWithLocationContext()
+    public function scopeSearchWithName($query, $searchTerm)
     {
-
+        return $query->with('category')->withPrices()->where('name_ar', 'like', "%{$searchTerm}%")
+            ->orWhere('name_en', 'like', "%{$searchTerm}%");
     }
 }

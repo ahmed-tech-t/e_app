@@ -31,7 +31,6 @@ class PurchaseService extends BaseService
         $this->repo = $repo;
     }
 
-
     public function preCreate($dto)
     {
         Log::info("Pre-creating purchase with supplier ID {$dto->supplier_id} at store ID {$dto->store_id} with tax {$dto->tax} and discount {$dto->discount}");
@@ -45,13 +44,12 @@ class PurchaseService extends BaseService
         return PurchaseEntity::create($dto->toArray(), $items->all());
     }
 
-
     public function create($dto)
     {
         $entity = $this->preCreate($dto);
 
         Log::info("Creating purchase with supplier ID {$dto->supplier_id} at store ID {$dto->store_id} with tax {$dto->tax} and discount {$dto->discount}");
-        $entity->code = $this->getCode("PUR");
+        $entity->code = $this->getCode('PUR');
 
         return DB::transaction(function () use ($entity) {
             Log::info("Saving purchase to database with code {$entity->code}");
@@ -82,35 +80,56 @@ class PurchaseService extends BaseService
         });
     }
 
-
     private function createProductBatch($purchase, $item, $storeId)
     {
         Log::info("Creating product batch for product ID {$item->product_id} with initial quantity {$item->quantity} at store ID {$storeId}");
         $batch = ProductBatchEntity::create([
-            "batch_code" => $purchase->code,
-            "product_id" => $item->product_id,
-            "initial_quantity" => $item->quantity,
-            "cost_price" => $item->price,
+            'batch_code' => $purchase->code,
+            'product_id' => $item->product_id,
+            'initial_quantity' => $item->quantity,
+            'cost_price' => $item->price,
         ]);
 
         $createdBatch = $this->productBatchRepo->create($batch);
+
         return $createdBatch;
     }
 
     private function checkPriceIntegrity($itemDto): void
     {
         $savedPrice = $this->productPriceRepo->getByProductIdAndType(
-            $itemDto["product_id"],
+            $itemDto['product_id'],
             PriceType::WHOLESALE
         )->price;
 
         $priceWithMinProfit = $itemDto['price'] * (1 + Constants::MIN_PROFIT);
         if ($savedPrice < $priceWithMinProfit) {
-            Log::info("price must be updated", ['data' => $itemDto]);
+            Log::info('price must be updated', ['data' => $itemDto]);
             // TODO send notification price must be updated
             //  event(new ProductPriceWarningEvent($itemDto["product_id"], $itemDto["price"]));
         }
     }
 
+    public function getTodayPurchasesCount(): int
+    {
+        return collect($this->repo->findAll())
+            ->filter(fn ($purchase) => $purchase->created_at?->isToday() ?? false)
+            ->count();
+    }
 
+    public function getTodayPurchasesTotal(): float
+    {
+        return collect($this->repo->findAll())
+            ->filter(fn ($purchase) => $purchase->created_at?->isToday() ?? false)
+            ->sum(fn ($purchase) => $purchase->grand_total ?? 0);
+    }
+
+    public function getRecentPurchases(int $limit = 5): array
+    {
+        return collect($this->repo->findAll())
+            ->reverse()
+            ->take($limit)
+            ->values()
+            ->all();
+    }
 }

@@ -11,7 +11,8 @@ use App\Infrastructure\Persistence\utils\PriceType;
 class ProductService extends BaseService
 {
     protected string $entityClass = ProductEntity::class;
-    protected $defaultCodeChar = "PRO";
+
+    protected $defaultCodeChar = 'PRO';
 
     public function __construct(ProductRepo $repo, private ProductPriceRepo $productPriceRepo)
     {
@@ -30,12 +31,12 @@ class ProductService extends BaseService
                 ProductPriceEntity::create([
                     'product_id' => $product->id,
                     'type' => PriceType::RETAIL,
-                    'price' => $product->retail_price
+                    'price' => $product->retail_price,
                 ]),
                 ProductPriceEntity::create([
                     'product_id' => $product->id,
                     'type' => PriceType::WHOLESALE,
-                    'price' => $product->wholesale_price
+                    'price' => $product->wholesale_price,
                 ]),
             ]
         );
@@ -52,5 +53,18 @@ class ProductService extends BaseService
     public function findByLocation(int $productId, int $locationId)
     {
         return $this->repo->findByLocation($productId, $locationId);
+    }
+
+    public function getLowStockProducts(int $threshold = 5): array
+    {
+        return collect($this->repo->findAll())
+            ->filter(fn ($product) => ($product->quantity ?? 0) <= $threshold)
+            ->values()
+            ->all();
+    }
+
+    public function getTotalProductCount(): int
+    {
+        return collect($this->repo->findAll())->count();
     }
 }

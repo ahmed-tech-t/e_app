@@ -2,12 +2,11 @@
 
 namespace App\Infrastructure\Persistence\repo;
 
-use App\Application\DTOs\StockMovementSearchDto;
+use App\Application\DTOs\Stock\StockMovementSearchDto;
 use App\Application\Mapper\StockMovementMapper;
 use App\Domain\Repo\ProductBatchRepo;
 use App\Domain\Repo\StockMovementRepo;
-use App\Infrastructure\Persistence\Models\Product;
-use App\Infrastructure\Persistence\Models\ProductBatch;
+
 use App\Infrastructure\Persistence\Models\StockMovement;
 use App\Infrastructure\Persistence\Pipeline\Filters\StockMovement\FilterByBillNumber;
 use App\Infrastructure\Persistence\Pipeline\Filters\StockMovement\FilterByLocationId;

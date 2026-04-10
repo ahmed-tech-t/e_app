@@ -51,6 +51,7 @@ abstract class BaseService
     public function update($dto, int $id)
     {
         $entity = ($this->repo)->findById($id);
+        Log::info("Entity before update from base service", ['entity' => $entity]);
         return ($this->repo)->update($entity->update($dto->toArray()));
     }
 
