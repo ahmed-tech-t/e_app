@@ -36,7 +36,9 @@
             </main>
         </div>
     </div>
-    @livewireScripts
+@livewireScripts
+    
+    <script src="{{ asset('js/expandable-image.js') }}"></script>
 </body>
 
 </html>

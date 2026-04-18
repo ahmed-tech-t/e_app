@@ -9,7 +9,7 @@ use App\Utils\ValidationRules;
 use Illuminate\Foundation\Http\FormRequest;
 
 use Illuminate\Validation\Rules\Enum;
-use function PHPSTORM_META\map;
+
 
 class CreateSalesRequest extends FormRequest
 {
@@ -41,15 +41,16 @@ class CreateSalesRequest extends FormRequest
     }
     public function toDto(): SalesDto
     {
+        $data = $this->validated();
         return new SalesDto(
-            customer_name: $this->customer_name,
-            store_id: $this->store_id,
-            type: PriceType::tryFrom($this->bill_type),
-            items: collect($this->items)
+            customer_name: $data['customer_name'],
+            store_id: $data['store_id'],
+            type: PriceType::tryFrom($data['bill_type']),
+            items: collect($data['items'])
                 ->map(fn(array $item) => SalesItemDto::create($item))
                 ->toArray(),
-            discount: $this->discount,
-            customer_phone: $this->customer_phone,
+            discount: $data['discount'],
+            customer_phone: $data['customer_phone'] ?? null,
         );
     }
 }

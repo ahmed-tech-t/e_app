@@ -16,7 +16,14 @@
             <x-ui.back-button :url="route('products.index')" />
         </div>
 
+
+
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <div class="mb-6 flex justify-center">
+                <x-ui.expandable-image :path="$product->image" :alt="$product->name_ar"
+                    imageClass="rounded-lg max-h-64 object-contain" />
+            </div>
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <p class="text-sm text-gray-500 dark:text-gray-400">Code</p>
@@ -67,160 +74,15 @@
                     <p class="font-medium">{{ $product->description ?? '-' }}</p>
                 </div>
             </div>
+
         </div>
 
-        {{-- @if(count($priceHistory) > 0)
-        <div class="mt-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-            <h3 class="text-lg font-semibold mb-4">Price History</h3>
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                    <thead>
-                        <tr>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
-                                Type</th>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
-                                Price</th>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
-                                Valid From</th>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
-                                Valid To</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                        @foreach($priceHistory as $price)
-                        <tr>
-                            <td class="px-4 py-3 text-sm">
-                                <x-ui.badge :variant="$price->type->value === 'retail' ? 'info' : 'warning'"
-                                    :text="ucfirst($price->type->value)" />
-                            </td>
-                            <td class="px-4 py-3 text-sm">{{ number_format($price->price, 2) }}</td>
-                            <td class="px-4 py-3 text-sm">{{ $price->valid_from?->format('M d, Y H:i') }}</td>
-                            <td class="px-4 py-3 text-sm">{{ $price->valid_to?->format('M d, Y H:i') ?? 'Current' }}</td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        @endif --}}
 
         <div class="card">
             <div class="card-body">
-                <div id="price-chart-container"></div>
+                <div id="price-chart-container" data-price-history='@json($priceHistory ?? [])'></div>
             </div>
         </div>
+
+        <script src="{{ asset('js/price-chart.js') }}"></script>
 @endsection
-
-
-    <script>
-        window.addEventListener('load', function () {
-            if (typeof window.ApexCharts === 'undefined') {
-                console.error("ApexCharts not loaded");
-                return;
-            }
-
-            const rawData = @json($priceHistory ?? []);
-
-            const options = {
-                chart: {
-                    type: 'line',
-                    height: 350,
-                    toolbar: {
-                        show: true
-                    }
-                },
-
-                series: [],
-
-                xaxis: {
-                    type: 'datetime',
-                    labels: {
-                        datetimeUTC: false,
-                        format: 'dd MMM' // 👈 try: dd MMM, dd MMM yyyy
-                    }
-                },
-
-                colors: ['#2563eb', '#f59e0b'], // Retail = blue, Wholesale = orange
-
-                stroke: {
-                    width: 3,
-                    curve: 'smooth'
-                },
-
-                markers: {
-                    size: 4
-                },
-
-                tooltip: {
-                    y: {
-                        formatter: function (val) {
-                            return val.toFixed(2);
-                        }
-                    }
-                },
-
-                noData: {
-                    text: 'No price history available'
-                },
-
-            };
-
-            const chart = new ApexCharts(
-                document.querySelector("#price-chart-container"),
-                options
-            );
-
-            chart.render();
-
-            function loadChart() {
-                if (!rawData.length) {
-                    chart.updateSeries([]);
-                    return;
-                }
-
-                const retail = rawData
-                    .filter(item => item.type === 'retail')
-                    .map(i => ({
-                        x: new Date(i.valid_from).getTime(),
-                        y: i.price
-                    }));
-
-                const wholesale = rawData
-                    .filter(item => item.type === 'wholesale')
-                    .map(i => ({
-                        x: new Date(i.valid_from).getTime(),
-                        y: i.price
-                    }));
-
-                chart.updateSeries([
-                    {
-                        name: 'Retail',
-                        data: retail
-                    },
-                    {
-                        name: 'Wholesale',
-                        data: wholesale
-                    }
-                ]);
-            }
-
-            loadChart();
-
-            // ✅ Optional: Dropdown toggle
-            const toggle = document.getElementById('typeToggle');
-
-            if (toggle) {
-                toggle.addEventListener('change', function () {
-                    const type = this.value;
-
-                    if (type === 'retail') {
-                        chart.hideSeries('Wholesale');
-                        chart.showSeries('Retail');
-                    } else if (type === 'wholesale') {
-                        chart.hideSeries('Retail');
-                        chart.showSeries('Wholesale');
-                    }
-                });
-            }
-        });
-    </script>

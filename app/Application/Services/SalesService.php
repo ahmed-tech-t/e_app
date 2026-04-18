@@ -66,15 +66,15 @@ class SalesService extends BaseService
     public function getTodaySalesCount(): int
     {
         return collect($this->repo->findAll())
-            ->filter(fn ($sale) => $sale->created_at?->isToday() ?? false)
+            ->filter(fn($sale) => $sale->created_at?->isToday() ?? false)
             ->count();
     }
 
     public function getTodaySalesTotal(): float
     {
         return collect($this->repo->findAll())
-            ->filter(fn ($sale) => $sale->created_at?->isToday() ?? false)
-            ->sum(fn ($sale) => $sale->grand_total ?? 0);
+            ->filter(fn($sale) => $sale->created_at?->isToday() ?? false)
+            ->sum(fn($sale) => $sale->grand_total ?? 0);
     }
 
     public function getRecentSales(int $limit = 5): array

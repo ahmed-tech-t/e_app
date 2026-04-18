@@ -56,6 +56,7 @@ class BaseERepo implements BaseRepo
     public function create($entity)
     {
         return DB::transaction(function () use ($entity) {
+            Log::info("Base repo create entity", ['entity' => $entity]);
             $model = ($this->modelClass)::create($entity->toArray())->refresh();
             return ($this->mapper)::modelToEntity($model);
         });

@@ -6,7 +6,6 @@ use App\Application\DTOs\Stock\StockMovementSearchDto;
 use App\Application\Mapper\StockMovementMapper;
 use App\Domain\Repo\ProductBatchRepo;
 use App\Domain\Repo\StockMovementRepo;
-
 use App\Infrastructure\Persistence\Models\StockMovement;
 use App\Infrastructure\Persistence\Pipeline\Filters\StockMovement\FilterByBillNumber;
 use App\Infrastructure\Persistence\Pipeline\Filters\StockMovement\FilterByLocationId;
@@ -16,15 +15,12 @@ use App\Infrastructure\Persistence\Pipeline\Filters\StockMovement\FilterByType;
 use App\Infrastructure\Persistence\Pipeline\Filters\StockMovement\StockMovementQueryContext;
 use App\Infrastructure\Persistence\utils\StockMovementType;
 use Illuminate\Pipeline\Pipeline;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class EStockMovementRepo implements StockMovementRepo
 {
     public function __construct(
         private ProductBatchRepo $productBatchRepo
-    ) {
-    }
+    ) {}
 
     public function transfer($batchId, $fromLocationId, $toLocationId, $quantity, $billNumber = null)
     {
@@ -37,18 +33,12 @@ class EStockMovementRepo implements StockMovementRepo
         self::create($batchId, $locationId, $quantity, $type, $billNumber);
     }
 
-
-
-
     public function findAll()
     {
         return StockMovement::paginate()->through(
-            fn($item) =>
-            StockMovementMapper::modelToEntity($item)
+            fn ($item) => StockMovementMapper::modelToEntity($item)
         );
     }
-
-
 
     public function create($productBatchId, $locationId, $quantity, $type, $billNumber)
     {
@@ -57,7 +47,7 @@ class EStockMovementRepo implements StockMovementRepo
             'location_id' => $locationId,
             'quantity' => $quantity,
             'type' => $type,
-            'bill_number' => $billNumber
+            'bill_number' => $billNumber,
         ]);
     }
 
@@ -68,9 +58,6 @@ class EStockMovementRepo implements StockMovementRepo
             ->exists();
     }
 
-    /**
-     * @inheritDoc
-     */
     public function search(StockMovementSearchDto $dto, $perPage = 5)
     {
 
@@ -93,11 +80,24 @@ class EStockMovementRepo implements StockMovementRepo
             ->orderBy('created_at', 'desc')
             ->paginate($perPage)
             ->through(
-                fn($item) => StockMovementMapper::modelToEntity($item)
+                fn ($item) => StockMovementMapper::modelToEntity($item)
 
             );
 
         return $result;
 
+    }
+
+    public function findByBillNumberAndTypeAndProductId($billNumber, $productId, $type)
+    {
+        return StockMovement::query()
+            ->where('bill_number', $billNumber)
+            ->where('type', $type)
+            ->whereHas('batch', function ($query) use ($productId) {
+                $query->where('product_id', $productId);
+            })
+            ->selectRaw('product_batch_id, ABS(quantity) as quantity')
+            ->lockForUpdate()
+            ->get();
     }
 }

@@ -17,4 +17,9 @@ class SalesItem extends Model
         'price',
         'total'
     ];
+
+    public function bill()
+    {
+        return $this->belongsTo(Sales::class, 'bill_id');
+    }
 }

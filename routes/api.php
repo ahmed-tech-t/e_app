@@ -1,17 +1,19 @@
 <?php
 
+use App\utils\Constants;
 use App\Interfaces\Http\Controllers\CategoryController;
 use App\Interfaces\Http\Controllers\LocationController;
 use App\Interfaces\Http\Controllers\ProductController;
 use App\Interfaces\Http\Controllers\ProductPriceController;
 use App\Interfaces\Http\Controllers\PurchaseController;
 use App\Interfaces\Http\Controllers\SalesController;
+use App\Interfaces\Http\Controllers\SalesReturnsController;
 use App\Interfaces\Http\Controllers\SaleUnitController;
 use App\Interfaces\Http\Controllers\StockMovementController;
 use App\Interfaces\Http\Controllers\SupplierController;
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('e_app/api')->group(function () {
+Route::prefix(Constants::BASE_API_URL)->group(function () {
     Route::prefix('v1')->group(function () {
 
         Route::post(
@@ -64,7 +66,7 @@ Route::prefix('e_app/api')->group(function () {
                 LocationController::class,
                 'productLocations'
             ]
-        )->name('locations.products.show');
+        );
 
         Route::get('locations', [LocationController::class, 'index']);
         Route::post('locations', [LocationController::class, 'store']);
@@ -84,32 +86,37 @@ Route::prefix('e_app/api')->group(function () {
         Route::post(
             'stock/transfer',
             [StockMovementController::class, 'transfer']
-        )->name('stock.transfer');
+        );
 
 
         Route::get(
             'stock/search',
             [StockMovementController::class, 'search']
-        )->name('stock.search');
+        );
 
         Route::get(
             'sales/preview',
             [SalesController::class, 'preSale']
-        )->name('sales.preSale');
+        );
         Route::post(
             'sales',
             [SalesController::class, 'store']
-        )->name('sales.store');
+        );
 
         Route::get(
             'purchases/preview',
             [PurchaseController::class, 'prePurchase']
-        )->name('purchases.prePurchase');
+        );
         Route::post(
             'purchases',
             [PurchaseController::class, 'store']
-        )->name('purchases.store');
+        );
+
+        Route::get('sales/returns/preview', [SalesReturnsController::class, 'preReturn']);
+        Route::post('sales/returns', [SalesReturnsController::class, 'store']);
     });
+
+
 
 
 });

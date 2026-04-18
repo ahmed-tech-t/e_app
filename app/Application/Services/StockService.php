@@ -2,7 +2,7 @@
 
 namespace App\Application\Services;
 
-use App\Application\DTOs\StockMovementSearchDto;
+use App\Application\DTOs\Stock\StockMovementSearchDto;
 use App\Application\Mapper\ProductBatchMapper;
 use App\Domain\Entities\ProductBatchEntity;
 use App\Domain\Repo\ProductBatchRepo;
@@ -28,6 +28,10 @@ class StockService
         return $this->stockMovementRepo->search($dto);
     }
 
+    public function findByBillNumberAndTypeAndProductId($billNumber, $productId, $type)
+    {
+        return $this->stockMovementRepo->findByBillNumberAndTypeAndProductId($billNumber, $productId, $type);
+    }
 
     public function createProductBatch(ProductBatchEntity $entity, int $locationId)
     {
@@ -110,36 +114,6 @@ class StockService
             }
         );
     }
-    // i think this is not needed
-    private function updateBatch(ProductBatchEntity $entity, ?int $initialQuantity = null)
-    {
-        return DB::transaction(function () use ($entity, $initialQuantity) {
-
-            $model = ProductBatch::
-                lockForUpdate()
-                ->findOrFail($entity->id);
-
-            if (
-                $initialQuantity
-                && $model->remaining_quantity == $model->initial_quantity
-            ) {
-                if (!$this->stockMovementRepo->isTransferOut($model->id)) {
-                    $diff = (float) $initialQuantity - (float) $model->initial_quantity;
-                    $locationId = $model->locations()->first()->id;
-                    $this->stockMovementRepo->adjust(
-                        batchId: $entity->id,
-                        locationId: $locationId,
-                        quantity: $diff,
-                        type: StockMovementType::ADJUST_INITIAL
-                    );
-                } else
-                    throw new \Exception("Cannot update initial quantity after stock movement");
-            }
-
-            $model->update($entity->toArray());
-            return ProductBatchMapper::modelToEntity($model->refresh());
-        });
-    }
 
     private function isQuantityAvailable($batches, $quantity, $productId, $currentLocationId): bool
     {
@@ -164,11 +138,13 @@ class StockService
         return true;
     }
 
-    private function handelBatchesMovement($batches, $quantity, callable $callBack)
+    public function handelBatchesMovement($batches, $quantity, callable $callBack)
     {
-        Log::info("Handling batches movement for quantity {$quantity}");
         $remainingToTake = $quantity;
+        Log::info("Handling batches movement for quantity {$quantity}");
+        Log::info("Batches count: " . count($batches));
         foreach ($batches as $batch) {
+            Log::info("Batch quantity: " . $batch->product_batch_id);
             $canTake = min($batch->quantity, $remainingToTake);
             $callBack($batch, $canTake);
             $remainingToTake -= $canTake;

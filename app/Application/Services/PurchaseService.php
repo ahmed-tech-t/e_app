@@ -113,15 +113,15 @@ class PurchaseService extends BaseService
     public function getTodayPurchasesCount(): int
     {
         return collect($this->repo->findAll())
-            ->filter(fn ($purchase) => $purchase->created_at?->isToday() ?? false)
+            ->filter(fn($purchase) => $purchase->created_at?->isToday() ?? false)
             ->count();
     }
 
     public function getTodayPurchasesTotal(): float
     {
         return collect($this->repo->findAll())
-            ->filter(fn ($purchase) => $purchase->created_at?->isToday() ?? false)
-            ->sum(fn ($purchase) => $purchase->grand_total ?? 0);
+            ->filter(fn($purchase) => $purchase->created_at?->isToday() ?? false)
+            ->sum(fn($purchase) => $purchase->grand_total ?? 0);
     }
 
     public function getRecentPurchases(int $limit = 5): array

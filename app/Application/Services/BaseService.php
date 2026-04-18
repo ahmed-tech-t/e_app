@@ -20,8 +20,6 @@ abstract class BaseService
         return ($this->repo)->findAll();
     }
 
-
-
     public function getPaginatedItems($perPage)
     {
         return ($this->repo)->getPaginatedItems($perPage);

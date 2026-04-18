@@ -1,6 +1,9 @@
 @props(['product'])
 <div>
     <tr>
+        <td class="px-4 py-3 text-sm">
+            <x-ui.expandable-image :path="$product->image" :alt="$product->name_ar" />
+        </td>
         <td class="px-4 py-3 text-sm">{{ $product->code }}</td>
         <td class="px-4 py-3 text-sm">{{ $product->name_ar }}</td>
         <td class="px-4 py-3 text-sm hidden md:table-cell">{{ $product->brand }}</td>

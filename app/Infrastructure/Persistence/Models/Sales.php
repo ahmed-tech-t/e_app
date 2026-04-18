@@ -20,4 +20,9 @@ class Sales extends Model
         'tax',
         'grand_total',
     ];
+
+    public function items()
+    {
+        return $this->hasMany(SalesItem::class, 'bill_id');
+    }
 }

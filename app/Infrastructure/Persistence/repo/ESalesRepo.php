@@ -6,14 +6,17 @@ use App\Domain\Repo\SalesRepo;
 use App\Infrastructure\Persistence\Models\Sales;
 
 
-class ESalesRepo extends BaseERepo implements SalesRepo {
-     protected $modelClass = Sales::class;
-     protected $mapper = SalesMapper::class; 
+class ESalesRepo extends BaseERepo implements SalesRepo
+{
+    protected $modelClass = Sales::class;
+    protected $mapper = SalesMapper::class;
 
     // protected $queryContext = ;
 
     protected array $searchFilters = [];
 
     protected array $withForPaginate = [];
-    protected array $defaultRelationships = [];
+    protected array $defaultRelationships = ['items'];
+
+
 }

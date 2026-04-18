@@ -8,12 +8,13 @@ use App\Infrastructure\Persistence\Pipeline\Filters\StockMovement\FilterByLocati
 use App\Infrastructure\Persistence\Pipeline\Filters\StockMovement\FilterByType;
 use App\Infrastructure\Persistence\Pipeline\Filters\StockMovement\StockMovementQueryContext;
 use App\Infrastructure\Persistence\utils\StockMovementType;
+
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Pipeline\Pipeline;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
+
 
 class StockMovement extends Model
 {
@@ -37,6 +38,14 @@ class StockMovement extends Model
     public function location()
     {
         return $this->belongsTo(Location::class, 'location_id');
+    }
+
+
+    public function productId(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->batch?->product_id,
+        );
     }
 
     public function scopeWithSearchByType($query, $type)

@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->foreignId('product_batch_id')->index()->constrained();
             $table->foreignId('location_id')->index()->constrained();
             $table->decimal('quantity', 15, 2);
-            $table->enum('type', ['entry', 'sale', 'transfer_in', 'transfer_out', 'adjust_initial'])->index();
+            $table->enum('type', ['entry', 'sale', 'transfer_in', 'transfer_out', 'adjust_initial', 'sale_return'])->index();
             $table->string('bill_number')->nullable();
             $table->softDeletes();
             $table->timestamps();

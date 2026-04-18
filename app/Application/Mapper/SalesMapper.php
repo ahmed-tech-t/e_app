@@ -17,6 +17,11 @@ class SalesMapper
             discount: $model['discount'],
             tax: $model['tax'],
             grand_total: $model['grand_total'],
+            created_at: $model['created_at'],
+            items: collect($model['items'])->map(function ($item) {
+                return SalesItemMapper::modelToEntity($item);
+            })->all()
+
         );
     }
 }

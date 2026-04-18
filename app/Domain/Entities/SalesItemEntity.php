@@ -27,9 +27,7 @@ class SalesItemEntity
             total: $total,
         );
     }
-    public function update(array $data)
-    {
-    }
+
 
     public function toArray()
     {

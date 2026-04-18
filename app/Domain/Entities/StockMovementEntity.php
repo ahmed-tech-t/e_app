@@ -2,8 +2,7 @@
 
 namespace App\Domain\Entities;
 
-use App\Infrastructure\Persistence\Models\Location;
-use App\Infrastructure\Persistence\Models\StockMovement;
+
 use App\Infrastructure\Persistence\utils\StockMovementType;
 use Carbon\Carbon;
 

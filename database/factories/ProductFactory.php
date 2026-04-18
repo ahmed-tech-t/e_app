@@ -44,7 +44,6 @@ class ProductFactory extends Factory
             'code' => $code,
             'description' => $this->faker->sentence(20),
             'brand' => $this->faker->company(),
-            'image' => $this->faker->imageUrl(),
             'origin' => $this->faker->country(),
             'units_per_carton' => $this->faker->numberBetween(1, 10),
             'sale_unit_id' => SaleUnit::get()->random()->id

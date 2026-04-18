@@ -11,7 +11,6 @@ class SalesController extends BaseController
 {
     protected string $resourceClass = SalesResource::class;
     protected string $storeRequest = CreateSalesRequest::class;
-    protected string $updateRequest = UpdateSalesRequest::class;
 
 
     public function __construct(private SalesService $salesService)
@@ -24,4 +23,4 @@ class SalesController extends BaseController
         $entity = $this->service->preCreate($request->toDto());
         return $this->success(($this->resourceClass)::make($entity));
     }
-} // 1 386  2 480
+}

@@ -12,8 +12,6 @@ class PurchaseController extends BaseController
 {
     protected string $resourceClass = PurchaseResource::class;
     protected string $storeRequest = CreatePurchaseRequest::class;
-    protected string $updateRequest = UpdatePurchaseRequest::class;
-
 
     public function __construct(private PurchaseService $purchaseService)
     {

@@ -1,6 +1,7 @@
 <?php
 
 use App\Traits\HttpResponses;
+use App\Utils\Constants;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -12,22 +13,21 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
-        web: __DIR__.'/../routes/web.php',
-        api: __DIR__.'/../routes/api.php',
+        web: __DIR__ . '/../routes/web.php',
+        api: __DIR__ . '/../routes/api.php',
         apiPrefix: '',
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->validateCsrfTokens(except: [
             'api/*',
-            'e_app/api/v1/*',
+            Constants::BASE_API_URL . '/v1/*',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->render(function (Throwable $e, Request $request) {
-            if ($request->is('api/*')) {
+            if ($request->is(Constants::BASE_API_URL . '/*')) {
 
-                $responder = new class
-                {
+                $responder = new class {
                     use HttpResponses;
                 };
 
