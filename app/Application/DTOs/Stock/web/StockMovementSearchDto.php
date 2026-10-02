@@ -1,5 +1,5 @@
 <?php
-namespace App\Application\DTOs\stock\web;
+namespace App\Application\DTOs\Stock\web;
 
 use App\Application\DTOs\Stock\StockSearchInterfaceDto;
 use App\Infrastructure\Persistence\utils\StockMovementType;

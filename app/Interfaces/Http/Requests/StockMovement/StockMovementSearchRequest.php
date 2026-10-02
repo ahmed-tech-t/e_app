@@ -2,7 +2,7 @@
 
 namespace App\Interfaces\Http\Requests\StockMovement;
 
-use App\Application\DTOs\StockMovementSearchDto;
+use App\Application\DTOs\Stock\StockMovementSearchDto;
 use App\Infrastructure\Persistence\utils\StockMovementType;
 use App\Utils\ValidationRules;
 use Illuminate\Foundation\Http\FormRequest;

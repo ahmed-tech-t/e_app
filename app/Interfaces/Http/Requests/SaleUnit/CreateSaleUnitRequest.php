@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Interfaces\Http\Requests\saleUnit;
+namespace App\Interfaces\Http\Requests\SaleUnit;
 
 use App\Application\DTOs\SaleUnitDto;
 use Illuminate\Foundation\Http\FormRequest;
