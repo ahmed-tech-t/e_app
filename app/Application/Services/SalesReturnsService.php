@@ -48,11 +48,12 @@ class SalesReturnsService extends BaseService
                 $created = $this->repo->create($entity);
 
                 foreach ($entity->items as $item) {
-
                     $item->sales_return_id = $created->id;
-                    $this->salesReturnItemRepo->create($item);
+                }
+                $this->repo->insert($entity->items);
 
 
+                foreach ($entity->items as $item) {
                     $saleHistory = $this
                         ->stockService
                         ->findByBillNumberAndTypeAndProductId(

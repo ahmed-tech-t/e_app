@@ -46,6 +46,7 @@ class SalesReturnItemEntity
             'restock_status' => $this->restock_status?->value,
             'price' => $this->price,
             'total' => $this->total,
+            'items' => array_map(fn(SalesReturnItemEntity $item) => $item->toArray(), $this->items ?? []),
         ];
     }
 }

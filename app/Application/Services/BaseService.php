@@ -30,6 +30,10 @@ abstract class BaseService
         return ($this->repo)->search($dto, $perPage);
     }
 
+    public function insert($array)
+    {
+        return ($this->repo)->insert($array);
+    }
     public function findById(int $id)
     {
         return ($this->repo)->findById($id);

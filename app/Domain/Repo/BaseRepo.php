@@ -13,4 +13,5 @@ interface BaseRepo
     public function create($entity);
     public function update($entity);
     public function destroy(int $id): string;
+    public function insert($array);
 }

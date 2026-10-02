@@ -126,4 +126,13 @@ class BaseERepo implements BaseRepo
                 fn($item) => ($this->mapper)::modelToEntity($item)
             );
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function insert($array)
+    {
+        $models = ($this->modelClass)::insert($array);
+        return $models->map(fn($model) => ($this->mapper)::modelToEntity($model));
+    }
 }

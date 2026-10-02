@@ -20,7 +20,8 @@ class EStockMovementRepo implements StockMovementRepo
 {
     public function __construct(
         private ProductBatchRepo $productBatchRepo
-    ) {}
+    ) {
+    }
 
     public function transfer($batchId, $fromLocationId, $toLocationId, $quantity, $billNumber = null)
     {
@@ -36,7 +37,7 @@ class EStockMovementRepo implements StockMovementRepo
     public function findAll()
     {
         return StockMovement::paginate()->through(
-            fn ($item) => StockMovementMapper::modelToEntity($item)
+            fn($item) => StockMovementMapper::modelToEntity($item)
         );
     }
 
@@ -80,7 +81,7 @@ class EStockMovementRepo implements StockMovementRepo
             ->orderBy('created_at', 'desc')
             ->paginate($perPage)
             ->through(
-                fn ($item) => StockMovementMapper::modelToEntity($item)
+                fn($item) => StockMovementMapper::modelToEntity($item)
 
             );
 
@@ -99,5 +100,20 @@ class EStockMovementRepo implements StockMovementRepo
             ->selectRaw('product_batch_id, ABS(quantity) as quantity')
             ->lockForUpdate()
             ->get();
+    }
+
+    public function findByBillNumberAndTypeGroupByProductId($billNumber, $type, $productId)
+    {
+        return StockMovement::query()
+            ->join('product_batches', 'product_batches.id', '=', 'stock_movements.product_batch_id')
+            ->where('bill_number', $billNumber)
+            ->where('type', $type)
+            ->where('product_batches.product_id', $productId)
+
+            ->selectRaw('product_batches.product_id,stock_movements.product_batch_id, ABS(quantity) as quantity')
+            ->groupBy('product_batches.product_id')
+            ->lockForUpdate()
+            ->get();
+
     }
 }
