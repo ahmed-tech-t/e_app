@@ -3,11 +3,13 @@
 namespace App\Interfaces\Http\Controllers\Web;
 
 use App\Application\Services\CategoryService;
+use App\Application\Services\ProductCatalogService;
 use App\Application\Services\ProductPriceService;
 use App\Application\Services\ProductService;
 use App\Application\Services\SaleUnitService;
 use App\Exports\ProductsExport;
 use App\Imports\ProductsImport;
+use App\Infrastructure\Persistence\Models\Product;
 use App\Interfaces\Http\Controllers\Controller;
 use App\Interfaces\Http\Requests\Product\CreateProductRequest;
 use App\Interfaces\Http\Requests\Product\UpdateProductRequest;
@@ -21,7 +23,8 @@ class ProductController extends Controller
         private ProductService $productService,
         private CategoryService $categoryService,
         private SaleUnitService $saleUnitService,
-        private ProductPriceService $productPriceService
+        private ProductPriceService $productPriceService,
+        private ProductCatalogService $productCatalogService
     ) {
     }
 
@@ -115,5 +118,62 @@ class ProductController extends Controller
         }
 
         return redirect()->route('products.index')->with('success', 'Products imported successfully.');
+    }
+
+    public function catalogPage(Request $request)
+    {
+        $categories = $this->categoryService->findAll();
+        $brands = $this->productCatalogService->getBrands();
+        $products = Product::with(['category', 'saleUnit'])
+            ->withPrices()
+            ->orderBy('name_ar')
+            ->get();
+
+        $productsData = $products->map(fn ($p) => [
+            'id' => $p->id,
+            'code' => $p->code,
+            'name_ar' => $p->name_ar,
+            'name_en' => $p->name_en ?? '',
+            'brand' => $p->brand ?? '',
+            'category_id' => $p->category_id,
+            'category_name' => $p->category->name_ar ?? ($p->category->name_en ?? '-'),
+            'retail_price' => (float) ($p->retail_price ?? 0),
+            'wholesale_price' => (float) ($p->wholesale_price ?? 0),
+            'image' => $p->image,
+        ])->values()->all();
+
+        return view('products.catalog', compact('categories', 'brands', 'productsData'));
+    }
+
+    public function catalogDownload(Request $request)
+    {
+        @ini_set('memory_limit', '512M');
+        @set_time_limit(300);
+
+        $request->validate([
+            'category_id' => 'nullable|integer',
+            'brand' => 'nullable|string|max:255',
+            'select_all' => 'nullable|boolean',
+            'product_ids' => 'nullable|array',
+            'product_ids.*' => 'integer',
+            'price_type' => 'nullable|in:retail,wholesale,both',
+        ]);
+
+        $categoryId = $request->filled('category_id') ? (int) $request->input('category_id') : null;
+        $brand = $request->filled('brand') ? (string) $request->input('brand') : null;
+        $selectAll = $request->boolean('select_all', true);
+        $productIds = $selectAll ? null : $request->input('product_ids', []);
+        $priceType = $request->input('price_type', 'retail');
+
+        $products = $this->productCatalogService->getProductsForCatalog($categoryId, $brand, $productIds);
+
+        if ($products->isEmpty()) {
+            return back()->with('error', __('app.products.no_products_for_catalog') ?? 'No products found for the selected criteria.');
+        }
+
+        $pdf = $this->productCatalogService->generatePdf($products, $priceType);
+        $filename = 'catalog_' . date('Y-m-d_His') . '.pdf';
+
+        return $pdf->download($filename);
     }
 }

@@ -29,6 +29,8 @@ Route::get('/products/export',  [ProductController::class, 'exportPage'])     ->
 Route::post('/products/export', [ProductController::class, 'exportDownload']) ->name('products.export.download');
 Route::get('/products/export-template', [ProductController::class, 'exportTemplate'])->name('products.export-template');
 Route::post('/products/import', [ProductController::class, 'import'])->name('products.import');
+Route::get('/products/catalog', [ProductController::class, 'catalogPage'])->name('products.catalog');
+Route::post('/products/catalog', [ProductController::class, 'catalogDownload'])->name('products.catalog.download');
 Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
 Route::get('/products/{id}/edit', [ProductController::class, 'edit'])->name('products.edit');
 Route::put('/products/{id}', [ProductController::class, 'update'])->name('products.update');

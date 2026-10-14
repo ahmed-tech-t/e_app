@@ -45,6 +45,7 @@ class WebPosTest extends TestCase
         $this->get('/products/create')->assertStatus(200);
         $this->get("/products/{$product->id}")->assertStatus(200);
         $this->get("/products/{$product->id}/edit")->assertStatus(200);
+        $this->get('/products/catalog')->assertStatus(200);
 
         $this->get('/suppliers')->assertStatus(200);
         $this->get('/suppliers/create')->assertStatus(200);
