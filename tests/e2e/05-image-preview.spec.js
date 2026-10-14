@@ -56,7 +56,7 @@ test.describe('Image Preview & Fallback Verification Across App Pages', () => {
     await expect(page).toHaveURL(/\/products\/\d+/);
 
     // Detail view image must be visible and loaded
-    const detailImg = page.locator('.expandable-image').first();
+    const detailImg = page.locator('main img').first();
     await expect(detailImg).toBeVisible();
 
     const isLoaded = await detailImg.evaluate((el) => el.complete && el.naturalWidth > 0);
