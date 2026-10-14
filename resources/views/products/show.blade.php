@@ -21,7 +21,7 @@
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
             <div class="mb-6 flex justify-center">
                 <x-ui.expandable-image :path="$product->image" :alt="$product->name_ar"
-                    imageClass="rounded-lg max-h-64 object-contain" />
+                    imageClass="w-full max-w-2xl aspect-[3/1.5] object-cover rounded-lg shadow-xs" />
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">

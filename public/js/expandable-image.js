@@ -42,9 +42,22 @@ document.addEventListener('DOMContentLoaded', function() {
         // Clone the image for expanded view
         const expandedImage = imgElement.cloneNode(true);
         expandedImage.id = 'expanded-image-' + uniqueId;
-        expandedImage.className = 'max-w-full max-h-full shadow-2xl z-50 fixed inset-0 m-auto p-4 transform transition-all duration-500 rounded-xl';
-        expandedImage.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';
+        expandedImage.className = 'w-full max-w-2xl aspect-[3/1.5] object-cover shadow-2xl z-50 fixed inset-0 m-auto transform transition-all duration-300 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 cursor-pointer';
+        expandedImage.style.aspectRatio = '3 / 1.5';
+        expandedImage.style.objectFit = 'cover';
+        expandedImage.style.width = '100%';
+        expandedImage.style.maxWidth = '42rem';
         console.log('Created expanded image:', expandedImage);
+
+        // Add backdrop overlay
+        let backdrop = document.getElementById('expanded-image-backdrop');
+        if (!backdrop) {
+            backdrop = document.createElement('div');
+            backdrop.id = 'expanded-image-backdrop';
+            backdrop.className = 'fixed inset-0 bg-black/60 z-40 transition-opacity duration-300';
+            backdrop.addEventListener('click', () => shrinkImage(expandedImage));
+            document.body.appendChild(backdrop);
+        }
         
         // Add click listener to expanded image
         expandedImage.addEventListener('click', function(e) {
@@ -76,12 +89,21 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function shrinkImage(expandedImage) {
         expandedImage.style.opacity = '0';
-        expandedImage.style.transform = 'scale(0.8)';
-        expandedImage.style.transition = 'all 0.5s ease-in-out';
+        expandedImage.style.transform = 'scale(0.9)';
+        expandedImage.style.transition = 'all 0.3s ease-in-out';
+
+        const backdrop = document.getElementById('expanded-image-backdrop');
+        if (backdrop) {
+            backdrop.style.opacity = '0';
+            backdrop.style.transition = 'opacity 0.3s ease-in-out';
+        }
         
         setTimeout(() => {
             expandedImage.remove();
+            if (backdrop) {
+                backdrop.remove();
+            }
             document.body.style.overflow = 'auto';
-        }, 500);
+        }, 300);
     }
 });

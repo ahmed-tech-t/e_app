@@ -15,7 +15,7 @@
                     <th class="px-4 py-3 text-start text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">{{ __('app.common.actions') }}</th>
                 </tr>
             </thead>
-            <tbody class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
+            <tbody x-data="{ selectedId: null }" class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
                 @foreach($items as $product)
                     <x-ui.product.product-card :product="$product" />
                 @endforeach

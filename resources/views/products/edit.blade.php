@@ -15,7 +15,7 @@
             <div class="mb-6 text-center">
 
                 <div id="imagePreviewContainer" onclick="document.getElementById('imageInput').click()"
-                    class="w-full max-w-lg aspect-[3/1.5] mx-auto relative rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-blue-500 dark:hover:border-blue-400 bg-gray-50 dark:bg-gray-800/60 flex items-center justify-center cursor-pointer overflow-hidden transition-colors group shadow-xs"
+                    class="w-full max-w-2xl aspect-[3/1.5] mx-auto relative rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-blue-500 dark:hover:border-blue-400 bg-gray-50 dark:bg-gray-800/60 flex items-center justify-center cursor-pointer overflow-hidden transition-colors group shadow-xs"
                     style="aspect-ratio: 3 / 1.5;" title="{{ __('app.products.click_to_change') }}">
                     @if ($product->image)
                         <x-ui.image id="productImagePreview" :path="$product->image" :alt="$product->name_ar"
