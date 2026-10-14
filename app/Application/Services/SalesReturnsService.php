@@ -49,8 +49,8 @@ class SalesReturnsService extends BaseService
 
                 foreach ($entity->items as $item) {
                     $item->sales_return_id = $created->id;
+                    $this->salesReturnItemRepo->create($item);
                 }
-                $this->repo->insert($entity->items);
 
 
                 foreach ($entity->items as $item) {
@@ -90,6 +90,29 @@ class SalesReturnsService extends BaseService
         );
     }
 
+    public function getTodayReturnsCount(): int
+    {
+        return collect($this->repo->findAll())
+            ->filter(fn($r) => $r->created_at?->isToday() ?? false)
+            ->count();
+    }
+
+    public function getTodayReturnsTotal(): float
+    {
+        return collect($this->repo->findAll())
+            ->filter(fn($r) => $r->created_at?->isToday() ?? false)
+            ->sum(fn($r) => $r->grand_total ?? 0);
+    }
+
+    public function getRecentReturns(int $limit = 5): array
+    {
+        return collect($this->repo->findAll())
+            ->reverse()
+            ->take($limit)
+            ->values()
+            ->all();
+    }
+
     public function updateQuantity(
         $saleArray,
         $returnedArray
@@ -101,7 +124,7 @@ class SalesReturnsService extends BaseService
         return $saleArray->map(function ($item) use ($totalReturns) {
             $batchId = $item->product_batch_id;
 
-            if ($item->quantity < $totalReturns[$batchId]) {
+            if (isset($totalReturns[$batchId]) && $item->quantity < $totalReturns[$batchId]) {
                 throw new \InvalidArgumentException('returned quantity is more than sale quantity');
             }
             if (isset($totalReturns[$batchId])) {

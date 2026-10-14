@@ -8,7 +8,7 @@ class ValidationRules
     public static function phone(bool $required = true): string
     {
         return self::base(
-            validation: 'string|min:11|max:11|regex:/^(01)(0|1|2|5)[0-9]{8}$/',
+            validation: 'string|min:11|max:11|regex:/^01[0125][0-9]{8}$/',
             required: $required
         );
     }

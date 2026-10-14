@@ -2,6 +2,8 @@
 
 namespace App\Interfaces\Http\Requests\Supplier;
 
+use App\Application\DTOs\SupplierDto;
+use App\Utils\ValidationRules;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateSupplierRequest extends FormRequest
@@ -11,7 +13,7 @@ class UpdateSupplierRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +24,21 @@ class UpdateSupplierRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => ValidationRules::name(false),
+            'phone' => ValidationRules::phone(false),
+            'address' => ValidationRules::name(false),
+            'email' => ValidationRules::email(false),
         ];
+    }
+
+    public function toDto(): SupplierDto
+    {
+        $data = $this->validated();
+        return new SupplierDto(
+            name: $data['name'] ?? '',
+            email: $data['email'] ?? null,
+            phone: $data['phone'] ?? null,
+            address: $data['address'] ?? null
+        );
     }
 }

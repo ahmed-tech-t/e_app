@@ -3,38 +3,29 @@
 @php
 $currentRoute = request()->route() ? request()->route()->getName() : '';
 $navItems = [
-    ['label' => 'Dashboard', 'route' => '/', 'icon' => 'dashboard', 'active' => $currentRoute === '' || request()->path() === '/'],
-    ['type' => 'section', 'label' => 'Inventory'],
-    ['label' => 'Products', 'route' => '/products', 'icon' => 'product', 'active' => str_starts_with($currentRoute, 'products.')],
-    ['label' => 'Categories', 'route' => '/categories', 'icon' => 'category', 'active' => str_starts_with($currentRoute, 'categories.')],
-    ['label' => 'Sale Units', 'route' => '/sale-units', 'icon' => 'unit', 'active' => str_starts_with($currentRoute, 'sale-units.')],
-    ['label' => 'Locations', 'route' => '/locations', 'icon' => 'location', 'active' => str_starts_with($currentRoute, 'locations.')],
-    ['type' => 'section', 'label' => 'People'],
-    ['label' => 'Suppliers', 'route' => '/suppliers', 'icon' => 'supplier', 'active' => str_starts_with($currentRoute, 'suppliers.')],
-    ['type' => 'section', 'label' => 'Transactions'],
-    ['label' => 'Purchases', 'route' => '/purchases', 'icon' => 'purchase', 'active' => str_starts_with($currentRoute, 'purchases.')],
-    ['label' => 'Sales', 'route' => '/sales', 'icon' => 'sale', 'active' => str_starts_with($currentRoute, 'sales.')],
-    ['type' => 'section', 'label' => 'Stock'],
-    ['label' => 'Movements', 'route' => '/stock', 'icon' => 'stock', 'active' => str_starts_with($currentRoute, 'stock.')],
-    ['label' => 'Transfer', 'route' => '/stock/transfer', 'icon' => 'transfer', 'active' => $currentRoute === 'stock.transfer'],
+    ['label' => __('app.nav.dashboard'), 'route' => '/', 'icon' => 'dashboard', 'active' => $currentRoute === '' || request()->path() === '/'],
+    ['type' => 'section', 'label' => __('app.sections.inventory')],
+    ['label' => __('app.nav.products'), 'route' => '/products', 'icon' => 'product', 'active' => str_starts_with($currentRoute, 'products.')],
+    ['label' => __('app.nav.categories'), 'route' => '/categories', 'icon' => 'category', 'active' => str_starts_with($currentRoute, 'categories.')],
+    ['label' => __('app.nav.sale_units'), 'route' => '/sale-units', 'icon' => 'unit', 'active' => str_starts_with($currentRoute, 'sale-units.')],
+    ['label' => __('app.nav.locations'), 'route' => '/locations', 'icon' => 'location', 'active' => str_starts_with($currentRoute, 'locations.')],
+    ['type' => 'section', 'label' => __('app.sections.people')],
+    ['label' => __('app.nav.suppliers'), 'route' => '/suppliers', 'icon' => 'supplier', 'active' => str_starts_with($currentRoute, 'suppliers.')],
+    ['type' => 'section', 'label' => __('app.sections.transactions')],
+    ['label' => __('app.nav.purchases'), 'route' => '/purchases', 'icon' => 'purchase', 'active' => str_starts_with($currentRoute, 'purchases.')],
+    ['label' => __('app.nav.sales'), 'route' => '/sales', 'icon' => 'sale', 'active' => str_starts_with($currentRoute, 'sales.')],
+    ['label' => __('app.nav.sales_returns'), 'route' => '/sales-returns', 'icon' => 'sale_return', 'active' => str_starts_with($currentRoute, 'sales-returns.')],
+    ['label' => __('app.nav.purchase_returns'), 'route' => '/purchase-returns', 'icon' => 'purchase_return', 'active' => str_starts_with($currentRoute, 'purchase-returns.')],
+    ['type' => 'section', 'label' => __('app.sections.stock')],
+    ['label' => __('app.nav.movements'), 'route' => '/stock', 'icon' => 'stock', 'active' => str_starts_with($currentRoute, 'stock.')],
+    ['label' => __('app.nav.transfer'), 'route' => '/stock/transfer', 'icon' => 'transfer', 'active' => $currentRoute === 'stock.transfer'],
 ];
 @endphp
 
-<aside class="fixed inset-y-0 left-0 z-50 bg-gray-800 dark:bg-gray-950 text-white transition-all duration-300
-             -translate-x-full lg:translate-x-0"
-       :class="{ 'lg:w-16': sidebarCollapsed, 'lg:w-64': !sidebarCollapsed, 'w-64 translate-x-0': sidebarOpen }"
-       x-init="$nextTick(() => {
-           if (window.innerWidth >= 1024) {
-               $el.style.width = JSON.parse(localStorage.getItem('sidebar_collapsed') || 'false') ? '4rem' : '16rem';
-           }
-       })"
-       @resize.window="
-           if (window.innerWidth >= 1024) {
-               $el.style.width = sidebarCollapsed ? '4rem' : '16rem';
-               sidebarOpen = false;
-           }
-       "
-       style="width: 16rem;"
+<aside class="fixed inset-y-0 left-0 z-50 bg-gray-800 dark:bg-gray-950 text-white transition-all duration-300 -translate-x-full lg:translate-x-0"
+       :class="{ 'w-64 translate-x-0': sidebarOpen }"
+       :style="sidebarCollapsed ? 'width: 4rem' : 'width: 16rem'"
+       @resize.window="if (window.innerWidth >= 1024) { sidebarOpen = false; }"
 >
     <div class="flex flex-col h-full">
         <div class="flex items-center justify-between h-16 px-4 border-b border-gray-700">
@@ -85,6 +76,12 @@ $navItems = [
                             @case('stock')
                                 <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
                                 @break
+                            @case('sale_return')
+                                <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
+                                @break
+                            @case('purchase_return')
+                                <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 10H11a8 8 0 00-8 8v2m18-10l-6 6m6-6l-6-6"/></svg>
+                                @break
                             @case('transfer')
                                 <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
                                 @break
@@ -98,7 +95,7 @@ $navItems = [
         <div class="hidden lg:block border-t border-gray-700 p-4">
             <button class="flex items-center text-gray-400 hover:text-white w-full" @click="sidebarCollapsed = !sidebarCollapsed; localStorage.setItem('sidebar_collapsed', sidebarCollapsed)">
                 <svg class="w-5 h-5 shrink-0 transition-transform" :class="{ 'rotate-180': sidebarCollapsed }" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/></svg>
-                <span class="ml-3 text-sm" x-show="!sidebarCollapsed">Collapse</span>
+                <span class="ml-3 text-sm" x-show="!sidebarCollapsed">{{ __('app.nav.collapse') }}</span>
             </button>
         </div>
     </div>

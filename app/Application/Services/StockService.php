@@ -47,7 +47,7 @@ class StockService
     public function transferProduct($dto)
     {
         Log::info("Transferring product ID {$dto->productId} from location ID {$dto->fromLocationId} to location ID {$dto->toLocationId} with quantity {$dto->quantity}");
-        DB::transaction(
+        return DB::transaction(
             function () use ($dto) {
 
                 $batches = $this->productBatchRepo->getBatchesInLocation($dto->productId, $dto->fromLocationId);

@@ -33,6 +33,7 @@ class UpdateProductRequest extends FormRequest
             'sale_unit_id' => 'sometimes|exists:sale_units,id',
             'category_id' => 'sometimes|exists:categories,id',
             'original_code' => 'nullable|string|max:255,unique:products,original_code',
+            'size' => 'nullable|string|max:50',
         ];
     }
 
@@ -51,6 +52,7 @@ class UpdateProductRequest extends FormRequest
             saleUnitId: $data['sale_unit_id'] ?? null,
             unitsPerCarton: $data['units_per_carton'] ?? null,
             image: $data['image'] ?? null,
+            size: $data['size'] ?? null,
         );
     }
 }

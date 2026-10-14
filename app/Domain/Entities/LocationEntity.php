@@ -32,12 +32,12 @@ class LocationEntity
     }
     public function update(array $data)
     {
-        return [
-            'name' => $data['name'] ?? $this->name,
-            'address' => $data['address'] ?? $this->address,
-            'phone' => $data['phone'] ?? $this->phone,
-            'type' => $data['type'] ?? $this->type,
-        ];
+        $this->name = $data['name'] ?? $this->name;
+        $this->address = $data['address'] ?? $this->address;
+        $this->phone = $data['phone'] ?? $this->phone;
+        $this->type = $data['type'] ?? $this->type;
+
+        return $this;
     }
 
     public function toArray()

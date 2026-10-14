@@ -19,4 +19,9 @@ class Purchase extends Model
         'tax',
         'grand_total'
     ];
+
+    public function items()
+    {
+        return $this->hasMany(PurchaseItem::class, 'purchase_id');
+    }
 }

@@ -36,6 +36,7 @@ class CreateProductRequest extends FormRequest
             'image' => ValidationRules::image(false),
             'retail_price' => ValidationRules::price(),
             'wholesale_price' => ValidationRules::price(),
+            'size' => 'nullable|string|max:50',
         ];
     }
 
@@ -56,6 +57,7 @@ class CreateProductRequest extends FormRequest
             image: $data['image'] ?? null,
             retail_price: $data['retail_price'],
             wholesale_price: $data['wholesale_price'],
+            size: $data['size'] ?? null,
         );
     }
 }

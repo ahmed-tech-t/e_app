@@ -15,6 +15,7 @@ class CreateProductDto
         public ?string $origin = null,
         public ?string $description = null,
         public ?string $image = null,
+        public ?string $size = null,
     ) {
     }
 
@@ -32,7 +33,8 @@ class CreateProductDto
             'description' => $this->description,
             'image' => $this->image,
             'retail_price' => $this->retail_price,
-            'wholesale_price' => $this->wholesale_price
+            'wholesale_price' => $this->wholesale_price,
+            'size' => $this->size,
         ];
     }
 }

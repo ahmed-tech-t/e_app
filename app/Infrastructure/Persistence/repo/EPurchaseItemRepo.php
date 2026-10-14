@@ -17,4 +17,12 @@ class EPurchaseItemRepo extends BaseERepo implements PurchaseItemRepo
 
     protected array $withForPaginate = [];
     protected array $defaultRelationships = [];
+
+    public function getItemsQuantitiesInBill(int $purchaseId, array $productIds): array
+    {
+        return PurchaseItem::where('purchase_id', $purchaseId)
+            ->whereIn('product_id', $productIds)
+            ->pluck('quantity', 'product_id')
+            ->toArray();
+    }
 }

@@ -49,7 +49,7 @@ class CreateSalesRequest extends FormRequest
             items: collect($data['items'])
                 ->map(fn(array $item) => SalesItemDto::create($item))
                 ->toArray(),
-            discount: $data['discount'],
+            discount: $data['discount'] ?? 0,
             customer_phone: $data['customer_phone'] ?? null,
         );
     }

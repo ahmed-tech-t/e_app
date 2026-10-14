@@ -22,6 +22,9 @@ class SalesReturnsMapper
             grand_total: $model['grand_total'],
             total: $model['total'],
             created_at: $model['created_at'],
+            items: collect($model->relationLoaded('items') ? $model->items : [])->map(
+                fn($item) => SalesReturnItemMapper::modelToEntity($item)
+            )->all(),
         );
     }
 

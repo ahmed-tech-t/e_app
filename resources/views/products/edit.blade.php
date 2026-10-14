@@ -36,6 +36,7 @@
                 <x-ui.select name="sale_unit_id" label="Sale Unit" :options="$saleUnits" :selected="$product->sale_unit_id" valueKey="id" labelKey="name_ar" />
                 <x-ui.input name="units_per_carton" label="Units per Carton" type="number" :min="1" :value="$product->units_per_carton" />
                 <x-ui.input name="origin" label="Origin" :value="$product->origin" />
+                <x-ui.input name="size" label="Size" placeholder="e.g. 130 ml" :value="$product->size" />
                 
             </div>
             <div class="mt-4">

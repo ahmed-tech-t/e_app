@@ -5,7 +5,9 @@ use App\Interfaces\Http\Controllers\Web\DashboardController;
 use App\Interfaces\Http\Controllers\Web\LocationController;
 use App\Interfaces\Http\Controllers\Web\ProductController;
 use App\Interfaces\Http\Controllers\Web\PurchaseController;
+use App\Interfaces\Http\Controllers\Web\PurchaseReturnController;
 use App\Interfaces\Http\Controllers\Web\SaleController;
+use App\Interfaces\Http\Controllers\Web\SalesReturnController;
 use App\Interfaces\Http\Controllers\Web\SaleUnitController;
 use App\Interfaces\Http\Controllers\Web\StockController;
 use App\Interfaces\Http\Controllers\Web\SupplierController;
@@ -23,6 +25,10 @@ Route::delete('/suppliers/{id}', [SupplierController::class, 'destroy'])->name('
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
 Route::post('/products', [ProductController::class, 'store'])->name('products.store');
+Route::get('/products/export',  [ProductController::class, 'exportPage'])     ->name('products.export');
+Route::post('/products/export', [ProductController::class, 'exportDownload']) ->name('products.export.download');
+Route::get('/products/export-template', [ProductController::class, 'exportTemplate'])->name('products.export-template');
+Route::post('/products/import', [ProductController::class, 'import'])->name('products.import');
 Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
 Route::get('/products/{id}/edit', [ProductController::class, 'edit'])->name('products.edit');
 Route::put('/products/{id}', [ProductController::class, 'update'])->name('products.update');
@@ -54,10 +60,25 @@ Route::get('/purchases/create', [PurchaseController::class, 'create'])->name('pu
 Route::post('/purchases', [PurchaseController::class, 'store'])->name('purchases.store');
 Route::get('/purchases/{id}', [PurchaseController::class, 'show'])->name('purchases.show');
 
+Route::get('/purchase-returns', [PurchaseReturnController::class, 'index'])->name('purchase-returns.index');
+Route::get('/purchases/{id}/return', [PurchaseReturnController::class, 'create'])->name('purchase-returns.create');
+Route::post('/purchase-returns', [PurchaseReturnController::class, 'store'])->name('purchase-returns.store');
+Route::get('/purchase-returns/{id}', [PurchaseReturnController::class, 'show'])->name('purchase-returns.show');
+
 Route::get('/sales', [SaleController::class, 'index'])->name('sales.index');
 Route::get('/sales/create', [SaleController::class, 'create'])->name('sales.create');
 Route::post('/sales', [SaleController::class, 'store'])->name('sales.store');
 Route::get('/sales/{id}', [SaleController::class, 'show'])->name('sales.show');
+
+Route::get('/sales-returns', [SalesReturnController::class, 'index'])->name('sales-returns.index');
+Route::get('/sales/{id}/return', [SalesReturnController::class, 'create'])->name('sales-returns.create');
+Route::post('/sales-returns', [SalesReturnController::class, 'store'])->name('sales-returns.store');
+Route::get('/sales-returns/{id}', [SalesReturnController::class, 'show'])->name('sales-returns.show');
+
+Route::post('/locale/{locale}', function ($locale) {
+    session(['locale' => in_array($locale, ['en', 'ar']) ? $locale : 'en']);
+    return back();
+})->name('locale.set');
 
 Route::get('/stock', [StockController::class, 'index'])->name('stock.index');
 Route::get('/stock/transfer', [StockController::class, 'transfer'])->name('stock.transfer');

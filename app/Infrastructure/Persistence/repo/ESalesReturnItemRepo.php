@@ -29,14 +29,11 @@ class ESalesReturnItemRepo extends BaseERepo implements SalesReturnItemRepo
         $returnedQuantity = SalesReturnItem::whereHas(
             'salesReturn',
             function ($query) use ($saleId) {
-
-                $query->where('sale_id', $saleId);
-
+                $query->where('original_bill_id', $saleId);
             }
         )
             ->where('product_id', $productId)
-            ->sum('quantity')
-            ->lockForUpdate();
+            ->sum('quantity');
 
         return $returnedQuantity ?? 0;
     }

@@ -13,6 +13,7 @@ class UpdateProductDto
         public ?string $origin = null,
         public ?string $description = null,
         public ?string $image = null,
+        public ?string $size = null,
     ) {
     }
 
@@ -29,6 +30,7 @@ class UpdateProductDto
             'origin' => $this->origin,
             'description' => $this->description,
             'image' => $this->image,
+            'size' => $this->size,
         ];
     }
 }

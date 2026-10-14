@@ -36,7 +36,8 @@ class ProductMapper
             sale_unit: $model->relationLoaded('saleUnit')
             ? SaleUnitMapper::modelToEntity($model->saleUnit) : null,
             created_at: $model->created_at,
-            updated_at: $model->updated_at
+            updated_at: $model->updated_at,
+            size: $model->size,
         );
     }
 

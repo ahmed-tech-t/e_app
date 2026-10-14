@@ -11,29 +11,53 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        DB::unprepared("
-            CREATE TRIGGER trk_check_batch_limit_insert
-            BEFORE INSERT ON product_batches
-            FOR EACH ROW
-            BEGIN
-                IF NEW.remaining_quantity > NEW.initial_quantity THEN
-                    SIGNAL SQLSTATE '45000'
-                    SET MESSAGE_TEXT = 'The remaining quantity cannot be greater than the initial quantity.';
-                END IF;
-            END
-        ");
+        $driver = DB::getDriverName();
 
-        DB::unprepared("
-            CREATE TRIGGER trk_check_batch_limit_update
-            BEFORE UPDATE ON product_batches
-            FOR EACH ROW
-            BEGIN
-                IF NEW.remaining_quantity > NEW.initial_quantity THEN
-                    SIGNAL SQLSTATE '45000'
-                    SET MESSAGE_TEXT = 'The remaining quantity cannot be greater than the initial quantity.';
-                END IF;
-            END
-        ");
+        if ($driver === 'mysql') {
+            DB::unprepared("
+                CREATE TRIGGER trk_check_batch_limit_insert
+                BEFORE INSERT ON product_batches
+                FOR EACH ROW
+                BEGIN
+                    IF NEW.remaining_quantity > NEW.initial_quantity THEN
+                        SIGNAL SQLSTATE '45000'
+                        SET MESSAGE_TEXT = 'The remaining quantity cannot be greater than the initial quantity.';
+                    END IF;
+                END
+            ");
+
+            DB::unprepared("
+                CREATE TRIGGER trk_check_batch_limit_update
+                BEFORE UPDATE ON product_batches
+                FOR EACH ROW
+                BEGIN
+                    IF NEW.remaining_quantity > NEW.initial_quantity THEN
+                        SIGNAL SQLSTATE '45000'
+                        SET MESSAGE_TEXT = 'The remaining quantity cannot be greater than the initial quantity.';
+                    END IF;
+                END
+            ");
+        } elseif ($driver === 'sqlite') {
+            DB::unprepared("
+                CREATE TRIGGER trk_check_batch_limit_insert
+                BEFORE INSERT ON product_batches
+                FOR EACH ROW
+                WHEN NEW.remaining_quantity > NEW.initial_quantity
+                BEGIN
+                    SELECT RAISE(ABORT, 'The remaining quantity cannot be greater than the initial quantity.');
+                END;
+            ");
+
+            DB::unprepared("
+                CREATE TRIGGER trk_check_batch_limit_update
+                BEFORE UPDATE ON product_batches
+                FOR EACH ROW
+                WHEN NEW.remaining_quantity > NEW.initial_quantity
+                BEGIN
+                    SELECT RAISE(ABORT, 'The remaining quantity cannot be greater than the initial quantity.');
+                END;
+            ");
+        }
     }
 
     /**

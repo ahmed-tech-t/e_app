@@ -26,6 +26,7 @@ class ProductEntity
         public ?Carbon $updated_at = null,
         public ?SaleUnitEntity $sale_unit = null,
         public ?CategoryEntity $category = null,
+        public ?string $size = null,
     ) {
     }
 
@@ -44,6 +45,7 @@ class ProductEntity
             sale_unit_id: $data['sale_unit_id'],
             retail_price: $data['retail_price'],
             wholesale_price: $data['wholesale_price'],
+            size: $data['size'] ?? null,
         );
     }
     public function update(array $data)
@@ -68,6 +70,8 @@ class ProductEntity
 
         $this->sale_unit_id = $data['sale_unit_id'] ?? $this->sale_unit_id;
 
+        $this->size = $data['size'] ?? $this->size;
+
         return $this;
     }
 
@@ -90,6 +94,9 @@ class ProductEntity
 
         if ($this->origin)
             $data['origin'] = $this->origin;
+
+        if ($this->size !== null)
+            $data['size'] = $this->size;
 
         return $data;
     }

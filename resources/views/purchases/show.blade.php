@@ -4,8 +4,11 @@
     <x-layout.breadcrumb :items="[['label' => 'Purchases', 'url' => route('purchases.index')], ['label' => $purchase->code]]" />
 
     <div class="max-w-4xl mx-auto">
-        <div class="mb-6">
+        <div class="mb-6 flex items-center gap-3">
             <x-ui.back-button :url="route('purchases.index')" />
+            <a href="{{ route('purchase-returns.create', $purchase->id) }}" class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg text-white bg-orange-500 hover:bg-orange-600 transition-colors">
+                Return Items
+            </a>
         </div>
 
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6">

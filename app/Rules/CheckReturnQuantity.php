@@ -29,9 +29,11 @@ class CheckReturnQuantity implements ValidationRule
         $originalQuantities = $salesItemRepo->getItemsQuantitiesInBill($this->saleId, $productIds);
         $returnedQuantities = $salesReturnItemRepo->getReturnedItemsQuantitiesInBill($this->saleId, $productIds);
 
-        foreach ($items as $item) {
-            $pid = $item['product_id'];
-            $requestedQty = $item['quantity'];
+        $requestedTotals = collect($items)
+            ->groupBy('product_id')
+            ->map(fn($group) => $group->sum('quantity'));
+
+        foreach ($requestedTotals as $pid => $requestedQty) {
             $original = $originalQuantities[$pid] ?? 0;
             $returned = $returnedQuantities[$pid] ?? 0;
             $available = $original - $returned;

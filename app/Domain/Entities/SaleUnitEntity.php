@@ -19,6 +19,13 @@ class SaleUnitEntity
         );
     }
 
+    public function update(array $data): static
+    {
+        $this->name_ar = $data['name_ar'] ?? $this->name_ar;
+        $this->name_en = $data['name_en'] ?? $this->name_en;
+        return $this;
+    }
+
     public function toArray()
     {
         return [

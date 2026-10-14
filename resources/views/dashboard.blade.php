@@ -3,7 +3,7 @@
 @section('content')
     <x-layout.breadcrumb :items="[]" />
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
         <x-ui.card>
             <div class="flex items-center justify-between">
                 <div>
@@ -41,21 +41,37 @@
                 </div>
             </div>
         </x-ui.card>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+        <x-ui.card>
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Sales Returns Today</p>
+                    <p class="text-2xl font-bold">{{ $salesReturnsTodayCount }}</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ number_format($salesReturnsTodayTotal, 2) }}</p>
+                </div>
+                <div class="p-3 bg-orange-100 dark:bg-orange-900 rounded-lg">
+                    <svg class="w-6 h-6 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
+                </div>
+            </div>
+        </x-ui.card>
 
         <x-ui.card>
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">Total Products</p>
-                    <p class="text-2xl font-bold">{{ $totalProducts }}</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Purchase Returns Today</p>
+                    <p class="text-2xl font-bold">{{ $purchaseReturnsTodayCount }}</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ number_format($purchaseReturnsTodayTotal, 2) }}</p>
                 </div>
-                <div class="p-3 bg-yellow-100 dark:bg-yellow-900 rounded-lg">
-                    <svg class="w-6 h-6 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+                <div class="p-3 bg-red-100 dark:bg-red-900 rounded-lg">
+                    <svg class="w-6 h-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 10H11a8 8 0 00-8 8v2m18-10l-6 6m6-6l-6-6"/></svg>
                 </div>
             </div>
         </x-ui.card>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         <x-ui.card title="Recent Sales">
             @if(count($recentSales) > 0)
                 <div class="overflow-x-auto">
@@ -111,6 +127,66 @@
                 </div>
             @else
                 <x-ui.empty-state title="No purchases yet" description="Purchases will appear here once created." />
+            @endif
+        </x-ui.card>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <x-ui.card title="Recent Sales Returns">
+            @if(count($recentSalesReturns) > 0)
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                        <thead>
+                            <tr>
+                                <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400">Code</th>
+                                <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400">Sale ID</th>
+                                <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400">Total</th>
+                                <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400">Date</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                            @foreach($recentSalesReturns as $r)
+                                <tr>
+                                    <td class="px-3 py-2 text-sm"><a href="{{ route('sales-returns.show', $r->id) }}" class="text-blue-600 dark:text-blue-400 hover:underline">{{ $r->code }}</a></td>
+                                    <td class="px-3 py-2 text-sm"><a href="{{ route('sales.show', $r->sales_id) }}" class="text-blue-600 dark:text-blue-400 hover:underline">#{{ $r->sales_id }}</a></td>
+                                    <td class="px-3 py-2 text-sm">{{ number_format($r->grand_total, 2) }}</td>
+                                    <td class="px-3 py-2 text-sm">{{ $r->created_at?->format('M d, Y') }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @else
+                <x-ui.empty-state title="No sales returns yet" description="Sales returns will appear here once created." />
+            @endif
+        </x-ui.card>
+
+        <x-ui.card title="Recent Purchase Returns">
+            @if(count($recentPurchaseReturns) > 0)
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                        <thead>
+                            <tr>
+                                <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400">Code</th>
+                                <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400">Purchase ID</th>
+                                <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400">Total</th>
+                                <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400">Date</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                            @foreach($recentPurchaseReturns as $r)
+                                <tr>
+                                    <td class="px-3 py-2 text-sm"><a href="{{ route('purchase-returns.show', $r->id) }}" class="text-blue-600 dark:text-blue-400 hover:underline">{{ $r->code }}</a></td>
+                                    <td class="px-3 py-2 text-sm"><a href="{{ route('purchases.show', $r->purchase_id) }}" class="text-blue-600 dark:text-blue-400 hover:underline">#{{ $r->purchase_id }}</a></td>
+                                    <td class="px-3 py-2 text-sm">{{ number_format($r->grand_total, 2) }}</td>
+                                    <td class="px-3 py-2 text-sm">{{ $r->created_at?->format('M d, Y') }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @else
+                <x-ui.empty-state title="No purchase returns yet" description="Purchase returns will appear here once created." />
             @endif
         </x-ui.card>
     </div>

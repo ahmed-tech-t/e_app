@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="">
+<html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" class="">
 
 <head>
     <meta charset="UTF-8">
@@ -15,9 +15,8 @@
           sidebarOpen: false,
           sidebarCollapsed: localStorage.getItem('sidebar_collapsed') === 'true'
       }" x-init="document.documentElement.classList.toggle('dark', dark)"
-    x-effect="document.documentElement.classList.toggle('dark', dark); localStorage.setItem('dark_mode', dark)">
-    <div class="flex min-h-screen"
-        x-data="{ sidebarOpen: false, sidebarCollapsed: localStorage.getItem('sidebar_collapsed') === 'true' }">
+    x-effect="document.documentElement.classList.toggle('dark', dark); localStorage.setItem('dark_mode', dark); localStorage.setItem('sidebar_collapsed', sidebarCollapsed)">
+    <div class="flex min-h-screen">
         <x-layout.sidebar />
         <div class="flex-1 flex flex-col min-h-screen transition-all duration-300"
             :style="window.innerWidth >= 1024 ? 'margin-left:' + (sidebarCollapsed ? '4rem' : '16rem') : 'margin-left:0'">

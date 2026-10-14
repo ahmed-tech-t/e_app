@@ -15,6 +15,7 @@
                 <x-ui.select name="sale_unit_id" label="Sale Unit" :required="true" :options="$saleUnits" valueKey="id" labelKey="name_ar" />
                 <x-ui.input name="units_per_carton" label="Units per Carton" type="number" :min="1" />
                 <x-ui.input name="origin" label="Origin" />
+                <x-ui.input name="size" label="Size" placeholder="e.g. 130 ml" />
                 <x-ui.input name="retail_price" label="Retail Price" type="number" :step="'0.01'" :required="true" />
                 <x-ui.input name="wholesale_price" label="Wholesale Price" type="number" :step="'0.01'" :required="true" />
                 <x-ui.input name="image" label="Product Image" type="file" />

@@ -38,7 +38,8 @@ class Product extends Model
         'image',
         'origin',
         'sale_unit_id',
-        'units_per_carton'
+        'units_per_carton',
+        'size',
     ];
 
     protected $casts = [

@@ -35,10 +35,10 @@ class UpdateLocationRequest extends FormRequest
         $data = $this->validated();
 
         return new LocationDto(
-            name: $data->name ?? null,
-            address: $data->address ?? null,
-            phone: $data->phone ?? null,
-            type: $data->type ?? null,
+            name: $data['name'] ?? '',
+            address: $data['address'] ?? null,
+            phone: $data['phone'] ?? null,
+            type: $data['type'] ?? null,
         );
     }
 }

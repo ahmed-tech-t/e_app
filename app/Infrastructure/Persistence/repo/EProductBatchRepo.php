@@ -88,11 +88,26 @@ class EProductBatchRepo extends BaseERepo implements ProductBatchRepo
      public function addToLocation(ProductBatch $batchModel, int $locationId, float $quantity)
      {
           Log::info("Attaching batch {$batchModel->id} to location {$locationId} with quantity {$quantity}");
-          $batchModel->locations()->syncWithoutDetaching([
-               $locationId => [
-                    'remaining_quantity' => DB::raw("remaining_quantity + $quantity")
-               ]
-          ]);
+          $existing = DB::table('batch_locations')
+               ->where('product_batch_id', $batchModel->id)
+               ->where('location_id', $locationId)
+               ->first();
+
+          if ($existing) {
+               DB::table('batch_locations')
+                    ->where('product_batch_id', $batchModel->id)
+                    ->where('location_id', $locationId)
+                    ->update([
+                         'remaining_quantity' => $existing->remaining_quantity + $quantity,
+                         'updated_at' => now(),
+                    ]);
+          } else {
+               $batchModel->locations()->attach($locationId, [
+                    'remaining_quantity' => $quantity,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+               ]);
+          }
      }
 
 

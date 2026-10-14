@@ -19,6 +19,10 @@ class SalesReturnsResource extends JsonResource
             'code' => $this->code,
             'sales_id' => $this->sales_id,
             'store_id' => $this->store_id,
+            'total' => $this->total,
+            'discount' => $this->discount,
+            'tax' => $this->tax,
+            'grand_total' => $this->grand_total,
             'items' => SalesReturnItemResource::collection($this->items),
             'created_at' => $this->created_at,
         ];

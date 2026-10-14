@@ -4,72 +4,76 @@ use App\Application\Services\LocationService;
 use App\Application\Services\ProductService;
 use App\Application\Services\StockService;
 use App\Domain\Repo\ProductBatchRepo;
+use Livewire\Attributes\Computed;
+use Livewire\Component;
 
-use function Livewire\Volt\computed;
-use function Livewire\Volt\mount;
-use function Livewire\Volt\state;
+new class extends Component {
+    public int $step = 1;
+    public ?int $productId = null;
+    public ?int $fromLocationId = null;
+    public ?int $toLocationId = null;
+    public int $quantity = 1;
+    public int $availableQuantity = 0;
 
-state([
-    'step' => 1,
-    'productId' => null,
-    'fromLocationId' => null,
-    'toLocationId' => null,
-    'quantity' => 1,
-    'availableQuantity' => 0,
-]);
+    #[Computed]
+    public function products(): mixed
+    {
+        return app(ProductService::class)->findAll();
+    }
 
-mount(function ($products = [], $locations = []) {});
+    #[Computed]
+    public function locations(): mixed
+    {
+        return app(LocationService::class)->findAll();
+    }
 
-$products = computed(function () {
-    return app(ProductService::class)->findAll();
-});
+    public function updatedProductId(): void
+    {
+        $this->fromLocationId = null;
+        $this->toLocationId = null;
+        $this->availableQuantity = 0;
+    }
 
-$locations = computed(function () {
-    return app(LocationService::class)->findAll();
-});
-
-$updatedProductId = function () {
-    $this->fromLocationId = null;
-    $this->toLocationId = null;
-    $this->availableQuantity = 0;
-};
-
-$updatedFromLocationId = function () {
-    if ($this->productId && $this->fromLocationId) {
-        try {
-            $batches = app(ProductBatchRepo::class)->getBatchesInLocation($this->productId, $this->fromLocationId);
-            $this->availableQuantity = $batches->sum('quantity');
-        } catch (\Exception $e) {
-            $this->availableQuantity = 0;
+    public function updatedFromLocationId(): void
+    {
+        if ($this->productId && $this->fromLocationId) {
+            try {
+                $batches = app(ProductBatchRepo::class)->getBatchesInLocation($this->productId, $this->fromLocationId);
+                $this->availableQuantity = $batches->sum('quantity');
+            } catch (\Exception $e) {
+                $this->availableQuantity = 0;
+            }
         }
     }
-};
 
-$goToPreview = function () {
-    $this->validate([
-        'productId' => 'required',
-        'fromLocationId' => 'required',
-        'toLocationId' => 'required',
-        'quantity' => 'required|integer|min:1',
-    ]);
-    $this->step = 2;
-};
+    public function goToPreview(): void
+    {
+        $this->validate([
+            'productId' => 'required',
+            'fromLocationId' => 'required',
+            'toLocationId' => 'required',
+            'quantity' => 'required|integer|min:1',
+        ]);
+        $this->step = 2;
+    }
 
-$goBack = function () {
-    $this->step = 1;
-};
+    public function goBack(): void
+    {
+        $this->step = 1;
+    }
 
-$transfer = function () {
-    app(StockService::class)->transferProduct(
-        new TransferProductDto(
+    public function transfer(): void
+    {
+        $dto = new TransferProductDto(
             productId: $this->productId,
             fromLocationId: $this->fromLocationId,
             toLocationId: $this->toLocationId,
             quantity: $this->quantity,
-        )
-    );
-    session()->flash('success', 'Stock transferred successfully.');
-    $this->redirect(route('stock.index'));
+        );
+        app(StockService::class)->transferProduct($dto);
+        session()->flash('success', 'Stock transferred successfully.');
+        $this->redirect(route('stock.index'));
+    }
 };
 ?>
 
