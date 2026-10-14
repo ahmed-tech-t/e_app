@@ -6,16 +6,16 @@ state(['search' => '']);
 
 $items = computed(function () {
     $service = app(\App\Application\Services\PurchaseReturnService::class);
-    $all = $service->findAll();
+    $all = collect($service->findAll());
 
     if ($this->search) {
         $search = strtolower($this->search);
-        $all = array_filter($all, function ($item) use ($search) {
+        $all = $all->filter(function ($item) use ($search) {
             return str_contains(strtolower($item->code ?? ''), $search);
         });
     }
 
-    return collect($all)->values();
+    return $all->values();
 });
 ?>
 

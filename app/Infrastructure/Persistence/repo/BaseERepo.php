@@ -78,8 +78,11 @@ class BaseERepo implements BaseRepo
 
     public function findAll()
     {
-        $entities = ($this->modelClass)::all()->map(fn($model) => ($this->mapper)::modelToEntity($model));
-        return $entities;
+        $query = ($this->modelClass)::query();
+        if (!empty($this->defaultRelationships)) {
+            $query->with($this->defaultRelationships);
+        }
+        return $query->get()->map(fn($model) => ($this->mapper)::modelToEntity($model));
     }
 
     /**

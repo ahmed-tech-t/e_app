@@ -40,7 +40,7 @@ trait CreatesTestData
             'name' => 'Main Store ' . uniqid(),
             'code' => 'LOC-' . strtoupper(uniqid()),
             'address' => 'Store Address',
-            'phone' => '123456789',
+            'phone' => '010' . rand(10000000, 99999999),
             'type' => 'store',
         ], $overrides));
     }
@@ -51,7 +51,7 @@ trait CreatesTestData
             'name' => 'Supplier ' . uniqid(),
             'code' => 'SUP-' . strtoupper(uniqid()),
             'contact_person' => 'John Doe',
-            'phone' => '01012345678',
+            'phone' => '010' . rand(10000000, 99999999),
             'email' => 'supplier_' . uniqid() . '@example.com',
             'address' => 'Supplier Address',
         ], $overrides));

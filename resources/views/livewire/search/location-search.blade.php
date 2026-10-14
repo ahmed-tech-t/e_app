@@ -6,18 +6,18 @@ state(['search' => '', 'perPage' => 10]);
 
 $items = computed(function () {
     $service = app(\App\Application\Services\LocationService::class);
-    $all = $service->findAll();
+    $all = collect($service->findAll());
 
     if ($this->search) {
         $search = strtolower($this->search);
-        $all = array_filter($all, function ($item) use ($search) {
+        $all = $all->filter(function ($item) use ($search) {
             return str_contains(strtolower($item->name ?? ''), $search)
                 || str_contains(strtolower($item->code ?? ''), $search)
                 || str_contains(strtolower($item->type ?? ''), $search);
         });
     }
 
-    return collect($all)->values();
+    return $all->values();
 });
 
 ?>

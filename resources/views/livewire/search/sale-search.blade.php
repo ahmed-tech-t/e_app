@@ -6,17 +6,17 @@ state(['search' => '', 'perPage' => 10]);
 
 $items = computed(function () {
     $service = app(\App\Application\Services\SalesService::class);
-    $all = $service->findAll();
+    $all = collect($service->findAll());
 
     if ($this->search) {
         $search = strtolower($this->search);
-        $all = array_filter($all, function ($item) use ($search) {
+        $all = $all->filter(function ($item) use ($search) {
             return str_contains(strtolower($item->code ?? ''), $search)
                 || str_contains(strtolower($item->customer_name ?? ''), $search);
         });
     }
 
-    return collect($all)->values();
+    return $all->values();
 });
 
 ?>
