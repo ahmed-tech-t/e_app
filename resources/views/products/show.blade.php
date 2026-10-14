@@ -46,7 +46,7 @@
                     <p class="font-medium">{{ $product->original_code ?? '-' }}</p>
                 </div>
                 <div>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">Origin</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ __('app.products.origin') }}</p>
                     <p class="font-medium">{{ $product->origin ?? '-' }}</p>
                 </div>
                 <div>
@@ -66,11 +66,11 @@
                     <p class="font-medium">{{ number_format($product->wholesale_price, 2) }}</p>
                 </div>
                 <div>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">Units per Carton</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ __('app.products.units_per_carton') }}</p>
                     <p class="font-medium">{{ $product->units_per_carton ?? '-' }}</p>
                 </div>
                 <div>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">Description</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ __('app.products.description') }}</p>
                     <p class="font-medium">{{ $product->description ?? '-' }}</p>
                 </div>
             </div>

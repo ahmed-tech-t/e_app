@@ -151,6 +151,13 @@ return [
         'search_placeholder' => 'Search products by name, code, barcode...',
         'no_found' => 'No products found',
         'no_found_desc' => 'Try adjusting your search or create a new product.',
+        'image' => 'Product Image',
+        'click_to_upload' => 'Click to upload image',
+        'click_to_change' => 'Click image to change',
+        'units_per_carton' => 'Units per Carton',
+        'origin' => 'Origin',
+        'size' => 'Size',
+        'description' => 'Description',
     ],
     'sales' => [
         'title' => 'Sales',
