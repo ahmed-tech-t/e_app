@@ -28,3 +28,4 @@ test.describe('POS Stock Transfer Real Browser E2E Flow', () => {
   });
 
 });
+
