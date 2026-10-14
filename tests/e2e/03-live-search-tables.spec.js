@@ -5,7 +5,7 @@ test.describe('Livewire Live Debounce Search Tables', () => {
   test('user can search live product catalog table', async ({ page }) => {
     await page.goto('/products');
 
-    const searchInput = page.locator('input[placeholder*="Search" i]').first();
+    const searchInput = page.locator('main input[type="text"], input[type="search"]').first();
     await expect(searchInput).toBeVisible();
 
     // Type query and verify input reflects typed value
@@ -16,7 +16,7 @@ test.describe('Livewire Live Debounce Search Tables', () => {
   test('user can search live sales table', async ({ page }) => {
     await page.goto('/sales');
 
-    const searchInput = page.locator('input[placeholder*="Search" i]').first();
+    const searchInput = page.locator('main input[type="text"], input[type="search"]').first();
     await expect(searchInput).toBeVisible();
 
     await searchInput.fill('SAL');
@@ -26,7 +26,7 @@ test.describe('Livewire Live Debounce Search Tables', () => {
   test('user can search live purchases table', async ({ page }) => {
     await page.goto('/purchases');
 
-    const searchInput = page.locator('input[placeholder*="Search" i]').first();
+    const searchInput = page.locator('main input[type="text"], input[type="search"]').first();
     await expect(searchInput).toBeVisible();
 
     await searchInput.fill('PUR');

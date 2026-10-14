@@ -41,6 +41,13 @@ class UpdateProductRequest extends FormRequest
     {
         $data = $this->validated();
 
+        $imagePath = null;
+        if ($this->hasFile('image')) {
+            $imagePath = $this->file('image')->store('products', 'public');
+        } elseif (isset($data['image']) && is_string($data['image'])) {
+            $imagePath = $data['image'];
+        }
+
         return new UpdateProductDto(
             categoryId: $data['category_id'] ?? null,
             original_code: $data['original_code'] ?? null,
@@ -51,7 +58,7 @@ class UpdateProductRequest extends FormRequest
             brand: $data['brand'] ?? null,
             saleUnitId: $data['sale_unit_id'] ?? null,
             unitsPerCarton: $data['units_per_carton'] ?? null,
-            image: $data['image'] ?? null,
+            image: $imagePath,
             size: $data['size'] ?? null,
         );
     }

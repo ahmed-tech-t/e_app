@@ -19,6 +19,9 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->web(append: [\App\Http\Middleware\SetLocale::class]);
+        $middleware->encryptCookies(except: [
+            'dark_mode',
+        ]);
         $middleware->validateCsrfTokens(except: [
             'api/*',
             Constants::BASE_API_URL . '/v1/*',

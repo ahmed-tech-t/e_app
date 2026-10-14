@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Dashboard'])
+@extends('layouts.app', ['title' => __('app.dashboard.title')])
 
 @section('content')
     <x-layout.breadcrumb :items="[]" />
@@ -7,7 +7,7 @@
         <x-ui.card>
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">Sales Today</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ __('app.dashboard.sales_today') }}</p>
                     <p class="text-2xl font-bold">{{ $salesTodayCount }}</p>
                     <p class="text-sm text-gray-500 dark:text-gray-400">{{ number_format($salesTodayTotal, 2) }}</p>
                 </div>
@@ -20,7 +20,7 @@
         <x-ui.card>
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">Purchases Today</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ __('app.dashboard.purchases_today') }}</p>
                     <p class="text-2xl font-bold">{{ $purchasesTodayCount }}</p>
                     <p class="text-sm text-gray-500 dark:text-gray-400">{{ number_format($purchasesTodayTotal, 2) }}</p>
                 </div>
@@ -33,7 +33,7 @@
         <x-ui.card>
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">Total Products</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ __('app.dashboard.total_products') }}</p>
                     <p class="text-2xl font-bold">{{ $totalProducts }}</p>
                 </div>
                 <div class="p-3 bg-purple-100 dark:bg-purple-900 rounded-lg">
@@ -47,7 +47,7 @@
         <x-ui.card>
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">Sales Returns Today</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ __('app.dashboard.sales_returns_today') }}</p>
                     <p class="text-2xl font-bold">{{ $salesReturnsTodayCount }}</p>
                     <p class="text-sm text-gray-500 dark:text-gray-400">{{ number_format($salesReturnsTodayTotal, 2) }}</p>
                 </div>
@@ -60,7 +60,7 @@
         <x-ui.card>
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">Purchase Returns Today</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ __('app.dashboard.purchase_returns_today') }}</p>
                     <p class="text-2xl font-bold">{{ $purchaseReturnsTodayCount }}</p>
                     <p class="text-sm text-gray-500 dark:text-gray-400">{{ number_format($purchaseReturnsTodayTotal, 2) }}</p>
                 </div>
@@ -72,16 +72,16 @@
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <x-ui.card title="Recent Sales">
+        <x-ui.card :title="__('app.dashboard.recent_sales')">
             @if(count($recentSales) > 0)
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                         <thead>
                             <tr>
-                                <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400">Code</th>
-                                <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400">Customer</th>
-                                <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400">Total</th>
-                                <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400">Date</th>
+                                <th class="px-3 py-2 text-start text-xs font-medium text-gray-500 dark:text-gray-400">{{ __('app.common.code') }}</th>
+                                <th class="px-3 py-2 text-start text-xs font-medium text-gray-500 dark:text-gray-400">{{ __('app.common.customer') }}</th>
+                                <th class="px-3 py-2 text-start text-xs font-medium text-gray-500 dark:text-gray-400">{{ __('app.common.total') }}</th>
+                                <th class="px-3 py-2 text-start text-xs font-medium text-gray-500 dark:text-gray-400">{{ __('app.common.date') }}</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
@@ -97,20 +97,20 @@
                     </table>
                 </div>
             @else
-                <x-ui.empty-state title="No sales yet" description="Sales will appear here once created." />
+                <x-ui.empty-state :title="__('app.dashboard.no_sales')" :description="__('app.dashboard.no_sales_desc')" />
             @endif
         </x-ui.card>
 
-        <x-ui.card title="Recent Purchases">
+        <x-ui.card :title="__('app.dashboard.recent_purchases')">
             @if(count($recentPurchases) > 0)
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                         <thead>
                             <tr>
-                                <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400">Code</th>
-                                <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400">Supplier ID</th>
-                                <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400">Total</th>
-                                <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400">Date</th>
+                                <th class="px-3 py-2 text-start text-xs font-medium text-gray-500 dark:text-gray-400">{{ __('app.common.code') }}</th>
+                                <th class="px-3 py-2 text-start text-xs font-medium text-gray-500 dark:text-gray-400">{{ __('app.dashboard.supplier_id') }}</th>
+                                <th class="px-3 py-2 text-start text-xs font-medium text-gray-500 dark:text-gray-400">{{ __('app.common.total') }}</th>
+                                <th class="px-3 py-2 text-start text-xs font-medium text-gray-500 dark:text-gray-400">{{ __('app.common.date') }}</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
@@ -126,22 +126,22 @@
                     </table>
                 </div>
             @else
-                <x-ui.empty-state title="No purchases yet" description="Purchases will appear here once created." />
+                <x-ui.empty-state :title="__('app.dashboard.no_purchases')" :description="__('app.dashboard.no_purchases_desc')" />
             @endif
         </x-ui.card>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <x-ui.card title="Recent Sales Returns">
+        <x-ui.card :title="__('app.dashboard.recent_sales_returns')">
             @if(count($recentSalesReturns) > 0)
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                         <thead>
                             <tr>
-                                <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400">Code</th>
-                                <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400">Sale ID</th>
-                                <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400">Total</th>
-                                <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400">Date</th>
+                                <th class="px-3 py-2 text-start text-xs font-medium text-gray-500 dark:text-gray-400">{{ __('app.common.code') }}</th>
+                                <th class="px-3 py-2 text-start text-xs font-medium text-gray-500 dark:text-gray-400">{{ __('app.dashboard.sale_id') }}</th>
+                                <th class="px-3 py-2 text-start text-xs font-medium text-gray-500 dark:text-gray-400">{{ __('app.common.total') }}</th>
+                                <th class="px-3 py-2 text-start text-xs font-medium text-gray-500 dark:text-gray-400">{{ __('app.common.date') }}</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
@@ -157,20 +157,20 @@
                     </table>
                 </div>
             @else
-                <x-ui.empty-state title="No sales returns yet" description="Sales returns will appear here once created." />
+                <x-ui.empty-state :title="__('app.dashboard.no_sales_returns')" :description="__('app.dashboard.no_sales_returns_desc')" />
             @endif
         </x-ui.card>
 
-        <x-ui.card title="Recent Purchase Returns">
+        <x-ui.card :title="__('app.dashboard.recent_purchase_returns')">
             @if(count($recentPurchaseReturns) > 0)
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                         <thead>
                             <tr>
-                                <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400">Code</th>
-                                <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400">Purchase ID</th>
-                                <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400">Total</th>
-                                <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400">Date</th>
+                                <th class="px-3 py-2 text-start text-xs font-medium text-gray-500 dark:text-gray-400">{{ __('app.common.code') }}</th>
+                                <th class="px-3 py-2 text-start text-xs font-medium text-gray-500 dark:text-gray-400">{{ __('app.dashboard.purchase_id') }}</th>
+                                <th class="px-3 py-2 text-start text-xs font-medium text-gray-500 dark:text-gray-400">{{ __('app.common.total') }}</th>
+                                <th class="px-3 py-2 text-start text-xs font-medium text-gray-500 dark:text-gray-400">{{ __('app.common.date') }}</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
@@ -186,7 +186,7 @@
                     </table>
                 </div>
             @else
-                <x-ui.empty-state title="No purchase returns yet" description="Purchase returns will appear here once created." />
+                <x-ui.empty-state :title="__('app.dashboard.no_purchase_returns')" :description="__('app.dashboard.no_purchase_returns_desc')" />
             @endif
         </x-ui.card>
     </div>

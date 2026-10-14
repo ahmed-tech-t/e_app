@@ -1,7 +1,7 @@
-@extends('layouts.app', ['title' => 'Stock Transfer'])
+@extends('layouts.app', ['title' => __('app.stock.transfer')])
 
 @section('content')
-    <x-layout.breadcrumb :items="[['label' => 'Stock', 'url' => route('stock.index')], ['label' => 'Transfer']]" />
+    <x-layout.breadcrumb :items="[['label' => __('app.nav.movements'), 'url' => route('stock.index')], ['label' => __('app.stock.transfer')]]" />
 
     <div class="mb-6">
         <x-ui.back-button :url="route('stock.index')" />

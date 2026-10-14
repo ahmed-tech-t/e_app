@@ -5,7 +5,7 @@
         <thead class="bg-gray-50 dark:bg-gray-800">
             <tr>
                 @foreach($headers as $header)
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider {{ $header['class'] ?? '' }}" @if(isset($header['class']))class="{{ $header['class'] }}"@endif>
+                    <th class="px-4 py-3 text-start text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider {{ $header['class'] ?? '' }}">
                         {{ $header['label'] }}
                     </th>
                 @endforeach

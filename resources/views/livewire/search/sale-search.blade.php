@@ -23,7 +23,7 @@ $items = computed(function () {
 
 <div>
     <div class="mb-4">
-        <input type="text" wire:model.live.debounce.300ms="search" placeholder="Search sales..." class="w-full md:w-1/3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+        <input type="text" wire:model.live.debounce.300ms="search" placeholder="{{ __('app.sales.search_placeholder') }}" class="w-full md:w-1/3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
     </div>
 
     @if($this->items->count() > 0)
@@ -31,12 +31,12 @@ $items = computed(function () {
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead class="bg-gray-50 dark:bg-gray-800">
                     <tr>
-                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Code</th>
-                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Customer</th>
-                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase hidden md:table-cell">Total</th>
-                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Grand Total</th>
-                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase hidden lg:table-cell">Date</th>
-                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Actions</th>
+                        <th class="px-4 py-3 text-start text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">{{ __('app.common.code') }}</th>
+                        <th class="px-4 py-3 text-start text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">{{ __('app.common.customer') }}</th>
+                        <th class="px-4 py-3 text-start text-xs font-medium text-gray-500 dark:text-gray-400 uppercase hidden md:table-cell">{{ __('app.common.total') }}</th>
+                        <th class="px-4 py-3 text-start text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">{{ __('app.common.total') }}</th>
+                        <th class="px-4 py-3 text-start text-xs font-medium text-gray-500 dark:text-gray-400 uppercase hidden lg:table-cell">{{ __('app.common.date') }}</th>
+                        <th class="px-4 py-3 text-start text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">{{ __('app.common.actions') }}</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
@@ -48,7 +48,7 @@ $items = computed(function () {
                             <td class="px-4 py-3 text-sm font-medium">{{ number_format($sale->grand_total, 2) }}</td>
                             <td class="px-4 py-3 text-sm hidden lg:table-cell">{{ $sale->created_at?->format('M d, Y') }}</td>
                             <td class="px-4 py-3 text-sm">
-                                <a href="{{ route('sales.show', $sale->id) }}" class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-lg text-blue-700 bg-blue-100 hover:bg-blue-200 dark:text-blue-400 dark:bg-blue-900 dark:hover:bg-blue-800">View</a>
+                                <a href="{{ route('sales.show', $sale->id) }}" class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-lg text-blue-700 bg-blue-100 hover:bg-blue-200 dark:text-blue-400 dark:bg-blue-900 dark:hover:bg-blue-800">{{ __('app.common.view') }}</a>
                             </td>
                         </tr>
                     @endforeach
@@ -56,6 +56,6 @@ $items = computed(function () {
             </table>
         </div>
     @else
-        <x-ui.empty-state title="No sales found" description="Try adjusting your search or create a new sale." />
+        <x-ui.empty-state :title="__('app.sales.no_found')" description="" />
     @endif
 </div>

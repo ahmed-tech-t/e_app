@@ -1,6 +1,21 @@
 @import 'tailwindcss';
 @variant dark (&:where(.dark, .dark *));
 
+[x-cloak] { display: none !important; }
+
+.theme-sun-icon {
+    display: none;
+}
+.theme-moon-icon {
+    display: block;
+}
+.dark .theme-sun-icon {
+    display: block !important;
+}
+.dark .theme-moon-icon {
+    display: none !important;
+}
+
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';

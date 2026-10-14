@@ -1,17 +1,17 @@
-@extends('layouts.app', ['title' => 'Product Details'])
+@extends('layouts.app', ['title' => __('app.products.title')])
 
 @section('content')
-    <x-layout.breadcrumb :items="[['label' => 'Products', 'url' => route('products.index')], ['label' => $product->name_ar]]" />
+    <x-layout.breadcrumb :items="[['label' => __('app.products.title'), 'url' => route('products.index')], ['label' => $product->name_ar]]" />
 
     <div class="max-w-4xl mx-auto">
         <div class="flex items-center gap-3 mb-6">
             <a href="{{ route('products.edit', $product->id) }}"
                 class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 transition-colors">
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-4 h-4 me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                 </svg>
-                Edit
+                {{ __('app.common.edit') }}
             </a>
             <x-ui.back-button :url="route('products.index')" />
         </div>
@@ -26,23 +26,23 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">Code</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ __('app.common.code') }}</p>
                     <p class="font-medium">{{ $product->code }}</p>
                 </div>
                 <div>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">Name (Arabic)</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ __('app.common.name_ar') }}</p>
                     <p class="font-medium">{{ $product->name_ar }}</p>
                 </div>
                 <div>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">Name (English)</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ __('app.common.name_en') }}</p>
                     <p class="font-medium">{{ $product->name_en ?? '-' }}</p>
                 </div>
                 <div>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">Brand</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ __('app.products.brand') }}</p>
                     <p class="font-medium">{{ $product->brand }}</p>
                 </div>
                 <div>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">Original Code</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ __('app.products.barcode') }}</p>
                     <p class="font-medium">{{ $product->original_code ?? '-' }}</p>
                 </div>
                 <div>
@@ -50,19 +50,19 @@
                     <p class="font-medium">{{ $product->origin ?? '-' }}</p>
                 </div>
                 <div>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">Category</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ __('app.products.category') }}</p>
                     <p class="font-medium">{{ $product->category->name_ar ?? '-' }}</p>
                 </div>
                 <div>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">Sale Unit</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ __('app.products.sale_unit') }}</p>
                     <p class="font-medium">{{ $product->sale_unit->name_ar ?? '-' }}</p>
                 </div>
                 <div>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">Retail Price</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ __('app.products.retail_price') }}</p>
                     <p class="font-medium">{{ number_format($product->retail_price, 2) }}</p>
                 </div>
                 <div>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">Wholesale Price</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ __('app.products.wholesale_price') }}</p>
                     <p class="font-medium">{{ number_format($product->wholesale_price, 2) }}</p>
                 </div>
                 <div>

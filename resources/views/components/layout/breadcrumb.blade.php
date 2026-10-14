@@ -2,7 +2,7 @@
 
 <nav class="mb-4" aria-label="Breadcrumb">
     <ol class="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
-        <li><a href="/" class="hover:text-gray-700 dark:hover:text-gray-200">Home</a></li>
+        <li><a href="/" class="hover:text-gray-700 dark:hover:text-gray-200">{{ __('app.common.home') }}</a></li>
         @foreach($items as $i => $item)
             <li class="flex items-center space-x-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>

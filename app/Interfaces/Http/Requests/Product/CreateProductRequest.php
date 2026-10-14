@@ -44,6 +44,13 @@ class CreateProductRequest extends FormRequest
     {
         $data = $this->validated();
 
+        $imagePath = null;
+        if ($this->hasFile('image')) {
+            $imagePath = $this->file('image')->store('products', 'public');
+        } elseif (isset($data['image']) && is_string($data['image'])) {
+            $imagePath = $data['image'];
+        }
+
         return new CreateProductDto(
             category_id: $data['category_id'],
             original_code: $data['original_code'] ?? null,
@@ -54,7 +61,7 @@ class CreateProductRequest extends FormRequest
             brand: $data['brand'],
             sale_unit_id: $data['sale_unit_id'],
             units_per_carton: $data['units_per_carton'] ?? null,
-            image: $data['image'] ?? null,
+            image: $imagePath,
             retail_price: $data['retail_price'],
             wholesale_price: $data['wholesale_price'],
             size: $data['size'] ?? null,

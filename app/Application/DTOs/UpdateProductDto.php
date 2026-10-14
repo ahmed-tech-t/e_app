@@ -20,12 +20,12 @@ class UpdateProductDto
     public function toArray()
     {
         return [
-            'categoryId' => $this->categoryId,
+            'category_id' => $this->categoryId,
             'original_code' => $this->original_code,
             'name_ar' => $this->name_ar,
             'brand' => $this->brand,
-            'saleUnitId' => $this->saleUnitId,
-            'unitsPerCarton' => $this->unitsPerCarton,
+            'sale_unit_id' => $this->saleUnitId,
+            'units_per_carton' => $this->unitsPerCarton,
             'name_en' => $this->name_en,
             'origin' => $this->origin,
             'description' => $this->description,
