@@ -67,16 +67,18 @@ Follow the project's layered Clean Architecture / DDD conventions:
 
 ---
 
-## 6. Mandatory Unit & Integration Testing for Heavy Logic
+## 6. Mandatory Automated Testing & Verification Gate (Strict Rule)
 
-- **Strict Unit Testing Requirement**: For every service, action, domain model calculation, stock/movement flow, pricing computation, financial ledger logic, or any functionality with non-trivial/heavy logic, you **MUST** create or update unit tests under `tests/Unit/`.
-- **Isolation & Mocking**: Follow the codebase pattern (see `tests/Unit/SalesReturnsServiceTest.php`): test business algorithms in isolation by mocking repository and external service dependencies (`$this->createMock(...)`).
+- **Mandatory Test Execution After Every Build/Change**: After building, modifying, or refactoring ANY code (services, controllers, models, migrations, views, or Livewire components), you **MUST ALWAYS** run the automated test suite (`php artisan test`) and verify 100% green status with zero failures before finishing your turn or reporting completion.
+- **Never Deliver Untested Code**: No feature, refactor, or bugfix is considered complete until actively proven by running tests (`php artisan test`).
+- **Comprehensive Test Coverage**: Every newly created or modified workflow (POS transaction, stock movement, pricing calculation, API endpoint, Livewire component, or validation rule) must have corresponding test coverage in `tests/Feature/` or `tests/Unit/`.
+- **Isolation & Mocking for Heavy Algorithms**: Test complex business calculations in isolation by mocking repository and external service dependencies (`$this->createMock(...)`) under `tests/Unit/`.
 - **Comprehensive Edge-Case Scenarios**:
   - Empty / null inputs and collections.
   - Boundary limits (zero, max quantities, negative balances).
   - Out-of-order execution, partial updates, and duplicate payloads.
   - Exception triggering on unauthorized or invalid domain state.
-- **Run & Verify**: Execute tests via `php artisan test --filter=<TestName>` and confirm green status before considering the feature or bugfix complete.
+- **Pre-Test Formatting**: Always run `vendor/bin/pint` on modified files before running the final tests.
 
 ---
 
