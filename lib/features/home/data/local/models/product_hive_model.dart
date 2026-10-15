@@ -1,7 +1,7 @@
 import 'package:hive_flutter/adapters.dart';
 import 'package:pos_mobile/features/home/domain/models/Product.dart';
 
-part 'product_hive_model.g.dart';
+part '../data_source/product_hive_model.g.dart';
 
 @HiveType(typeId: 0)
 class ProductHiveModel {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:pos_mobile/PosApp.dart';
 import 'package:pos_mobile/core/config/app_config.dart';
 
 void main() async {
@@ -11,5 +12,5 @@ void main() async {
     appName: 'POS',
     baseUrl: 'https://api.yoursite.com',
   );
-  runApp(const MyApp());
+  runApp(PosApp());
 }

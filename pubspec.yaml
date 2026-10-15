@@ -33,23 +33,22 @@ dependencies:
   dio: ^5.11.1
   hive_flutter: ^1.1.0       # Local database
   connectivity_plus: ^6.1.0  # Check internet connection
-  freezed_annotation: any
-  json_annotation: any
-  retrofit: any
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
+  freezed_annotation: ^3.0.2
+  json_annotation: ^4.12.0
+  retrofit: ^4.10.0
   cupertino_icons: ^1.0.8
+  get: ^4.7.3
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
-  build_runner: any
-  freezed: any
-  json_serializable: any
-  hive_ce_generator: any
-  retrofit_generator: any
-
+  build_runner: ^2.4.14
+  freezed: ^4.0.2
+  json_serializable: ^6.14.1
+  hive_ce_generator: ^1.11.3
+  retrofit_generator: ^10.2.12
+  
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 

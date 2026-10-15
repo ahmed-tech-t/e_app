@@ -1,5 +1,5 @@
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:pos_mobile/features/home/data/local/data_source/product_hive_model.dart';
+import 'package:pos_mobile/features/home/data/local/models/product_hive_model.dart';
 import 'package:pos_mobile/features/home/data/mapper/product_mapper.dart';
 import 'package:pos_mobile/features/home/domain/models/Product.dart';
 
