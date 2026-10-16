@@ -2,6 +2,7 @@
 
 use App\utils\Constants;
 use App\Interfaces\Http\Controllers\CategoryController;
+use App\Interfaces\Http\Controllers\ImageController;
 use App\Interfaces\Http\Controllers\LocationController;
 use App\Interfaces\Http\Controllers\ProductController;
 use App\Interfaces\Http\Controllers\ProductPriceController;
@@ -119,5 +120,11 @@ Route::prefix(Constants::BASE_API_URL)->group(function () {
 
         Route::get('sales/returns/preview', [SalesReturnsController::class, 'preReturn']);
         Route::post('sales/returns', [SalesReturnsController::class, 'store']);
+
+        Route::get('images', [ImageController::class, 'index']);
+        Route::post('images', [ImageController::class, 'store']);
+        Route::get('images/{id}', [ImageController::class, 'show']);
+        Route::post('images/{id}', [ImageController::class, 'update']);
+        Route::delete('images/{id}', [ImageController::class, 'destroy']);
     });
 });

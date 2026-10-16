@@ -38,7 +38,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 return match (true) {
                     $e instanceof AuthenticationException => $responder->error(null, 'Unauthenticated', 401),
 
-                    $e instanceof ValidationException => $responder->error(null, $e->getMessage(), 422),
+                    $e instanceof ValidationException => $responder->error($e->errors(), $e->getMessage(), 422),
 
                     $e instanceof NotFoundHttpException => $responder->error(null, $e->getMessage() ?: 'Resource not found', 404),
                     $e instanceof HttpException => $responder->error(null, $e->getMessage(), $e->getStatusCode()),

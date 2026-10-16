@@ -7,6 +7,8 @@ use App\Application\Services\ProductCatalogService;
 use App\Application\Services\ProductPriceService;
 use App\Application\Services\ProductService;
 use App\Application\Services\SaleUnitService;
+use App\Application\Services\ImageCompressionService;
+use App\Application\Services\CloudflareImageService;
 use App\Exports\ProductsExport;
 use App\Imports\ProductsImport;
 use App\Infrastructure\Persistence\Models\Product;
@@ -21,6 +23,8 @@ class ProductController extends Controller
 {
     public function __construct(
         private ProductService $productService,
+        private readonly ImageCompressionService $compressionService,
+        private readonly CloudflareImageService $cloudflareService,
         private CategoryService $categoryService,
         private SaleUnitService $saleUnitService,
         private ProductPriceService $productPriceService,
@@ -43,9 +47,20 @@ class ProductController extends Controller
 
     public function store(CreateProductRequest $request)
     {
+        $file = $request->hasFile('image') ? $request->file('image') : null;
+        $imageUrl = null;
+        $compressed = null;
+        if ($file) {
+            $compressed = $this->compressionService->compressUnderLimit($file);
+            $uploadResult = $this->cloudflareService->upload($compressed);
+            $imageUrl = $uploadResult->url;
+        }
         $dto = $request->toDto();
+        $dto->image = $imageUrl;
         $this->productService->create($dto);
-
+        if ($compressed && $compressed->isTemporary && file_exists($compressed->filePath)) {
+            @unlink($compressed->filePath);
+        }
         return redirect()->route('products.index')->with('success', 'Product created successfully.');
     }
 
@@ -69,16 +84,36 @@ class ProductController extends Controller
 
     public function update(int $id, UpdateProductRequest $request)
     {
+        $product = $this->productService->findById($id);
+        $oldImage = $product->image ?? null;
+        $file = $request->hasFile('image') ? $request->file('image') : null;
+        $imageUrl = $oldImage;
+        $compressed = null;
+        if ($file) {
+            $compressed = $this->compressionService->compressUnderLimit($file);
+            $uploadResult = $this->cloudflareService->upload($compressed);
+            $imageUrl = $uploadResult->url;
+        }
         $dto = $request->toDto();
+        $dto->image = $imageUrl;
         $this->productService->update($dto, $id);
-
+        if ($file && $oldImage) {
+            $this->cloudflareService->delete($oldImage);
+        }
+        if ($compressed && $compressed->isTemporary && file_exists($compressed->filePath)) {
+            @unlink($compressed->filePath);
+        }
         return redirect()->route('products.index')->with('success', 'Product updated successfully.');
     }
 
     public function destroy(int $id)
     {
+        $product = $this->productService->findById($id);
+        $image = $product->image ?? null;
+        if ($image) {
+            $this->cloudflareService->delete($image);
+        }
         $this->productService->destroy($id);
-
         return redirect()->route('products.index')->with('success', 'Product deleted successfully.');
     }
 

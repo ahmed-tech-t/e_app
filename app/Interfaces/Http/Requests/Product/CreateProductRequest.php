@@ -33,7 +33,7 @@ class CreateProductRequest extends FormRequest
             'brand' => ValidationRules::name(),
             'sale_unit_id' => ValidationRules::saleUnitId(),
             'units_per_carton' => ValidationRules::quantity(false),
-            'image' => ValidationRules::image(false),
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:51200',
             'retail_price' => ValidationRules::price(),
             'wholesale_price' => ValidationRules::price(),
             'size' => 'nullable|string|max:50',

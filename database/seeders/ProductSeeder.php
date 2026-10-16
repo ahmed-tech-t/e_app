@@ -12,6 +12,13 @@ class ProductSeeder extends Seeder
      */
     public function run(): void
     {
-        Product::factory(2)->create();
+        if (\App\Infrastructure\Persistence\Models\Category::count() === 0) {
+            $this->call(CategorySeeder::class);
+        }
+        if (\App\Infrastructure\Persistence\Models\SaleUnit::count() === 0) {
+            $this->call(SaleUnitSeeder::class);
+        }
+
+        Product::factory(100)->create();
     }
 }
