@@ -15,5 +15,5 @@ class EPurchaseRepo extends BaseERepo implements PurchaseRepo {
     protected array $searchFilters = [];
 
     protected array $withForPaginate = [];
-    protected array $defaultRelationships = ['items'];
+    protected array $defaultRelationships = ['items.product', 'supplier', 'store'];
 }

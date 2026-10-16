@@ -25,4 +25,14 @@ class Sales extends Model
     {
         return $this->hasMany(SalesItem::class, 'bill_id');
     }
+
+    public function store()
+    {
+        return $this->belongsTo(Location::class, 'store_id');
+    }
+
+    public function location()
+    {
+        return $this->belongsTo(Location::class, 'store_id');
+    }
 }

@@ -543,4 +543,53 @@ class SalesReturnsTest extends TestCase
         // Stock remains 8 (10 - 2)
         $this->assertEquals(8, $batch->fresh()->remaining_quantity);
     }
+
+    public function test_sales_return_allows_returning_single_item_from_multi_item_sale_with_empty_items(): void
+    {
+        $store = $this->createLocation();
+        $product1 = $this->createProduct([], retailPrice: 100.0);
+        $product2 = $this->createProduct([], retailPrice: 50.0);
+        $batch1 = $this->createBatch($product1, $store, quantity: 10);
+        $batch2 = $this->createBatch($product2, $store, quantity: 10);
+
+        $this->postJson($this->salesApiUrl, [
+            'customer_name' => 'Partial Return Customer',
+            'store_id' => $store->id,
+            'bill_type' => PriceType::RETAIL->value,
+            'discount' => 0,
+            'items' => [
+                ['product_id' => $product1->id, 'quantity' => 5],
+                ['product_id' => $product2->id, 'quantity' => 5],
+            ],
+        ])->assertStatus(200);
+
+        $sale = Sales::first();
+
+        // Return only product1 with quantity 2, leaving product2 quantity empty
+        $response = $this->post(route('sales-returns.store'), [
+            'sales_id' => $sale->id,
+            'store_id' => $store->id,
+            'items' => [
+                [
+                    'product_id' => $product1->id,
+                    'quantity' => '2',
+                    'restock_status' => ReturnedItemStatus::RESEALABLE->value,
+                ],
+                [
+                    'product_id' => $product2->id,
+                    'quantity' => '',
+                    'restock_status' => ReturnedItemStatus::RESEALABLE->value,
+                ],
+            ],
+        ]);
+
+        $response->assertSessionHasNoErrors();
+        $response->assertRedirect(route('sales-returns.index'));
+
+        // Product 1: 10 - 5 + 2 = 7
+        $this->assertEquals(7, $batch1->fresh()->remaining_quantity);
+        // Product 2: 10 - 5 = 5 (untouched by return)
+        $this->assertEquals(5, $batch2->fresh()->remaining_quantity);
+    }
 }
+

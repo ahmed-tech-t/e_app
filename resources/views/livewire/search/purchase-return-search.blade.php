@@ -11,7 +11,8 @@ $items = computed(function () {
     if ($this->search) {
         $search = strtolower($this->search);
         $all = $all->filter(function ($item) use ($search) {
-            return str_contains(strtolower($item->code ?? ''), $search);
+            return str_contains(strtolower($item->code ?? ''), $search)
+                || str_contains(strtolower($item->original_bill_code ?? ''), $search);
         });
     }
 
@@ -42,7 +43,7 @@ $items = computed(function () {
                         <tr>
                             <td class="px-4 py-3 text-sm">{{ $item->code }}</td>
                             <td class="px-4 py-3 text-sm hidden md:table-cell">
-                                <a href="{{ route('purchases.show', $item->purchase_id) }}" class="text-blue-600 dark:text-blue-400 hover:underline">#{{ $item->purchase_id }}</a>
+                                <a href="{{ route('purchases.show', $item->purchase_id) }}" class="text-blue-600 dark:text-blue-400 hover:underline">{{ $item->original_bill_code ?? ('#' . $item->purchase_id) }}</a>
                             </td>
                             <td class="px-4 py-3 text-sm font-medium">{{ number_format($item->grand_total, 2) }}</td>
                             <td class="px-4 py-3 text-sm hidden lg:table-cell">{{ $item->created_at?->format('M d, Y') }}</td>

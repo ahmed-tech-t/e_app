@@ -15,6 +15,8 @@ class PurchaseReturnItemEntity
         public ?int $purchase_return_id = null,
         public ?float $price = null,
         public ?float $total = null,
+        public ?ProductEntity $product = null,
+        public ?string $product_code = null,
     ) {}
 
     public static function create(array $data, float $price)

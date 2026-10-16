@@ -8,7 +8,6 @@ use App\Infrastructure\Persistence\Pipeline\Filters\StockMovement\FilterByLocati
 use App\Infrastructure\Persistence\Pipeline\Filters\StockMovement\FilterByType;
 use App\Infrastructure\Persistence\Pipeline\Filters\StockMovement\StockMovementQueryContext;
 use App\Infrastructure\Persistence\utils\StockMovementType;
-
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -45,6 +44,39 @@ class StockMovement extends Model
     {
         return Attribute::make(
             get: fn() => $this->batch?->product_id,
+        );
+    }
+
+    public function billUrl(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                if (empty($this->bill_number)) {
+                    return null;
+                }
+
+                if (str_starts_with($this->bill_number, 'PUR-')) {
+                    $id = Purchase::where('code', $this->bill_number)->value('id');
+                    return $id ? route('purchases.show', $id) : null;
+                }
+
+                if (str_starts_with($this->bill_number, 'SAL-')) {
+                    $id = Sales::where('code', $this->bill_number)->value('id');
+                    return $id ? route('sales.show', $id) : null;
+                }
+
+                if (str_starts_with($this->bill_number, 'RPU-')) {
+                    $id = PurchaseReturn::where('code', $this->bill_number)->value('id');
+                    return $id ? route('purchase-returns.show', $id) : null;
+                }
+
+                if (str_starts_with($this->bill_number, 'RSA-')) {
+                    $id = SalesReturns::where('code', $this->bill_number)->value('id');
+                    return $id ? route('sales-returns.show', $id) : null;
+                }
+
+                return null;
+            }
         );
     }
 

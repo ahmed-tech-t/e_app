@@ -18,8 +18,14 @@
                     </p>
                 </div>
                 <div>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ __('app.purchases.supplier') }} ID</p>
-                    <p class="font-medium">{{ $originalPurchase->supplier_id }}</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ __('app.purchases.supplier') }} {{ __('app.common.code') }}</p>
+                    <p class="font-medium">
+                        @if($originalPurchase->supplier_id)
+                            <a href="{{ route('suppliers.show', $originalPurchase->supplier_id) }}" class="text-blue-600 dark:text-blue-400 hover:underline">{{ $originalPurchase->supplier?->code ?? $originalPurchase->supplier_code ?? $originalPurchase->supplier_id }}</a>
+                        @else
+                            {{ $originalPurchase->supplier?->code ?? $originalPurchase->supplier_code ?? '-' }}
+                        @endif
+                    </p>
                 </div>
                 <div>
                     <p class="text-sm text-gray-500 dark:text-gray-400">{{ __('app.common.date') }}</p>
@@ -53,7 +59,7 @@
                 <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                     <thead>
                         <tr>
-                            <th class="px-4 py-3 text-start text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">{{ __('app.common.product_id') }}</th>
+                            <th class="px-4 py-3 text-start text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">{{ __('app.common.product') }}</th>
                             <th class="px-4 py-3 text-start text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">{{ __('app.common.quantity') }}</th>
                             <th class="px-4 py-3 text-start text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">{{ __('app.common.price') }}</th>
                             <th class="px-4 py-3 text-start text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">{{ __('app.common.total') }}</th>
@@ -64,7 +70,14 @@
                     <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                         @foreach($return->items as $item)
                             <tr>
-                                <td class="px-4 py-3 text-sm">{{ $item->product_id }}</td>
+                                <td class="px-4 py-3 text-sm">
+                                    @if($item->product_id)
+                                        <a href="{{ route('products.show', $item->product_id) }}" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">{{ $item->product?->code ?? $item->product_code ?? $item->product_id }}</a>
+                                    @else
+                                        {{ $item->product?->code ?? $item->product_code ?? $item->product_id }}
+                                    @endif
+                                    - {{ app()->getLocale() === 'ar' ? ($item->product?->name_ar ?? $item->product?->name_en) : ($item->product?->name_en ?? $item->product?->name_ar) }}
+                                </td>
                                 <td class="px-4 py-3 text-sm">{{ $item->quantity }}</td>
                                 <td class="px-4 py-3 text-sm">{{ number_format($item->price, 2) }}</td>
                                 <td class="px-4 py-3 text-sm">{{ number_format($item->total, 2) }}</td>

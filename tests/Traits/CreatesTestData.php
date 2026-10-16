@@ -10,11 +10,22 @@ use App\Infrastructure\Persistence\Models\ProductPrice;
 use App\Infrastructure\Persistence\Models\SaleUnit;
 use App\Infrastructure\Persistence\Models\StockMovement;
 use App\Infrastructure\Persistence\Models\Supplier;
+use App\Infrastructure\Persistence\Models\User;
 use App\Infrastructure\Persistence\utils\PriceType;
 use App\Infrastructure\Persistence\utils\StockMovementType;
+use Illuminate\Support\Facades\Hash;
 
 trait CreatesTestData
 {
+    public function createUser(array $overrides = []): User
+    {
+        return User::create(array_merge([
+            'name' => 'Test User ' . uniqid(),
+            'email' => 'user_' . uniqid() . '@example.com',
+            'password' => Hash::make('password'),
+        ], $overrides));
+    }
+
     public function createCategory(array $overrides = []): Category
     {
         return Category::create(array_merge([

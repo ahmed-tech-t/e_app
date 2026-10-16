@@ -25,4 +25,9 @@ class PurchaseReturnItem extends Model
     {
         return $this->belongsTo(PurchaseReturn::class, 'purchase_return_id');
     }
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class, 'product_id');
+    }
 }

@@ -16,8 +16,8 @@ class ESalesReturnsRepo extends BaseERepo implements SalesReturnsRepo
 
     protected array $searchFilters = [];
 
-    protected array $withForPaginate = [];
-    protected array $defaultRelationships = ['items'];
+    protected array $withForPaginate = ['items.product', 'sale'];
+    protected array $defaultRelationships = ['items.product', 'sale'];
 
     /**
      * @inheritDoc

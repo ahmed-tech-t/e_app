@@ -13,7 +13,9 @@ class PurchaseItemEntity
         public float $price,
         public ?int $purchase_id = null,
         public ?int $id = null,
-        public ?float $total = null
+        public ?float $total = null,
+        public ?ProductEntity $product = null,
+        public ?string $product_code = null
     ) {
 
     }

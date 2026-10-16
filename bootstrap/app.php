@@ -18,6 +18,10 @@ return Application::configure(basePath: dirname(__DIR__))
         apiPrefix: '',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->redirectTo(
+            guests: '/login',
+            users: '/'
+        );
         $middleware->web(append: [\App\Http\Middleware\SetLocale::class]);
         $middleware->encryptCookies(except: [
             'dark_mode',

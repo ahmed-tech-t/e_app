@@ -5,11 +5,16 @@ namespace App\Application\Mapper;
 use App\Application\DTOs\PurchaseReturnItemDto;
 use App\Domain\Entities\PurchaseItemEntity;
 use App\Domain\Entities\PurchaseReturnItemEntity;
+use Illuminate\Database\Eloquent\Model;
 
 class PurchaseReturnItemMapper
 {
     public static function modelToEntity($model)
     {
+        $productEntity = ($model instanceof Model && $model->relationLoaded('product') && $model->product)
+            ? ProductMapper::modelToEntity($model->product)
+            : null;
+
         return new PurchaseReturnItemEntity(
             id: $model->id,
             purchase_return_id: $model->purchase_return_id,
@@ -19,6 +24,8 @@ class PurchaseReturnItemMapper
             total: $model->total,
             reason: $model->reason,
             restock_status: $model->restock_status,
+            product: $productEntity,
+            product_code: $productEntity?->code,
         );
     }
 

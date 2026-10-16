@@ -61,7 +61,15 @@
                     @foreach($stockMovements as $movement)
                         <tr>
                             <td class="px-4 py-3 text-sm">{{ $movement->created_at?->format('M d, Y H:i') }}</td>
-                            <td class="px-4 py-3 text-sm hidden md:table-cell">{{ $movement->batch->product->name_ar ?? $movement->batch->product->name_en ?? $movement->product_batch_id }}</td>
+                            <td class="px-4 py-3 text-sm hidden md:table-cell">
+                                @if($movement->productId)
+                                    <a href="{{ route('products.show', $movement->productId) }}" class="text-blue-600 dark:text-blue-400 hover:underline">
+                                        {{ $movement->batch->product->name_ar ?? $movement->batch->product->name_en ?? $movement->product_batch_id }}
+                                    </a>
+                                @else
+                                    {{ $movement->batch->product->name_ar ?? $movement->batch->product->name_en ?? $movement->product_batch_id }}
+                                @endif
+                            </td>
                             <td class="px-4 py-3 text-sm hidden lg:table-cell">{{ $movement->location->name ?? $movement->location_id }}</td>
                             <td class="px-4 py-3 text-sm font-medium">{{ $movement->quantity }}</td>
                             <td class="px-4 py-3 text-sm hidden lg:table-cell">
@@ -69,7 +77,15 @@
                                  :text="ucfirst(str_replace('_', ' ', 
                                  $movement->type->name))" />
                             </td>
-                            <td class="px-4 py-3 text-sm hidden lg:table-cell">{{ $movement->bill_number ?? '-' }}</td>
+                            <td class="px-4 py-3 text-sm hidden lg:table-cell">
+                                @if($movement->bill_url)
+                                    <a href="{{ $movement->bill_url }}" class="text-blue-600 dark:text-blue-400 hover:underline font-mono">
+                                        {{ $movement->bill_number }}
+                                    </a>
+                                @else
+                                    <span class="font-mono">{{ $movement->bill_number ?? '-' }}</span>
+                                @endif
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>

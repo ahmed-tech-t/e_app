@@ -44,6 +44,27 @@ class CreateSalesReturnsRequest extends FormRequest
         ];
     }
 
+    protected function prepareForValidation(): void
+    {
+        if ($this->has('items') && is_array($this->items)) {
+            $filtered = array_filter($this->items, function ($item) {
+                return isset($item['quantity']) && $item['quantity'] !== null && $item['quantity'] !== '';
+            });
+
+            $this->merge([
+                'items' => array_values($filtered),
+            ]);
+        }
+    }
+
+    public function messages(): array
+    {
+        return [
+            'items.required' => __('app.common.select_at_least_one'),
+            'items.min' => __('app.common.select_at_least_one'),
+        ];
+    }
+
     public function toDto(): SalesReturnsDto
     {
         $data = $this->validated();

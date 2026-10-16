@@ -13,6 +13,7 @@ class PurchaseReturnMapper
         return new PurchaseReturnEntity(
             id: $model['id'],
             code: $model['code'],
+            original_bill_code: $model->purchase?->code ?? null,
             store_id: $model['location_id'],
             purchase_id: $model['original_bill_id'],
             discount: $model['discount'],

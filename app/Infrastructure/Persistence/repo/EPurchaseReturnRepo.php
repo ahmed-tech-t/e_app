@@ -12,8 +12,8 @@ class EPurchaseReturnRepo extends BaseERepo implements PurchaseReturnRepo
     protected $mapper = PurchaseReturnMapper::class;
 
     protected array $searchFilters = [];
-    protected array $withForPaginate = [];
-    protected array $defaultRelationships = ['items'];
+    protected array $withForPaginate = ['items.product', 'purchase'];
+    protected array $defaultRelationships = ['items.product', 'purchase'];
 
     public function findByOriginalBillId(int $id)
     {

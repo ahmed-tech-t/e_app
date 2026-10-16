@@ -56,8 +56,15 @@
                             <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
                                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                                     <div>
-                                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">{{ __('app.common.product_id') }}</p>
-                                        <p class="font-medium text-sm">{{ $item->product_id }}</p>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">{{ __('app.common.product') }}</p>
+                                        <p class="font-medium text-sm">
+                                            @if($item->product_id)
+                                                <a href="{{ route('products.show', $item->product_id) }}" class="text-blue-600 dark:text-blue-400 hover:underline">{{ $item->product?->code ?? $item->product_code ?? $item->product_id }}</a>
+                                            @else
+                                                {{ $item->product?->code ?? $item->product_code ?? $item->product_id }}
+                                            @endif
+                                            - {{ app()->getLocale() === 'ar' ? ($item->product?->name_ar ?? $item->product?->name_en) : ($item->product?->name_en ?? $item->product?->name_ar) }}
+                                        </p>
                                         <input type="hidden" name="items[{{ $index }}][product_id]" value="{{ $item->product_id }}">
                                     </div>
                                     <div>
@@ -65,18 +72,18 @@
                                         <p class="font-medium text-sm">{{ $item->quantity }}</p>
                                     </div>
                                     <div>
-                                        <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">{{ __('app.common.return_qty') }} <span class="text-red-500">*</span></label>
-                                        <input type="number" name="items[{{ $index }}][quantity]" min="1" max="{{ $item->quantity }}" required
+                                        <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">{{ __('app.common.return_qty') }}</label>
+                                        <input type="number" name="items[{{ $index }}][quantity]" min="1" max="{{ $item->quantity }}" placeholder="0"
+                                            value="{{ old("items.{$index}.quantity") }}"
                                             class="w-full rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500">
                                         @error("items.{$index}.quantity")<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
                                     </div>
                                     <div>
-                                        <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">{{ __('app.common.status') }} <span class="text-red-500">*</span></label>
-                                        <select name="items[{{ $index }}][restock_status]" required
+                                        <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">{{ __('app.common.status') }}</label>
+                                        <select name="items[{{ $index }}][restock_status]"
                                             class="w-full rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500">
-                                            <option value="">{{ __('app.common.select_location') }}</option>
-                                            <option value="resealable">{{ __('app.common.resealable') }}</option>
-                                            <option value="damaged">{{ __('app.common.damaged') }}</option>
+                                            <option value="resealable" {{ old("items.{$index}.restock_status", 'resealable') === 'resealable' ? 'selected' : '' }}>{{ __('app.common.resealable') }}</option>
+                                            <option value="damaged" {{ old("items.{$index}.restock_status") === 'damaged' ? 'selected' : '' }}>{{ __('app.common.damaged') }}</option>
                                         </select>
                                         @error("items.{$index}.restock_status")<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
                                     </div>

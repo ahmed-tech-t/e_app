@@ -11,6 +11,11 @@
              discount: 0,
              tax: 0,
              items: [{ product_id: '', quantity: 1, price: 0 }],
+             products: @json(collect($products)->map(fn($p) => ['id' => $p->id, 'code' => $p->code])),
+             getProductCode(id) {
+                 const p = this.products.find(x => x.id == id);
+                 return p ? p.code : id;
+             },
              get subtotal() {
                  return this.items.reduce((sum, item) => sum + (item.quantity * item.price), 0);
              },
@@ -63,7 +68,7 @@
                         <select x-model="supplier_id" class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-2 text-sm">
                             <option value="">{{ __('app.purchases.select_supplier') }}</option>
                             @foreach($suppliers as $supplier)
-                                <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>
+                                <option value="{{ $supplier->id }}">{{ $supplier->name }} ({{ $supplier->code }})</option>
                             @endforeach
                         </select>
                     </div>
@@ -72,7 +77,7 @@
                         <select x-model="store_id" class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-2 text-sm">
                             <option value="">{{ __('app.common.select_location') }}</option>
                             @foreach($locations as $location)
-                                <option value="{{ $location->id }}">{{ $location->name }}</option>
+                                <option value="{{ $location->id }}">{{ $location->name }} ({{ $location->code }})</option>
                             @endforeach
                         </select>
                     </div>
@@ -99,7 +104,7 @@
                                 <select x-model="item.product_id" class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-2 text-sm">
                                     <option value="">{{ __('app.common.select_product') }}</option>
                                     @foreach($products as $product)
-                                        <option value="{{ $product->id }}">{{ $product->name_ar }}</option>
+                                        <option value="{{ $product->id }}">{{ $product->code }} - {{ $product->name_ar }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -152,7 +157,7 @@
                     <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                         <thead>
                             <tr>
-                                <th class="px-4 py-2 text-start text-xs font-medium text-gray-500 dark:text-gray-400">{{ __('app.common.product') }}</th>
+                                <th class="px-4 py-2 text-start text-xs font-medium text-gray-500 dark:text-gray-400">{{ __('app.common.product_code') }}</th>
                                 <th class="px-4 py-2 text-start text-xs font-medium text-gray-500 dark:text-gray-400">{{ __('app.common.quantity') }}</th>
                                 <th class="px-4 py-2 text-start text-xs font-medium text-gray-500 dark:text-gray-400">{{ __('app.common.price') }}</th>
                                 <th class="px-4 py-2 text-start text-xs font-medium text-gray-500 dark:text-gray-400">{{ __('app.common.total') }}</th>
@@ -161,7 +166,7 @@
                         <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                             <template x-for="(item, index) in items" :key="index">
                                 <tr>
-                                    <td class="px-4 py-2 text-sm" x-text="item.product_id"></td>
+                                    <td class="px-4 py-2 text-sm font-mono" x-text="getProductCode(item.product_id)"></td>
                                     <td class="px-4 py-2 text-sm" x-text="item.quantity"></td>
                                     <td class="px-4 py-2 text-sm" x-text="parseFloat(item.price).toFixed(2)"></td>
                                     <td class="px-4 py-2 text-sm" x-text="(item.quantity * item.price).toFixed(2)"></td>

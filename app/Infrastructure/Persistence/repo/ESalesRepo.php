@@ -15,6 +15,6 @@ class ESalesRepo extends BaseERepo implements SalesRepo
 
     protected array $searchFilters = [];
 
-    protected array $withForPaginate = ['items'];
-    protected array $defaultRelationships = ['items'];
+    protected array $withForPaginate = ['items.product'];
+    protected array $defaultRelationships = ['items.product'];
 }

@@ -90,8 +90,14 @@ class WebPosTest extends TestCase
         $purchaseResponse->assertSessionHas('success');
 
         $purchase = \App\Infrastructure\Persistence\Models\Purchase::first();
-        $this->get("/purchases/{$purchase->id}")->assertStatus(200);
-        $this->get("/purchases/{$purchase->id}/return")->assertStatus(200);
+        $this->get("/purchases/{$purchase->id}")
+            ->assertStatus(200)
+            ->assertSee($supplier->code)
+            ->assertSee($store1->code)
+            ->assertSee($product->code);
+        $this->get("/purchases/{$purchase->id}/return")
+            ->assertStatus(200)
+            ->assertSee($product->code);
 
         // 2. Web Stock Transfer Submission
         $transferResponse = $this->post('/stock/transfer', [
@@ -117,8 +123,12 @@ class WebPosTest extends TestCase
         $saleResponse->assertSessionHas('success');
 
         $sale = \App\Infrastructure\Persistence\Models\Sales::first();
-        $this->get("/sales/{$sale->id}")->assertStatus(200);
-        $this->get("/sales/{$sale->id}/return")->assertStatus(200);
+        $this->get("/sales/{$sale->id}")
+            ->assertStatus(200)
+            ->assertSee($product->code);
+        $this->get("/sales/{$sale->id}/return")
+            ->assertStatus(200)
+            ->assertSee($product->code);
 
         // 4. Web Sales Return Submission & Show View
         $salesReturnResponse = $this->post('/sales-returns', [
@@ -136,7 +146,9 @@ class WebPosTest extends TestCase
         $salesReturnResponse->assertSessionHas('success');
 
         $salesReturn = \App\Infrastructure\Persistence\Models\SalesReturns::first();
-        $this->get("/sales-returns/{$salesReturn->id}")->assertStatus(200);
+        $this->get("/sales-returns/{$salesReturn->id}")
+            ->assertStatus(200)
+            ->assertSee($product->code);
 
         // 5. Web Purchase Return Submission & Show View
         $purchaseReturnResponse = $this->post('/purchase-returns', [
@@ -155,7 +167,10 @@ class WebPosTest extends TestCase
         $purchaseReturnResponse->assertSessionHas('success');
 
         $purchaseReturn = \App\Infrastructure\Persistence\Models\PurchaseReturn::first();
-        $this->get("/purchase-returns/{$purchaseReturn->id}")->assertStatus(200);
+        $this->get("/purchase-returns/{$purchaseReturn->id}")
+            ->assertStatus(200)
+            ->assertSee($product->code)
+            ->assertSee($supplier->code);
     }
 }
 

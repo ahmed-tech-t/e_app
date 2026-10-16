@@ -148,7 +148,7 @@
                             @foreach($recentSalesReturns as $r)
                                 <tr>
                                     <td class="px-3 py-2 text-sm"><a href="{{ route('sales-returns.show', $r->id) }}" class="text-blue-600 dark:text-blue-400 hover:underline">{{ $r->code }}</a></td>
-                                    <td class="px-3 py-2 text-sm"><a href="{{ route('sales.show', $r->sales_id) }}" class="text-blue-600 dark:text-blue-400 hover:underline">#{{ $r->sales_id }}</a></td>
+                                    <td class="px-3 py-2 text-sm"><a href="{{ route('sales.show', $r->sales_id) }}" class="text-blue-600 dark:text-blue-400 hover:underline">{{ $r->original_bill_code ?? ('#' . $r->sales_id) }}</a></td>
                                     <td class="px-3 py-2 text-sm">{{ number_format($r->grand_total, 2) }}</td>
                                     <td class="px-3 py-2 text-sm">{{ $r->created_at?->format('M d, Y') }}</td>
                                 </tr>
@@ -177,7 +177,7 @@
                             @foreach($recentPurchaseReturns as $r)
                                 <tr>
                                     <td class="px-3 py-2 text-sm"><a href="{{ route('purchase-returns.show', $r->id) }}" class="text-blue-600 dark:text-blue-400 hover:underline">{{ $r->code }}</a></td>
-                                    <td class="px-3 py-2 text-sm"><a href="{{ route('purchases.show', $r->purchase_id) }}" class="text-blue-600 dark:text-blue-400 hover:underline">#{{ $r->purchase_id }}</a></td>
+                                    <td class="px-3 py-2 text-sm"><a href="{{ route('purchases.show', $r->purchase_id) }}" class="text-blue-600 dark:text-blue-400 hover:underline">{{ $r->original_bill_code ?? ('#' . $r->purchase_id) }}</a></td>
                                     <td class="px-3 py-2 text-sm">{{ number_format($r->grand_total, 2) }}</td>
                                     <td class="px-3 py-2 text-sm">{{ $r->created_at?->format('M d, Y') }}</td>
                                 </tr>

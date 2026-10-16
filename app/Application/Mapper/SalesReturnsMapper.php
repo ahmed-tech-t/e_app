@@ -15,6 +15,7 @@ class SalesReturnsMapper
         return new SalesReturnsEntity(
             id: $model['id'],
             code: $model['code'],
+            original_bill_code: $model->sale?->code ?? null,
             store_id: $model['location_id'],
             sales_id: $model['original_bill_id'],
             discount: $model['discount'],

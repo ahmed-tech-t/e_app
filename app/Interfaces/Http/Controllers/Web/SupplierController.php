@@ -28,6 +28,13 @@ class SupplierController extends Controller
         return redirect()->route('suppliers.index')->with('success', 'Supplier created successfully.');
     }
 
+    public function show(int $id)
+    {
+        $supplier = $this->supplierService->findById($id);
+
+        return view('suppliers.show', compact('supplier'));
+    }
+
     public function edit(int $id)
     {
         $supplier = $this->supplierService->findById($id);

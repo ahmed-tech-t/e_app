@@ -43,14 +43,15 @@ $items = computed(function () {
                 <tbody class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
                     @foreach($this->items as $supplier)
                         <tr>
-                            <td class="px-4 py-3 text-sm">{{ $supplier->code }}</td>
+                            <td class="px-4 py-3 text-sm"><a href="{{ route('suppliers.show', $supplier->id) }}" class="text-blue-600 dark:text-blue-400 hover:underline">{{ $supplier->code }}</a></td>
                             <td class="px-4 py-3 text-sm">{{ $supplier->name }}</td>
                             <td class="px-4 py-3 text-sm hidden md:table-cell">{{ $supplier->email ?? '-' }}</td>
                             <td class="px-4 py-3 text-sm hidden md:table-cell">{{ $supplier->phone ?? '-' }}</td>
                             <td class="px-4 py-3 text-sm hidden lg:table-cell">{{ $supplier->address ?? '-' }}</td>
                             <td class="px-4 py-3 text-sm">
                                 <div class="flex items-center gap-2">
-                                    <a href="{{ route('suppliers.edit', $supplier->id) }}" class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-lg text-blue-700 bg-blue-100 hover:bg-blue-200 dark:text-blue-400 dark:bg-blue-900 dark:hover:bg-blue-800">{{ __('app.common.edit') }}</a>
+                                    <a href="{{ route('suppliers.show', $supplier->id) }}" class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-lg text-blue-700 bg-blue-100 hover:bg-blue-200 dark:text-blue-400 dark:bg-blue-900 dark:hover:bg-blue-800">{{ __('app.common.view') }}</a>
+                                    <a href="{{ route('suppliers.edit', $supplier->id) }}" class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-lg text-gray-700 bg-gray-100 hover:bg-gray-200 dark:text-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600">{{ __('app.common.edit') }}</a>
                                     <x-ui.delete-button :action="route('suppliers.destroy', $supplier->id)" />
                                 </div>
                             </td>

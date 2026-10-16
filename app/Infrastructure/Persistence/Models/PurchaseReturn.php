@@ -20,4 +20,9 @@ class PurchaseReturn extends Model
     {
         return $this->hasMany(PurchaseReturnItem::class, 'purchase_return_id');
     }
+
+    public function purchase()
+    {
+        return $this->belongsTo(Purchase::class, 'original_bill_id');
+    }
 }

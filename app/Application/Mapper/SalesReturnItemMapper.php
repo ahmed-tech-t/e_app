@@ -7,14 +7,19 @@ use App\Domain\Entities\SalesItemEntity;
 use App\Domain\Entities\SalesReturnItemEntity;
 use App\Domain\Utils\ReturnedItemStatus;
 use App\Infrastructure\Persistence\Models\Sales;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 
 class SalesReturnItemMapper
 {
     public static function modelToEntity($model)
     {
-        return new SalesReturnItemEntity(
+        $productEntity = ($model instanceof Model && $model->relationLoaded('product') && $model->product)
+            ? ProductMapper::modelToEntity($model->product)
+            : null;
 
+        return new SalesReturnItemEntity(
+            id: $model->id,
             sales_return_id: $model->sales_return_id,
             product_id: $model->product_id,
             quantity: $model->quantity,
@@ -22,6 +27,8 @@ class SalesReturnItemMapper
             total: $model->total,
             reason: $model->reason,
             restock_status: $model->restock_status,
+            product: $productEntity,
+            product_code: $productEntity?->code,
         );
     }
 

@@ -43,7 +43,13 @@ $items = computed(function () {
                     @foreach($this->items as $purchase)
                         <tr>
                             <td class="px-4 py-3 text-sm">{{ $purchase->code }}</td>
-                            <td class="px-4 py-3 text-sm hidden md:table-cell">{{ $purchase->supplier_id }}</td>
+                            <td class="px-4 py-3 text-sm hidden md:table-cell">
+                                @if($purchase->supplier_id)
+                                    <a href="{{ route('suppliers.show', $purchase->supplier_id) }}" class="text-blue-600 dark:text-blue-400 hover:underline">{{ $purchase->supplier?->code ?? $purchase->supplier_code ?? $purchase->supplier_id }}</a>
+                                @else
+                                    {{ $purchase->supplier?->code ?? $purchase->supplier_code ?? '-' }}
+                                @endif
+                            </td>
                             <td class="px-4 py-3 text-sm hidden md:table-cell">{{ number_format($purchase->total, 2) }}</td>
                             <td class="px-4 py-3 text-sm font-medium">{{ number_format($purchase->grand_total, 2) }}</td>
                             <td class="px-4 py-3 text-sm hidden lg:table-cell">{{ $purchase->created_at?->format('M d, Y') }}</td>

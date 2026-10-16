@@ -54,7 +54,7 @@
                 <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                     <thead>
                         <tr>
-                            <th class="px-4 py-3 text-start text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">{{ __('app.common.product_id') }}</th>
+                            <th class="px-4 py-3 text-start text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">{{ __('app.common.product_code') }}</th>
                             <th class="px-4 py-3 text-start text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">{{ __('app.common.quantity') }}</th>
                             <th class="px-4 py-3 text-start text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">{{ __('app.common.price') }}</th>
                             <th class="px-4 py-3 text-start text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">{{ __('app.common.total') }}</th>
@@ -63,7 +63,13 @@
                     <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                         @foreach($sale->items as $item)
                             <tr>
-                                <td class="px-4 py-3 text-sm">{{ $item->product_id }}</td>
+                                <td class="px-4 py-3 text-sm">
+                                    @if($item->product_id)
+                                        <a href="{{ route('products.show', $item->product_id) }}" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">{{ $item->product?->code ?? $item->product_code ?? $item->product_id }}</a>
+                                    @else
+                                        {{ $item->product?->code ?? $item->product_code ?? $item->product_id }}
+                                    @endif
+                                </td>
                                 <td class="px-4 py-3 text-sm">{{ $item->quantity }}</td>
                                 <td class="px-4 py-3 text-sm">{{ number_format($item->price, 2) }}</td>
                                 <td class="px-4 py-3 text-sm">{{ number_format($item->total, 2) }}</td>

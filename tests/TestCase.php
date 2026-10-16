@@ -8,4 +8,20 @@ use Tests\Traits\CreatesTestData;
 abstract class TestCase extends BaseTestCase
 {
     use CreatesTestData;
+
+    protected bool $authenticateUser = true;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        if ($this->authenticateUser) {
+            try {
+                $user = $this->createUser();
+                $this->actingAs($user, 'web');
+            } catch (\Throwable) {
+                // Ignore if database is not migrated yet
+            }
+        }
+    }
 }

@@ -312,4 +312,55 @@ class PurchaseReturnsTest extends TestCase
         // Batch remaining quantity must NOT drop to negative
         $this->assertEquals(2, $batch->fresh()->remaining_quantity);
     }
+
+    public function test_purchase_return_allows_returning_single_item_from_multi_item_bill_with_empty_items(): void
+    {
+        $purchaseService = app($this->app->make(PurchaseService::class)::class);
+        $supplier = $this->createSupplier();
+        $store = $this->createLocation();
+        $product1 = $this->createProduct();
+        $product2 = $this->createProduct();
+
+        $purchase = $purchaseService->create(new PurchaseDto(
+            supplier_id: $supplier->id,
+            store_id: $store->id,
+            tax: 0,
+            discount: 0,
+            paper_total: 1000.0,
+            items: [
+                ['product_id' => $product1->id, 'quantity' => 10, 'price' => 50.0],
+                ['product_id' => $product2->id, 'quantity' => 10, 'price' => 50.0],
+            ]
+        ));
+
+        // Submit return where product 1 has quantity 2 and product 2 has empty string quantity
+        $response = $this->post(route('purchase-returns.store'), [
+            'purchase_id' => $purchase->id,
+            'store_id' => $store->id,
+            'items' => [
+                [
+                    'product_id' => $product1->id,
+                    'quantity' => '2',
+                    'restock_status' => ReturnedItemStatus::RESEALABLE->value,
+                ],
+                [
+                    'product_id' => $product2->id,
+                    'quantity' => '',
+                    'restock_status' => ReturnedItemStatus::RESEALABLE->value,
+                ],
+            ],
+        ]);
+
+        $response->assertSessionHasNoErrors();
+        $response->assertRedirect(route('purchase-returns.index'));
+
+        $batch1 = ProductBatch::where('product_id', $product1->id)->first();
+        $batch2 = ProductBatch::where('product_id', $product2->id)->first();
+
+        // Product 1 returned 2 units -> 8 remaining
+        $this->assertEquals(8, $batch1->remaining_quantity);
+        // Product 2 was untouched -> 10 remaining
+        $this->assertEquals(10, $batch2->remaining_quantity);
+    }
 }
+

@@ -45,4 +45,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    protected static function newFactory(): \Database\Factories\UserFactory
+    {
+        return \Database\Factories\UserFactory::new();
+    }
 }

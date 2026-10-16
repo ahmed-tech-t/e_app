@@ -22,7 +22,12 @@ class PurchaseEntity
         public ?float $grand_total = null,
         /** @var PurchaseItemEntity[] */
         public ?array $items = [],
-        public ?Carbon $created_at = null
+        public ?Carbon $created_at = null,
+        public ?SupplierEntity $supplier = null,
+        public ?LocationEntity $store = null,
+        public ?LocationEntity $location = null,
+        public ?string $supplier_code = null,
+        public ?string $store_code = null
     ) {
     }
 

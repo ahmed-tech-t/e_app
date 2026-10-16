@@ -21,4 +21,9 @@ class SalesReturns extends Model
     {
         return $this->hasMany(SalesReturnItem::class, 'sales_return_id');
     }
+
+    public function sale()
+    {
+        return $this->belongsTo(Sales::class, 'original_bill_id');
+    }
 }

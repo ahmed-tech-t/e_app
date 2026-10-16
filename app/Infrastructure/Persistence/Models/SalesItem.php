@@ -22,4 +22,9 @@ class SalesItem extends Model
     {
         return $this->belongsTo(Sales::class, 'bill_id');
     }
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class, 'product_id');
+    }
 }

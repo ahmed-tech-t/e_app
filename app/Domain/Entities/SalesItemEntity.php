@@ -14,6 +14,8 @@ class SalesItemEntity
         public ?int $bill_id = null,
         public ?float $price = null,
         public ?float $total = null,
+        public ?ProductEntity $product = null,
+        public ?string $product_code = null,
     ) {
     }
 
