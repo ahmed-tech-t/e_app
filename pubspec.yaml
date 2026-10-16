@@ -19,7 +19,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.13.5
+  sdk: '>=3.13.0 <4.0.0'
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -38,6 +38,14 @@ dependencies:
   retrofit: ^4.10.0
   cupertino_icons: ^1.0.8
   get: ^4.7.3
+  flutter_bloc: ^9.1.1
+  mobile_scanner: ^7.4.2
+  qr: 3.0.2
+  pdf: ^3.13.1
+  printing: ^5.15.1
+  share_plus: ^13.3.1
+  intl: ^0.20.3
+  cached_network_image: ^4.0.4
 
 dev_dependencies:
   flutter_test:

@@ -1,7 +1,7 @@
-import 'package:hive_flutter/adapters.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:pos_mobile/features/home/domain/models/Product.dart';
 
-part '../data_source/product_hive_model.g.dart';
+part 'product_hive_model.g.dart';
 
 @HiveType(typeId: 0)
 class ProductHiveModel {
@@ -9,10 +9,10 @@ class ProductHiveModel {
   final String? originalCode;
 
   @HiveField(1)
-  final String nameAr;
+  final String? nameAr;
 
   @HiveField(2)
-  final String nameEn;
+  final String? nameEn;
 
   @HiveField(3)
   final String? code;
@@ -35,10 +35,14 @@ class ProductHiveModel {
   @HiveField(9)
   final num? unitsPerCarton;
 
+  @HiveField(10)
+  final int? id;
+
   ProductHiveModel({
+    this.id,
     this.originalCode,
-    required this.nameAr,
-    required this.nameEn,
+    this.nameAr,
+    this.nameEn,
     this.retailprice,
     this.wholeprice,
     this.code,
@@ -51,6 +55,7 @@ class ProductHiveModel {
   // Mapper: From Domain to Hive
   factory ProductHiveModel.fromDomain(Product product) {
     return ProductHiveModel(
+      id: product.id,
       originalCode: product.originalCode,
       nameAr: product.nameAr,
       nameEn: product.nameEn,
@@ -67,6 +72,7 @@ class ProductHiveModel {
   // Mapper: From Hive to Domain
   Product toDomain() {
     return Product(
+      id: id,
       originalCode: originalCode,
       nameAr: nameAr,
       nameEn: nameEn,

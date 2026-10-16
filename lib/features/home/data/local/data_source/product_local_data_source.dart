@@ -15,4 +15,15 @@ class ProductLocalDataSource {
     // Super clean and readable:
     return _box.values.toList().toDomain();
   }
+
+  Product? getProductByCode(String code) {
+    try {
+      final model = _box.values.firstWhere(
+        (item) => item.code == code || item.originalCode == code,
+      );
+      return model.toDomain();
+    } catch (_) {
+      return null;
+    }
+  }
 }

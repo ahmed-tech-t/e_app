@@ -46,3 +46,19 @@ app.*.map.json
 
 # Widget Preview related
 .widget_preview/
+
+# Non-Flutter backend files & caches
+/.env
+/.phpunit.result.cache
+/bootstrap/
+/database/
+/node_modules/
+/public/
+/storage/
+/test-results/
+/tests/
+/app/
+/vendor/
+.agents/
+.opencode/
+

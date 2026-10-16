@@ -1,4 +1,3 @@
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:pos_mobile/features/home/data/local/data_source/product_local_data_source.dart';
 import 'package:pos_mobile/features/home/data/remote/data_source/product_data_source.dart';
 import 'package:pos_mobile/features/home/data/mapper/product_mapper.dart';
@@ -15,33 +14,28 @@ class ProductRepositoryImpl implements ProductRepository {
   });
 
   @override
-  Future<List<Product>> getProducts({int? page, int? limit}) async {
-    // 1. Check internet connectivity
-    final connectivity = await Connectivity().checkConnectivity();
-    final hasInternet = !connectivity.contains(ConnectivityResult.none);
+  Future<List<Product>> getProducts() async {
+    try {
+      final response = await remoteDataSource.getProducts();
 
-    if (hasInternet) {
-      try {
-        // 2. Fetch from Retrofit Remote DataSource
-        final response = await remoteDataSource.getProducts(
-          page: page,
-          limit: limit,
-        );
-
-        final products = response.data?.items.toDomain() ?? [];
-
-        // 3. Cache into Hive if we got products
-        if (products.isNotEmpty) {
-          await localDataSource.cacheProducts(products);
-        }
-        return products;
-      } catch (_) {
-        // Fallback to local cache if request fails (timeout, server error, etc.)
-        return localDataSource.getCachedProducts();
+      final products = response.data?.toDomain() ?? [];
+      if (products.isNotEmpty) {
+        await localDataSource.cacheProducts(products);
       }
-    } else {
-      // 4. Offline: load directly from Hive
+      return products;
+    } catch (_) {
+      // Fallback to local cache if request fails (timeout, network error, server offline)
       return localDataSource.getCachedProducts();
     }
+  }
+
+  @override
+  List<Product> getCachedProducts() {
+    return localDataSource.getCachedProducts();
+  }
+
+  @override
+  Product? getProductByCode(String code) {
+    return localDataSource.getProductByCode(code);
   }
 }

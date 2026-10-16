@@ -4,8 +4,9 @@ part 'product_dto.freezed.dart';
 part 'product_dto.g.dart';
 
 @freezed
-class ProductDto with _$ProductDto {
+abstract class ProductDto with _$ProductDto {
   const factory ProductDto({
+    int? id,
     @JsonKey(name: 'original_code') String? originalCode,
     @JsonKey(name: 'name_ar') @Default('') String nameAr,
     @JsonKey(name: 'name_en') @Default('') String nameEn,
@@ -13,8 +14,8 @@ class ProductDto with _$ProductDto {
     String? description,
     String? brand,
     String? image,
-    double? retailprice,
-    double? wholeprice,
+    @JsonKey(name: 'retail_price') double? retailprice,
+    @JsonKey(name: 'wholesale_price') double? wholeprice,
     @JsonKey(name: 'units_per_carton') num? unitsPerCarton,
   }) = _ProductDto;
 

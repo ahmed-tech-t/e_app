@@ -10,6 +10,7 @@ import 'package:pos_mobile/features/home/data/local/models/product_hive_model.da
 extension ProductDtoMapper on ProductDto {
   Product toDomain() {
     return Product(
+      id: id,
       originalCode: originalCode,
       nameAr: nameAr,
       nameEn: nameEn,
@@ -34,6 +35,7 @@ extension ProductDtoListMapper on List<ProductDto> {
 extension ProductHiveMapper on ProductHiveModel {
   Product toDomain() {
     return Product(
+      id: id,
       originalCode: originalCode,
       nameAr: nameAr,
       nameEn: nameEn,
@@ -58,6 +60,7 @@ extension ProductHiveListMapper on List<ProductHiveModel> {
 extension ProductToHiveMapper on Product {
   ProductHiveModel toHive() {
     return ProductHiveModel(
+      id: id,
       originalCode: originalCode,
       nameAr: nameAr,
       nameEn: nameEn,

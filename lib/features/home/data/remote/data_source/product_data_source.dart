@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:pos_mobile/core/config/models/base_response.dart';
-import 'package:pos_mobile/core/config/models/paginated_response.dart';
 import 'package:pos_mobile/features/home/data/remote/dto/product_dto.dart';
 
 part 'product_data_source.g.dart';
@@ -10,9 +9,6 @@ part 'product_data_source.g.dart';
 abstract class ProductDataSource {
   factory ProductDataSource(Dio dio, {String baseUrl}) = _ProductDataSource;
 
-  @GET('/products')
-  Future<BaseResponse<PaginatedData<ProductDto>>> getProducts({
-    @Query('page') int? page,
-    @Query('limit') int? limit,
-  });
+  @GET('v1/products')
+  Future<BaseResponse<List<ProductDto>>> getProducts();
 }

@@ -3,13 +3,13 @@ import 'package:pos_mobile/core/config/models/paginated_response.dart';
 
 class BaseResponse<T> {
   final int? code;
-  final bool success;
+  final String status;
   final String? message;
   final T? data;
 
   const BaseResponse({
     this.code,
-    required this.success,
+    required this.status,
     this.message,
     this.data,
   });
@@ -20,7 +20,7 @@ class BaseResponse<T> {
   ) {
     return BaseResponse<T>(
       code: json['code'] as int? ?? 404,
-      success: json['success'] as bool? ?? false,
+      status: json['status'] as String? ?? 'error',
       message: json['message'] as String?,
       data: json['data'] != null && fromJsonT != null
           ? fromJsonT(json['data'])
