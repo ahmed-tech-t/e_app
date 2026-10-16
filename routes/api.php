@@ -104,6 +104,11 @@ Route::prefix(Constants::BASE_API_URL)->group(function () {
         );
 
         Route::get(
+            'sales',
+            [SalesController::class, 'index']
+        );
+
+        Route::get(
             'purchases/preview',
             [PurchaseController::class, 'prePurchase']
         );
@@ -115,8 +120,4 @@ Route::prefix(Constants::BASE_API_URL)->group(function () {
         Route::get('sales/returns/preview', [SalesReturnsController::class, 'preReturn']);
         Route::post('sales/returns', [SalesReturnsController::class, 'store']);
     });
-
-
-
-
 });

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Interfaces\Http\Controllers;
+
 use App\Application\Services\SalesService;
 use App\Interfaces\Http\Requests\Sales\CreateSalesRequest;
 use App\Interfaces\Http\Requests\Sales\UpdateSalesRequest;
@@ -17,6 +18,12 @@ class SalesController extends BaseController
     {
         $this->service = $salesService;
     }
+
+    public function index(Request $request)
+    {
+        return $this->getPaginatedItems($request);
+    }
+
     public function preSale()
     {
         $request = app($this->storeRequest);

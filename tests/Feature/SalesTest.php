@@ -523,4 +523,21 @@ class SalesTest extends TestCase
         $this->assertDatabaseCount('sales', 0);
         $this->assertEquals(10, $batch->fresh()->remaining_quantity);
     }
+
+    public function test_sales_index_returns_paginated_sales(): void
+    {
+        $response = $this->getJson($this->salesApiUrl);
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'status',
+            'data' => [
+                'items',
+                'meta' => [
+                    'current_page',
+                    'total',
+                    'last_page',
+                ],
+            ],
+        ]);
+    }
 }

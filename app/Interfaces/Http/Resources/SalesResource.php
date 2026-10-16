@@ -16,6 +16,7 @@ class SalesResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'code' => $this->code,
             'customer_name' => $this->customer_name,
             'customer_phone' => $this->customer_phone,
             'total' => $this->total,

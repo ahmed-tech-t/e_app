@@ -54,6 +54,14 @@ class EProductRepo extends BaseERepo implements ProductRepo
     }
 
 
+    public function findAll()
+    {
+        return Product::allProducts()
+            ->with($this->defaultRelationships)
+            ->get()
+            ->map(fn($item) => ProductMapper::modelToEntity($item));
+    }
+
     public function getPaginatedItems($perPage): LengthAwarePaginator
     {
         return Product::

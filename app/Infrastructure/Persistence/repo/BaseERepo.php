@@ -31,8 +31,9 @@ class BaseERepo implements BaseRepo
     public function getPaginatedItems($perPage): LengthAwarePaginator
     {
         $query = ($this->modelClass)::query();
-        if (!empty($this->withForPaginate)) {
-            $query->with($this->withForPaginate);
+        $relations = !empty($this->withForPaginate) ? $this->withForPaginate : $this->defaultRelationships;
+        if (!empty($relations)) {
+            $query->with($relations);
         }
 
         $items = $query->
