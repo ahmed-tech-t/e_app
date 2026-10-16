@@ -2,12 +2,16 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
+import 'package:pos_mobile/core/theme/app_decorations.dart';
 import 'package:pos_mobile/features/bills/domain/models/price_type.dart';
 import 'package:pos_mobile/features/bills/domain/services/bill_pdf_service.dart';
 import 'package:pos_mobile/features/bills/ui/cubit/bills_cubit.dart';
 import 'package:pos_mobile/features/bills/ui/cubit/create_bill_cubit.dart';
 import 'package:pos_mobile/features/bills/ui/widgets/bill_preview_dialog.dart';
 import 'package:pos_mobile/features/bills/ui/widgets/qr_scanner_dialog.dart';
+import 'package:pos_mobile/screens/common/app_snack_bar.dart';
+import 'package:pos_mobile/screens/common/custom_text_form_field.dart';
+import 'package:pos_mobile/screens/common/primary_action_button.dart';
 
 class CreateBillScreen extends StatefulWidget {
   const CreateBillScreen({super.key});
@@ -38,13 +42,7 @@ class _CreateBillScreenState extends State<CreateBillScreen> {
     final found = cubit.addProductByCode(code);
     if (found) {
       _qrController.clear();
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Product added successfully!'),
-          duration: Duration(milliseconds: 900),
-          backgroundColor: Colors.green,
-        ),
-      );
+      AppSnackBar.showSuccess(context, 'Product added to bill');
     }
   }
 
@@ -69,12 +67,7 @@ class _CreateBillScreenState extends State<CreateBillScreen> {
       body: BlocConsumer<CreateBillCubit, CreateBillState>(
         listener: (context, state) {
           if (state.errorMessage != null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.errorMessage!),
-                backgroundColor: Colors.red,
-              ),
-            );
+            AppSnackBar.showError(context, state.errorMessage!);
           }
         },
         builder: (context, state) {
@@ -87,10 +80,15 @@ class _CreateBillScreenState extends State<CreateBillScreen> {
 
           return Column(
             children: [
-              // 1. Customer, Discount & Price Type Header
+              // 1. Customer, Discount & Price Type Header Container
               Container(
                 padding: const EdgeInsets.all(12),
-                color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.4),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+                  border: Border(
+                    bottom: BorderSide(color: theme.colorScheme.outline, width: 1),
+                  ),
+                ),
                 child: Form(
                   key: _formKey,
                   child: Column(
@@ -100,14 +98,10 @@ class _CreateBillScreenState extends State<CreateBillScreen> {
                         children: [
                           Expanded(
                             flex: 3,
-                            child: TextFormField(
+                            child: CustomTextFormField(
                               controller: _nameController,
-                              decoration: const InputDecoration(
-                                labelText: 'Customer Name *',
-                                prefixIcon: Icon(Icons.person_outline, size: 20),
-                                isDense: true,
-                                border: OutlineInputBorder(),
-                              ),
+                              label: 'Customer Name *',
+                              prefixIcon: const Icon(Icons.person_outline, size: 20),
                               validator: (value) {
                                 final text = value?.trim() ?? '';
                                 if (text.isEmpty) {
@@ -124,15 +118,11 @@ class _CreateBillScreenState extends State<CreateBillScreen> {
                           const SizedBox(width: 8),
                           Expanded(
                             flex: 3,
-                            child: TextFormField(
+                            child: CustomTextFormField(
                               controller: _phoneController,
                               keyboardType: TextInputType.phone,
-                              decoration: const InputDecoration(
-                                labelText: 'Phone (optional)',
-                                prefixIcon: Icon(Icons.phone_outlined, size: 20),
-                                isDense: true,
-                                border: OutlineInputBorder(),
-                              ),
+                              label: 'Phone (optional)',
+                              prefixIcon: const Icon(Icons.phone_outlined, size: 20),
                               validator: (value) {
                                 final text = value?.trim() ?? '';
                                 if (text.isNotEmpty) {
@@ -154,15 +144,14 @@ class _CreateBillScreenState extends State<CreateBillScreen> {
                           // Discount field
                           SizedBox(
                             width: 140,
-                            child: TextFormField(
+                            child: CustomTextFormField(
                               controller: _discountController,
                               keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                              decoration: const InputDecoration(
-                                labelText: 'Discount %',
-                                prefixIcon: Icon(Icons.discount_outlined, size: 20),
-                                suffixText: '%',
-                                isDense: true,
-                                border: OutlineInputBorder(),
+                              label: 'Discount %',
+                              prefixIcon: const Icon(Icons.discount_outlined, size: 20),
+                              suffixIcon: const Padding(
+                                padding: EdgeInsets.all(12.0),
+                                child: Text('%', style: TextStyle(fontWeight: FontWeight.bold)),
                               ),
                               validator: (value) {
                                 final text = value?.trim() ?? '';
@@ -184,6 +173,9 @@ class _CreateBillScreenState extends State<CreateBillScreen> {
                           // Price Type selector
                           Expanded(
                             child: SegmentedButton<PriceType>(
+                              style: const ButtonStyle(
+                                visualDensity: VisualDensity.compact,
+                              ),
                               segments: const [
                                 ButtonSegment(
                                   value: PriceType.retail,
@@ -213,30 +205,31 @@ class _CreateBillScreenState extends State<CreateBillScreen> {
                 child: Row(
                   children: [
                     Expanded(
-                      child: TextField(
+                      child: CustomTextFormField(
                         controller: _qrController,
-                        decoration: InputDecoration(
-                          labelText: 'Scan QR / Barcode or Enter Code',
-                          hintText: 'e.g. 123456',
-                          prefixIcon: IconButton(
-                            icon: const Icon(Icons.camera_alt_outlined),
-                            tooltip: 'Scan with Camera',
-                            onPressed: _openCameraScanner,
-                          ),
-                          suffixIcon: IconButton(
-                            icon: const Icon(Icons.arrow_forward_rounded),
-                            tooltip: 'Add by Code',
-                            onPressed: () => _onScanOrEnterCode(_qrController.text),
-                          ),
-                          border: const OutlineInputBorder(),
+                        label: 'Scan QR / Barcode or Enter Code',
+                        hintText: 'e.g. 123456',
+                        prefixIcon: IconButton(
+                          icon: const Icon(Icons.camera_alt_outlined),
+                          tooltip: 'Scan with Camera',
+                          onPressed: _openCameraScanner,
                         ),
-                        onSubmitted: _onScanOrEnterCode,
+                        suffixIcon: IconButton(
+                          icon: const Icon(Icons.arrow_forward_rounded),
+                          tooltip: 'Add by Code',
+                          onPressed: () => _onScanOrEnterCode(_qrController.text),
+                        ),
+                        onFieldSubmitted: _onScanOrEnterCode,
                       ),
                     ),
                     const SizedBox(width: 8),
                     IconButton.filledTonal(
                       icon: const Icon(Icons.qr_code_scanner_rounded),
                       tooltip: 'Open Camera Scanner',
+                      style: IconButton.styleFrom(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        minimumSize: const Size(48, 48),
+                      ),
                       onPressed: _openCameraScanner,
                     ),
                   ],
@@ -252,11 +245,18 @@ class _CreateBillScreenState extends State<CreateBillScreen> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(Icons.qr_code_2_rounded, size: 64, color: Colors.grey[400]),
+                            Icon(
+                              Icons.qr_code_2_rounded,
+                              size: 64,
+                              color: theme.colorScheme.outline,
+                            ),
                             const SizedBox(height: 8),
-                            const Text(
+                            Text(
                               'Scan barcode or enter code to add items',
-                              style: TextStyle(color: Colors.grey, fontSize: 15),
+                              style: TextStyle(
+                                color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                                fontSize: 15,
+                              ),
                             ),
                           ],
                         ),
@@ -272,111 +272,116 @@ class _CreateBillScreenState extends State<CreateBillScreen> {
                           final displayName = (product.nameEn?.isNotEmpty ?? false)
                               ? product.nameEn!
                               : (product.nameAr ?? 'Product');
+                          final barcode = product.originalCode ?? product.code ?? '-';
 
-                          return Card(
-                            elevation: 1,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                children: [
-                                  // Product Image
-                                  Container(
-                                    width: 50,
-                                    height: 50,
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey[200],
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    clipBehavior: Clip.antiAlias,
-                                    child: product.image != null && product.image!.isNotEmpty
-                                        ? CachedNetworkImage(
-                                            imageUrl: product.image!,
-                                            fit: BoxFit.cover,
-                                            placeholder: (context, url) => const Center(
-                                              child: SizedBox(
-                                                width: 18,
-                                                height: 18,
-                                                child: CircularProgressIndicator(strokeWidth: 2),
-                                              ),
+                          return Container(
+                            decoration: AppDecorations.cardDecoration(context),
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                // Product Image
+                                Container(
+                                  width: 50,
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                    color: theme.colorScheme.surfaceContainerHighest,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  clipBehavior: Clip.antiAlias,
+                                  child: product.image != null && product.image!.isNotEmpty
+                                      ? CachedNetworkImage(
+                                          imageUrl: product.image!,
+                                          fit: BoxFit.cover,
+                                          placeholder: (context, url) => const Center(
+                                            child: SizedBox(
+                                              width: 18,
+                                              height: 18,
+                                              child: CircularProgressIndicator(strokeWidth: 2),
                                             ),
-                                            errorWidget: (context, url, error) =>
-                                                const Icon(Icons.inventory_2_outlined),
-                                          )
-                                        : const Icon(Icons.inventory_2_outlined),
-                                  ),
-                                  const SizedBox(width: 12),
-                                  // Details
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          displayName,
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(fontWeight: FontWeight.bold),
-                                        ),
-                                        Text(
-                                          'ID: ${product.id ?? '-'} | Code: ${product.code ?? '-'}',
-                                          style: TextStyle(color: Colors.grey[600], fontSize: 12),
-                                        ),
-                                        Text(
-                                          '\$${unitPrice.toStringAsFixed(2)} each',
-                                          style: TextStyle(
-                                            color: theme.colorScheme.primary,
-                                            fontWeight: FontWeight.w600,
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  // Quantity Counter
-                                  Row(
-                                    mainAxisSize: MainAxisSize.min,
+                                          errorWidget: (context, url, error) =>
+                                              const Icon(Icons.inventory_2_outlined),
+                                        )
+                                      : const Icon(Icons.inventory_2_outlined),
+                                ),
+                                const SizedBox(width: 12),
+                                // Details: Name & Barcode
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      IconButton(
-                                        icon: const Icon(Icons.remove_circle_outline, size: 20),
-                                        onPressed: () => cubit.updateQuantity(
-                                          index,
-                                          item.quantity - 1,
+                                      Text(
+                                        displayName,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(fontWeight: FontWeight.bold),
+                                      ),
+                                      const SizedBox(height: 2),
+                                      Text(
+                                        'Code: $barcode',
+                                        style: TextStyle(
+                                          color: theme.colorScheme.onSurface.withValues(alpha: 0.65),
+                                          fontSize: 12,
+                                          fontFamily: 'monospace',
                                         ),
                                       ),
                                       Text(
-                                        '${item.quantity}',
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                      IconButton(
-                                        icon: const Icon(Icons.add_circle_outline, size: 20),
-                                        onPressed: () => cubit.updateQuantity(
-                                          index,
-                                          item.quantity + 1,
+                                        '\$${unitPrice.toStringAsFixed(2)} each',
+                                        style: TextStyle(
+                                          color: theme.colorScheme.primary,
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 13,
                                         ),
                                       ),
                                     ],
                                   ),
-                                ],
-                              ),
+                                ),
+                                // Quantity Counter
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    IconButton(
+                                      icon: const Icon(Icons.remove_circle_outline, size: 20),
+                                      onPressed: () => cubit.updateQuantity(
+                                        index,
+                                        item.quantity - 1,
+                                      ),
+                                    ),
+                                    Text(
+                                      '${item.quantity}',
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                    IconButton(
+                                      icon: const Icon(Icons.add_circle_outline, size: 20),
+                                      onPressed: () => cubit.updateQuantity(
+                                        index,
+                                        item.quantity + 1,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
                           );
                         },
                       ),
               ),
 
-              // 4. Bottom Checkout Bar
+              // 4. Bottom Checkout Bar using PrimaryActionButton
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 decoration: BoxDecoration(
                   color: theme.colorScheme.surface,
+                  border: Border(
+                    top: BorderSide(color: theme.colorScheme.outline, width: 1),
+                  ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.08),
-                      blurRadius: 8,
+                      color: Colors.black.withValues(alpha: 0.05),
+                      blurRadius: 6,
                       offset: const Offset(0, -2),
                     ),
                   ],
@@ -391,7 +396,10 @@ class _CreateBillScreenState extends State<CreateBillScreen> {
                         children: [
                           Text(
                             '${state.items.length} items',
-                            style: TextStyle(color: Colors.grey[600], fontSize: 13),
+                            style: TextStyle(
+                              color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                              fontSize: 13,
+                            ),
                           ),
                           Text(
                             '\$${grandTotal.toStringAsFixed(2)}',
@@ -402,13 +410,10 @@ class _CreateBillScreenState extends State<CreateBillScreen> {
                           ),
                         ],
                       ),
-                      ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
+                      PrimaryActionButton(
+                        label: state.isPreviewLoading ? 'Calculating...' : 'Preview Bill',
+                        isLoading: state.isPreviewLoading,
+                        icon: const Icon(Icons.preview_outlined, color: Colors.white, size: 18),
                         onPressed: state.isPreviewLoading || state.isSubmitting
                             ? null
                             : () async {
@@ -433,13 +438,10 @@ class _CreateBillScreenState extends State<CreateBillScreen> {
                                               Navigator.of(dialogCtx).pop();
                                               Get.find<BillsCubit>().fetchBills();
                                               Get.back();
-                                              Get.snackbar(
-                                                'Success',
-                                                'Bill #${createdBill.id ?? ''} completed successfully!',
-                                                backgroundColor: Colors.green,
-                                                colorText: Colors.white,
+                                              AppSnackBar.showSuccess(
+                                                context,
+                                                'Bill #${createdBill.code ?? createdBill.id ?? ''} completed successfully!',
                                               );
-                                              // Prompt to print or view PDF receipt
                                               if (context.mounted) {
                                                 await BillPdfService.printOrPreviewReceipt(
                                                   context,
@@ -455,14 +457,6 @@ class _CreateBillScreenState extends State<CreateBillScreen> {
                                   );
                                 }
                               },
-                        icon: state.isPreviewLoading
-                            ? const SizedBox(
-                                width: 18,
-                                height: 18,
-                                child: CircularProgressIndicator(strokeWidth: 2),
-                              )
-                            : const Icon(Icons.preview_outlined),
-                        label: Text(state.isPreviewLoading ? 'Calculating...' : 'Preview Bill'),
                       ),
                     ],
                   ),

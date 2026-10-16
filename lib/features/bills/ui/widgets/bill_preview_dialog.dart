@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:pos_mobile/core/theme/app_decorations.dart';
 import 'package:pos_mobile/features/bills/domain/models/bill.dart';
+import 'package:pos_mobile/features/bills/domain/models/sale_item.dart';
 import 'package:pos_mobile/features/home/domain/models/Product.dart';
+import 'package:pos_mobile/screens/common/primary_action_button.dart';
 
 class BillPreviewDialog extends StatelessWidget {
   final Bill bill;
@@ -27,7 +30,7 @@ class BillPreviewDialog extends StatelessWidget {
     final taxAmount = (total - (total * (discount / 100))) * (tax / 100);
 
     return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      shape: RoundedRectangleBorder(borderRadius: AppDecorations.borderRadiusLarge),
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 500, maxHeight: 650),
         child: Padding(
@@ -43,7 +46,7 @@ class BillPreviewDialog extends StatelessWidget {
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       color: theme.colorScheme.primaryContainer,
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: AppDecorations.borderRadiusSmall,
                     ),
                     child: Icon(Icons.receipt_long, color: theme.colorScheme.primary),
                   ),
@@ -58,7 +61,10 @@ class BillPreviewDialog extends StatelessWidget {
                         ),
                         Text(
                           'Calculated on server',
-                          style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                          style: TextStyle(
+                            color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                            fontSize: 12,
+                          ),
                         ),
                       ],
                     ),
@@ -76,7 +82,7 @@ class BillPreviewDialog extends StatelessWidget {
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: AppDecorations.borderRadiusSmall,
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -85,20 +91,23 @@ class BillPreviewDialog extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          bill.customerName ?? 'Walk-in',
+                          bill.customerName ?? 'Walk-in Customer',
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                         if (bill.customerPhone != null && bill.customerPhone!.isNotEmpty)
                           Text(
                             bill.customerPhone!,
-                            style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                            style: TextStyle(
+                              color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                              fontSize: 12,
+                            ),
                           ),
                       ],
                     ),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: theme.colorScheme.primary.withValues(alpha: 0.1),
+                        color: theme.colorScheme.primary.withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
@@ -161,12 +170,16 @@ class BillPreviewDialog extends StatelessWidget {
                                   const SizedBox(height: 2),
                                   Row(
                                     children: [
-                                      Icon(Icons.qr_code, size: 13, color: Colors.grey[600]),
+                                      Icon(
+                                        Icons.qr_code_2_rounded,
+                                        size: 13,
+                                        color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
+                                      ),
                                       const SizedBox(width: 4),
                                       Text(
                                         barcode,
                                         style: TextStyle(
-                                          color: Colors.grey[700],
+                                          color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
                                           fontSize: 12,
                                           fontFamily: 'monospace',
                                         ),
@@ -177,7 +190,10 @@ class BillPreviewDialog extends StatelessWidget {
                                 const SizedBox(height: 2),
                                 Text(
                                   'Qty: ${item.quantity ?? 1} × \$${(item.price ?? 0).toStringAsFixed(2)}',
-                                  style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                                  style: TextStyle(
+                                    color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                                    fontSize: 12,
+                                  ),
                                 ),
                               ],
                             ),
@@ -195,9 +211,9 @@ class BillPreviewDialog extends StatelessWidget {
               const Divider(thickness: 1.2),
 
               // Summary Section
-              _buildPriceRow('Subtotal', '\$${total.toStringAsFixed(2)}'),
-              _buildPriceRow('Discount', '${discount.toStringAsFixed(1)}%'),
-              _buildPriceRow('Tax (${tax.toStringAsFixed(0)}%)', '\$${taxAmount.toStringAsFixed(2)}'),
+              _buildPriceRow(context, 'Subtotal', '\$${total.toStringAsFixed(2)}'),
+              _buildPriceRow(context, 'Discount', '${discount.toStringAsFixed(1)}%'),
+              _buildPriceRow(context, 'Tax (${tax.toStringAsFixed(0)}%)', '\$${taxAmount.toStringAsFixed(2)}'),
               const SizedBox(height: 4),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -216,7 +232,7 @@ class BillPreviewDialog extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 18),
 
               // Actions
               Row(
@@ -230,21 +246,11 @@ class BillPreviewDialog extends StatelessWidget {
                   const SizedBox(width: 12),
                   Expanded(
                     flex: 2,
-                    child: ElevatedButton.icon(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: theme.colorScheme.primary,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                      ),
+                    child: PrimaryActionButton(
+                      label: isSubmitting ? 'Completing...' : 'Confirm & Complete',
+                      isLoading: isSubmitting,
+                      icon: const Icon(Icons.check_circle_outline, color: Colors.white, size: 18),
                       onPressed: isSubmitting ? null : onConfirm,
-                      icon: isSubmitting
-                          ? const SizedBox(
-                              width: 18,
-                              height: 18,
-                              child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
-                            )
-                          : const Icon(Icons.check_circle_outline),
-                      label: Text(isSubmitting ? 'Completing...' : 'Confirm & Complete'),
                     ),
                   ),
                 ],
@@ -256,16 +262,49 @@ class BillPreviewDialog extends StatelessWidget {
     );
   }
 
-  Widget _buildPriceRow(String label, String value) {
+  Widget _buildPriceRow(BuildContext context, String label, String value) {
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: TextStyle(color: Colors.grey[700], fontSize: 13)),
+          Text(
+            label,
+            style: TextStyle(
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+              fontSize: 13,
+            ),
+          ),
           Text(value, style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 13)),
         ],
       ),
     );
   }
+}
+
+/// Widget Preview
+Widget previewBillPreviewDialog() {
+  return MaterialApp(
+    home: Scaffold(
+      body: Center(
+        child: BillPreviewDialog(
+          bill: const Bill(
+            id: 1,
+            code: 'SAL-1234',
+            customerName: 'John Doe',
+            total: 200.0,
+            discount: 10.0,
+            tax: 15.0,
+            grandTotal: 207.0,
+            items: [
+              SaleItem(id: 1, productId: 1, quantity: 2, price: 100.0, total: 200.0),
+            ],
+          ),
+          isSubmitting: false,
+          onConfirm: () {},
+        ),
+      ),
+    ),
+  );
 }

@@ -107,7 +107,11 @@ class ProductCard extends StatelessWidget {
               flex: 5,
               child: GestureDetector(
                 onTap: product.image != null && product.image!.isNotEmpty
-                    ? () => _showZoomableImage(context, product.image!, displayName)
+                    ? () => _showZoomableImage(
+                        context,
+                        product.image!,
+                        displayName,
+                      )
                     : null,
                 child: Stack(
                   children: [
@@ -167,7 +171,10 @@ class ProductCard extends StatelessWidget {
             Expanded(
               flex: 5,
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10.0,
+                  vertical: 8.0,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -198,7 +205,9 @@ class ProductCard extends StatelessWidget {
                               barcode,
                               style: TextStyle(
                                 fontSize: 11,
-                                color: Colors.grey[700],
+                                color: theme.colorScheme.onSurface.withValues(
+                                  alpha: 0.75,
+                                ),
                                 fontFamily: 'monospace',
                                 fontWeight: FontWeight.w500,
                               ),
@@ -213,7 +222,13 @@ class ProductCard extends StatelessWidget {
                     if (product.brand != null && product.brand!.isNotEmpty)
                       Row(
                         children: [
-                          Icon(Icons.label_outline, size: 12, color: Colors.grey[500]),
+                          Icon(
+                            Icons.label_outline,
+                            size: 12,
+                            color: theme.colorScheme.onSurface.withValues(
+                              alpha: 0.5,
+                            ),
+                          ),
                           const SizedBox(width: 4),
                           Expanded(
                             child: Text(
@@ -222,7 +237,9 @@ class ProductCard extends StatelessWidget {
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                 fontSize: 11,
-                                color: Colors.grey[600],
+                                color: theme.colorScheme.onSurface.withValues(
+                                  alpha: 0.65,
+                                ),
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -248,4 +265,28 @@ class ProductCard extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Widget Preview
+Widget previewProductCard() {
+  return const MaterialApp(
+    home: Scaffold(
+      body: Center(
+        child: SizedBox(
+          width: 180,
+          height: 250,
+          child: ProductCard(
+            product: Product(
+              id: 1,
+              nameEn: 'Veritatis Plates',
+              code: 'PLA-4731',
+              originalCode: '8462047073676',
+              brand: 'Pacocha-Gottlieb',
+              retailprice: 986.37,
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
 }

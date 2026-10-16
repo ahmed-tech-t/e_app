@@ -17,9 +17,13 @@ class ProductLocalDataSource {
   }
 
   Product? getProductByCode(String code) {
+    final cleanCode = code.trim().toLowerCase();
+    if (cleanCode.isEmpty) return null;
     try {
       final model = _box.values.firstWhere(
-        (item) => item.code == code || item.originalCode == code,
+        (item) =>
+            (item.code != null && item.code!.trim().toLowerCase() == cleanCode) ||
+            (item.originalCode != null && item.originalCode!.trim().toLowerCase() == cleanCode),
       );
       return model.toDomain();
     } catch (_) {

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:pos_mobile/core/config/app_routes.dart';
 import 'package:pos_mobile/features/splash/ui/cubit/splash_cubit.dart';
+import 'package:pos_mobile/screens/common/primary_action_button.dart';
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
@@ -27,31 +28,46 @@ class SplashScreen extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(
-                    Icons.point_of_sale_rounded,
-                    size: 80,
-                    color: theme.colorScheme.primary,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'POS App',
-                    style: theme.textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.primaryContainer,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.point_of_sale_rounded,
+                      size: 64,
+                      color: theme.colorScheme.primary,
                     ),
                   ),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 20),
+                  Text(
+                    'POS Mobile',
+                    style: theme.textTheme.headlineMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: -0.5,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    'Smart Retail & Checkout System',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                    ),
+                  ),
+                  const SizedBox(height: 36),
                   ...state.maybeWhen(
                     error: (message) => [
                       Text(
                         message,
                         textAlign: TextAlign.center,
-                        style: const TextStyle(color: Colors.red),
+                        style: TextStyle(color: theme.colorScheme.error),
                       ),
                       const SizedBox(height: 16),
-                      ElevatedButton.icon(
+                      PrimaryActionButton(
+                        label: 'Retry Connection',
+                        icon: const Icon(Icons.refresh, color: Colors.white, size: 18),
                         onPressed: () => context.read<SplashCubit>().syncProducts(),
-                        icon: const Icon(Icons.refresh),
-                        label: const Text('Retry'),
                       ),
                       const SizedBox(height: 8),
                       TextButton(
@@ -63,8 +79,10 @@ class SplashScreen extends StatelessWidget {
                       const CircularProgressIndicator(),
                       const SizedBox(height: 16),
                       Text(
-                        'Syncing products...',
-                        style: theme.textTheme.bodyMedium?.copyWith(color: Colors.grey),
+                        'Syncing catalog...',
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                        ),
                       ),
                     ],
                   ),
