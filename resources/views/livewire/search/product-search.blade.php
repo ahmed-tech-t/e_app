@@ -14,12 +14,10 @@ new class extends Component {
         $this->resetPage();
     }
 
-
     public function with()
     {
         return [
-            'items' => Product::searchWithName($this->search)
-                ->latest()->paginate(10)
+            'items' => Product::searchWithName($this->search)->latest()->paginate(10),
         ];
     }
 };

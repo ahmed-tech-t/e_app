@@ -82,17 +82,17 @@ class Product extends Model
         return $query
             ->addSelect([
                 'retail_price' =>
-                    ProductPrice::select('price')
-                        ->whereColumn('product_id', 'products.id')
-                        ->where('type', PriceType::RETAIL)
-                        ->whereNull('valid_to')
-                        ->limit(1),
+                ProductPrice::select('price')
+                    ->whereColumn('product_id', 'products.id')
+                    ->where('type', PriceType::RETAIL)
+                    ->whereNull('valid_to')
+                    ->limit(1),
                 'wholesale_price' =>
-                    ProductPrice::select('price')
-                        ->whereColumn('product_id', 'products.id')
-                        ->where('type', PriceType::WHOLESALE)
-                        ->whereNull('valid_to')
-                        ->limit(1),
+                ProductPrice::select('price')
+                    ->whereColumn('product_id', 'products.id')
+                    ->where('type', PriceType::WHOLESALE)
+                    ->whereNull('valid_to')
+                    ->limit(1),
             ]);
     }
 
@@ -100,11 +100,11 @@ class Product extends Model
     {
         return $query->addSelect([
             'quantity' =>
-                ProductBatch::query()
-                    ->join('batch_locations', 'product_batches.id', '=', 'batch_locations.product_batch_id')
-                    ->selectRaw('SUM(batch_locations.remaining_quantity)')
-                    ->whereColumn('product_batches.product_id', 'products.id')
-                    ->where('batch_locations.location_id', $locationId)
+            ProductBatch::query()
+                ->join('batch_locations', 'product_batches.id', '=', 'batch_locations.product_batch_id')
+                ->selectRaw('SUM(batch_locations.remaining_quantity)')
+                ->whereColumn('product_batches.product_id', 'products.id')
+                ->where('batch_locations.location_id', $locationId)
         ]);
     }
 
@@ -137,6 +137,7 @@ class Product extends Model
     public function scopeSearchWithName($query, $searchTerm)
     {
         return $query->with('category')->withPrices()->where('name_ar', 'like', "%{$searchTerm}%")
-            ->orWhere('name_en', 'like', "%{$searchTerm}%");
+            ->orWhere('name_en', 'like', "%{$searchTerm}%")
+            ->orWhere('code', 'like', "%{$searchTerm}%");
     }
 }
