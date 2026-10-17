@@ -1,0 +1,640 @@
+stages:
+  - test
+  - security
+  - build
+  - push
+  - update-manifest
+  # Stage must not be named "dast" — GitLab reserves it for Ultimate DAST (dast_configuration)
+  - dynamic_scan
+  - notify
+
+variables:
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: "/certs"
+  IMAGE_TAG: "$CI_COMMIT_SHORT_SHA"
+  # Overridden via GitLab project variable DOCKERFILE_PATH (Terraform dockerfile_path). Relative to repo root, e.g. Dockerfile (no leading slash).
+  DOCKERFILE_PATH: "Dockerfile"
+  # Use GitLab's project registry path (namespace/project), not Terraform IMAGE_NAME (e.g. service-env).
+  FULL_IMAGE: "$CI_REGISTRY_IMAGE:$IMAGE_TAG"
+  FULL_IMAGE_LATEST: "$CI_REGISTRY_IMAGE:latest"
+
+# Reusable branch filter anchors (include literal `dev`; do not rely only on $DEPLOY_BRANCH)
+.deploy_branches: &deploy_branches
+  refs:
+    - dev
+    - $DEPLOY_BRANCH
+    - main
+    - develop
+    - /^release\/.*/
+
+.test_branches: &test_branches
+  refs:
+    - merge_requests
+    - dev
+    - $DEPLOY_BRANCH
+    - main
+    - develop
+
+laravel_pint:
+  stage: test
+  image: php:8.3-cli-bookworm
+  before_script:
+    - apt-get update && apt-get install -y --no-install-recommends git unzip libzip-dev
+    - docker-php-ext-install zip
+    - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+  script:
+    - composer install --no-interaction --prefer-dist
+    - vendor/bin/pint --test
+  allow_failure: true
+  only: *test_branches
+
+laravel_test:
+  stage: test
+  image: php:8.3-cli-bookworm
+  services:
+    - name: mysql:8.4
+      alias: mysql
+  variables:
+    MYSQL_ROOT_PASSWORD: test
+    MYSQL_DATABASE: clinic_booking
+    APP_ENV: testing
+    APP_KEY: base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
+    DB_CONNECTION: mysql
+    DB_HOST: mysql
+    DB_PORT: "3306"
+    DB_DATABASE: clinic_booking
+    DB_USERNAME: root
+    DB_PASSWORD: test
+  before_script:
+    - apt-get update && apt-get install -y --no-install-recommends git unzip libzip-dev libpng-dev libjpeg62-turbo-dev libfreetype6-dev libonig-dev libxml2-dev default-mysql-client
+    - docker-php-ext-configure gd --with-freetype --with-jpeg
+    - docker-php-ext-install bcmath gd mbstring pdo_mysql zip
+    - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+    - until mysqladmin ping -h mysql -uroot -ptest --silent; do sleep 2; done
+  script:
+    - composer install --no-interaction --prefer-dist
+    - cp .env.example .env
+    - php artisan key:generate
+    - php artisan migrate --force
+    - php artisan test
+  only: *test_branches
+
+trufflehog_scan:
+  stage: security
+  image: trufflesecurity/trufflehog:latest
+  script:
+    - trufflehog git "file://." --branch=HEAD --json > trufflehog_results.json || true
+  artifacts:
+    when: always
+    paths:
+      - trufflehog_results.json
+    expire_in: 1 day
+  allow_failure: true
+  only: *deploy_branches
+
+sonarqube_scan:
+  stage: security
+  image: sonarsource/sonar-scanner-cli:latest
+  script:
+    - >
+      sonar-scanner
+      -Dsonar.projectKey=${SERVICE_NAME}
+      -Dsonar.sources=.
+      -Dsonar.host.url=${SONAR_HOST_URL}
+      -Dsonar.token=${SONAR_TOKEN}
+      -Dsonar.working.directory=/tmp/.scannerwork
+  allow_failure: true
+  only: *deploy_branches
+
+trivy_fs_scan:
+  stage: security
+  image: aquasec/trivy:latest
+  script:
+    - trivy fs . --severity CRITICAL --format table --output trivy_fs_report.txt --exit-code 0
+  artifacts:
+    when: always
+    paths:
+      - trivy_fs_report.txt
+    expire_in: 1 day
+  allow_failure: true
+  only: *deploy_branches
+
+build:
+  stage: build
+  resource_group: kaniko-build
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  variables:
+    KUBERNETES_MEMORY_REQUEST: "128Mi"
+    KUBERNETES_MEMORY_LIMIT: "10Gi"
+    KUBERNETES_CPU_LIMIT: "4"
+    KUBERNETES_CPU_REQUEST: "250m"
+    KUBERNETES_HELPER_MEMORY_REQUEST: "64Mi"
+    KUBERNETES_HELPER_MEMORY_LIMIT: "128Mi"
+  script:
+    - mkdir -p /kaniko/.docker
+    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
+    # Context must always be repo root -- do not reuse DOCKERFILE_PATH here (would set context to the Dockerfile path when value is "/Dockerfile" and Kaniko reads .dockerignore as .../Dockerfile/.dockerignore).
+    - DF_REL="${DOCKERFILE_PATH#/}"
+    - /kaniko/executor
+        --context "$CI_PROJECT_DIR"
+        --dockerfile "$CI_PROJECT_DIR/$DF_REL"
+        --destination "$FULL_IMAGE"
+        --destination "$FULL_IMAGE_LATEST"
+        --cache=true
+        --cache-repo "$CI_REGISTRY_IMAGE/cache"
+        --snapshot-mode=redo
+        --compressed-caching=false
+  only: *deploy_branches
+
+trivy_image_scan:
+  stage: push
+  image: aquasec/trivy:latest
+  script:
+    - trivy image "$FULL_IMAGE" --severity CRITICAL --format table --output trivy_image_report.txt --exit-code 0 || true
+  artifacts:
+    when: always
+    paths:
+      - trivy_image_report.txt
+    expire_in: 1 day
+  allow_failure: true
+  only: *deploy_branches
+
+update-manifest:
+  stage: update-manifest
+  image: python:3.12-alpine
+  before_script:
+    - apk add --no-cache git openssh-client
+    - git config --global user.email "ci@quizava.com"
+    - git config --global user.name "Quizava CI"
+  script:
+    - |
+      set -e
+      # Resolve prefixed CI vars (for example DEV_* / PROD_*) into canonical names.
+      # Optional explicit override from CI variable VARIABLE_KEY_PREFIX.
+      if [ -z "${VARIABLE_KEY_PREFIX:-}" ]; then
+        case "${CI_COMMIT_REF_NAME:-}" in
+          dev|develop) VARIABLE_KEY_PREFIX="DEV_" ;;
+          main|master|prod|production|release/*) VARIABLE_KEY_PREFIX="PROD_" ;;
+          *) VARIABLE_KEY_PREFIX="" ;;
+        esac
+      fi
+
+      resolve_ci_var() {
+        var_name="$1"
+        pref_name="${VARIABLE_KEY_PREFIX}${var_name}"
+        pref_value="$(printenv "$pref_name" || true)"
+        plain_value="$(printenv "$var_name" || true)"
+        if [ -n "$pref_value" ]; then
+          export "$var_name=$pref_value"
+        elif [ -n "$plain_value" ]; then
+          export "$var_name=$plain_value"
+        fi
+      }
+
+      for var in \
+        REGISTRY_HOST IMAGE_NAME SERVICE_NAME GITOPS_REPO_URL MANIFEST_FILE_PATH \
+        DEPLOY_BRANCH SERVICE_HOST CONTAINER_PORT HEALTH_PATH NAMESPACE DOCKERFILE_PATH \
+        CLOUDFLARE_TUNNEL GITLAB_TOKEN GITOPS_PUSH_TOKEN GITOPS_DEPLOY_KEY ENVIRONMENT
+      do
+        resolve_ci_var "$var"
+      done
+
+      # HTTPS: first of GITOPS_PUSH_TOKEN or GITLAB_TOKEN (GitLab PAT / project token)
+      GITOPS_HTTP_TOKEN="${GITOPS_PUSH_TOKEN:-${GITLAB_TOKEN:-}}"
+      GITOPS_USE_HTTPS=0
+      if [ -n "$GITOPS_DEPLOY_KEY" ]; then
+        eval "$(ssh-agent -s)"
+        echo "$GITOPS_DEPLOY_KEY" | tr -d '\r' | ssh-add -
+        mkdir -p ~/.ssh && chmod 700 ~/.ssh
+        ssh-keyscan -H gitlab.quizava.com >> ~/.ssh/known_hosts
+        git clone --depth 1 "$GITOPS_REPO_URL" gitops
+      elif [ -n "$GITOPS_HTTP_TOKEN" ]; then
+        GITOPS_USE_HTTPS=1
+        HTTPS_URL=$(echo "$GITOPS_REPO_URL" | sed -E 's#^git@([^:]+):#https://\1/#')
+        AUTH_URL=$(echo "$HTTPS_URL" | sed -E "s|^https://|https://oauth2:${GITOPS_HTTP_TOKEN}@|")
+        git clone --depth 1 "$AUTH_URL" gitops
+      else
+        echo "ERROR: set ${VARIABLE_KEY_PREFIX}GITOPS_DEPLOY_KEY or ${VARIABLE_KEY_PREFIX}GITLAB_TOKEN (or unprefixed equivalents)" && exit 1
+      fi
+      cd gitops
+      MANIFEST_NAME="${MANIFEST_FILE_PATH:-${SERVICE_NAME}.yaml}"
+      # Support both gitops repo layouts:
+      # 1) workloads/templates/<service>.yaml and blueprint/argoapp.yaml
+      # 2) quizava-manifest/workloads/templates/<service>.yaml and quizava-manifest/blueprint/argoapp.yaml
+      if [ -d "workloads/templates" ]; then
+        TEMPLATE_DIR="workloads/templates"
+        BLUEPRINT_FILE="blueprint/argoapp.yaml"
+      elif [ -d "quizava-manifest/workloads/templates" ]; then
+        TEMPLATE_DIR="quizava-manifest/workloads/templates"
+        BLUEPRINT_FILE="quizava-manifest/blueprint/argoapp.yaml"
+      else
+        echo "ERROR: workloads/templates directory not found in gitops repo" && exit 1
+      fi
+      export MANIFEST="${TEMPLATE_DIR}/${MANIFEST_NAME}"
+      SERVICE_ENV="${ENVIRONMENT:-}"
+      SERVICE_PORT="${CONTAINER_PORT:-8000}"
+      SERVICE_HOST_VALUE="${SERVICE_HOST:-${SERVICE_NAME}.quizava.com}"
+      SERVICE_NAMESPACE_VALUE="${NAMESPACE:-${SERVICE_NAME}-${SERVICE_ENV}}"
+      SERVICE_HEALTH_PATH_VALUE="${HEALTH_PATH:-/healthz}"
+      CLOUDFLARE_TUNNEL_VALUE="${CLOUDFLARE_TUNNEL:-}"
+
+      if [ ! -f "$MANIFEST" ]; then
+        if [ ! -f "$BLUEPRINT_FILE" ]; then
+          echo "ERROR: blueprint file not found at ${BLUEPRINT_FILE}" && exit 1
+        fi
+
+        cp "$BLUEPRINT_FILE" "$MANIFEST"
+
+        # Build HTTPS repo URL for Argo app source.repoURL replacement.
+        GITOPS_HTTPS_URL=$(echo "$GITOPS_REPO_URL" | sed -E 's#^git@([^:]+):#https://\1/#')
+
+        sed -i "s|#gcr-repo#|${CI_REGISTRY_IMAGE}|g" "$MANIFEST"
+        sed -i "s|#image-tag#|${IMAGE_TAG}|g" "$MANIFEST"
+        sed -i "s|#service-name#|${SERVICE_NAME}|g" "$MANIFEST"
+        sed -i "s|#host#|${SERVICE_HOST_VALUE}|g" "$MANIFEST"
+        sed -i "s|#env#|${SERVICE_ENV}|g" "$MANIFEST"
+        sed -i "s|#port#|${SERVICE_PORT}|g" "$MANIFEST"
+        sed -i "s|#repo-url#|${GITOPS_HTTPS_URL}|g" "$MANIFEST"
+        sed -i "s|#cloudflare-tunnel-cname-target#|${CLOUDFLARE_TUNNEL_VALUE}|g" "$MANIFEST"
+      fi
+      sed -i "s|#namespace#|${SERVICE_NAMESPACE_VALUE}|g" "$MANIFEST"
+      sed -i "s|#health-path#|${SERVICE_HEALTH_PATH_VALUE}|g" "$MANIFEST"
+      sed -i "s|#cloudflare-tunnel-cname-target#|${CLOUDFLARE_TUNNEL_VALUE}|g" "$MANIFEST"
+      sed -i "s|path: /healthz|path: ${SERVICE_HEALTH_PATH_VALUE}|g" "$MANIFEST"
+      python3 -c '
+      import os, re, sys
+      q = chr(34)
+      p = os.environ["MANIFEST"]
+      t = os.environ["IMAGE_TAG"]
+
+      def esc_inner(s):
+          return s.replace("\\", "\\\\").replace(q, "\\" + q)
+
+      c = open(p).read()
+      n = c.replace("#image-tag#", t)
+
+      # Only update image tags that are already double-quoted (e.g. tag: "latest" -> tag: "<IMAGE_TAG>");
+      # do not rewrite unquoted values or other keys.
+      tag_in_quotes = re.compile(r"(^[\t ]*tag:\s*)" + q + r"([^" + q + r"]*)" + q + r"(\s*(?:#.*)?)$", re.MULTILINE)
+      if not tag_in_quotes.search(n):
+          if "#image-tag#" in c:
+              open(p, "w").write(n)
+              print("Patched " + p + " (placeholder only)")
+              sys.exit(0)
+          sys.exit(
+              "ERROR: no quoted tag lines (tag: " + q + "..." + q + ") and no #image-tag# in " + p
+          )
+
+      n = tag_in_quotes.sub(lambda m: m.group(1) + q + esc_inner(t) + q + m.group(3), n)
+
+      if n == c:
+          print("No changes needed; tag already " + q + t + q + " in " + p)
+          sys.exit(0)
+
+      open(p, "w").write(n)
+      print("Patched " + p + " -> tag " + q + t + q)
+      '
+      git add "$MANIFEST"
+      git diff --cached --exit-code || git commit -m "ci(deploy): ${SERVICE_NAME} ${IMAGE_TAG} [skip ci]"
+      if [ "$GITOPS_USE_HTTPS" = 1 ]; then
+        HTTPS_URL=$(echo "$GITOPS_REPO_URL" | sed -E 's#^git@([^:]+):#https://\1/#')
+        AUTH_URL=$(echo "$HTTPS_URL" | sed -E "s|^https://|https://oauth2:${GITOPS_HTTP_TOKEN}@|")
+        git remote set-url origin "$AUTH_URL"
+      fi
+      git push
+  only: *deploy_branches
+
+dast_nuclei:
+  stage: dynamic_scan
+  image: projectdiscovery/nuclei:latest
+  script:
+    - nuclei -u "https://${SERVICE_HOST}" -o nuclei_report.txt || true
+  artifacts:
+    when: always
+    paths:
+      - nuclei_report.txt
+    expire_in: 1 day
+  allow_failure: true
+  only: *deploy_branches
+
+dast_zap:
+  stage: dynamic_scan
+  image: ghcr.io/zaproxy/zaproxy:stable
+  script:
+    - zap-baseline.py -a -l WARN -t "https://${SERVICE_HOST}" -w zap_report.txt || true
+  artifacts:
+    when: always
+    paths:
+      - zap_report.txt
+    expire_in: 1 day
+  allow_failure: true
+  only: *deploy_branches
+
+notify_slack:
+  stage: notify
+  image: python:3.12-alpine
+  needs:
+    - job: trufflehog_scan
+      artifacts: true
+      optional: true
+    - job: sonarqube_scan
+      artifacts: true
+      optional: true
+    - job: trivy_fs_scan
+      artifacts: true
+      optional: true
+    - job: trivy_image_scan
+      artifacts: true
+      optional: true
+    - job: update-manifest
+      artifacts: false
+      optional: true
+  script:
+    - |
+      python3 <<'PYEOF'
+      import json
+      import os
+      import re
+      import sys
+      import urllib.error
+      import urllib.parse
+      import urllib.request
+      from base64 import b64encode
+
+      SLACK_SECTION_LIMIT = 2700
+      webhook = os.environ.get("SLACK_WEBHOOK_URL", "").strip()
+      if not webhook:
+          print("SLACK_WEBHOOK_URL is not set, skipping notification")
+          sys.exit(0)
+
+      service = os.environ.get("SERVICE_NAME", "unknown-service")
+      image_tag = os.environ.get("IMAGE_TAG", "unknown")
+      pipeline_url = os.environ.get("CI_PIPELINE_URL", "")
+      project_url = os.environ.get("CI_PROJECT_URL", "")
+      pipeline_id = os.environ.get("CI_PIPELINE_ID", "")
+      branch = os.environ.get("CI_COMMIT_REF_NAME", "")
+      commit = os.environ.get("CI_COMMIT_SHORT_SHA", "")
+
+      def read_text(path):
+          try:
+              with open(path, encoding="utf-8", errors="replace") as handle:
+                  return handle.read()
+          except OSError:
+              return ""
+
+      def slack_escape(text):
+          return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+      def fit_section(title, body, empty_label="No findings."):
+          content = (body or "").strip() or empty_label
+          prefix = f"{title}\n```\n"
+          suffix = "\n```"
+          budget = SLACK_SECTION_LIMIT - len(prefix) - len(suffix)
+          if len(content) > budget:
+              omitted = len(content) - budget
+              content = (
+                  content[:budget]
+                  + f"\n\n... ({omitted} chars omitted — full report in pipeline artifacts)"
+              )
+          return prefix + content + suffix
+
+      def format_trufflehog():
+          raw = read_text("trufflehog_results.json").strip()
+          if not raw:
+              return "Status: SKIPPED or no report\n\nNo TruffleHog output was produced.", "unknown"
+
+          findings = []
+          for line in raw.splitlines():
+              line = line.strip()
+              if not line:
+                  continue
+              try:
+                  findings.append(json.loads(line))
+              except json.JSONDecodeError:
+                  continue
+
+          if not findings:
+              return "Status: CLEAN\n\nNo secrets detected in repository history.", "clean"
+
+          lines = [f"Status: ALERT — {len(findings)} finding(s)", ""]
+          for index, item in enumerate(findings, start=1):
+              detector = item.get("DetectorName") or item.get("DetectorType") or "unknown"
+              verified = item.get("Verified", False)
+              meta = item.get("SourceMetadata", {}).get("Data", {})
+              git_meta = meta.get("Git") or meta.get("Filesystem") or {}
+              file_path = git_meta.get("file") or git_meta.get("path") or meta.get("path") or "unknown"
+              line_no = git_meta.get("line") or git_meta.get("lineNumber") or "?"
+              commit_sha = git_meta.get("commit") or git_meta.get("commitHash") or ""
+              lines.extend([
+                  f"{index}. {detector} ({'verified' if verified else 'unverified'})",
+                  f"   File : {file_path}",
+                  f"   Line : {line_no}",
+              ])
+              if commit_sha:
+                  lines.append(f"   Commit: {commit_sha[:12]}")
+              lines.append("   Secret: [REDACTED]")
+              lines.append("")
+
+          return "\n".join(lines).strip(), "alert"
+
+      def sonar_api(path, params=None):
+          host = os.environ.get("SONAR_HOST_URL", "").rstrip("/")
+          token = os.environ.get("SONAR_TOKEN", "")
+          if not host or not token:
+              return None
+
+          query = urllib.parse.urlencode(params or {})
+          url = f"{host}{path}?{query}" if query else f"{host}{path}"
+          auth = b64encode(f"{token}:".encode()).decode()
+          request = urllib.request.Request(
+              url,
+              headers={"Authorization": f"Basic {auth}", "Accept": "application/json"},
+          )
+          try:
+              with urllib.request.urlopen(request, timeout=30) as response:
+                  return json.loads(response.read().decode())
+          except (urllib.error.URLError, urllib.error.HTTPError, json.JSONDecodeError, TimeoutError):
+              return None
+
+      def format_sonarqube():
+          project_key = os.environ.get("SERVICE_NAME", "")
+          if not project_key:
+              return "Status: SKIPPED or unavailable\n\nSERVICE_NAME is not set.", "unknown"
+
+          qg = sonar_api("/api/qualitygates/project_status", {"projectKey": project_key})
+          metrics = sonar_api(
+              "/api/measures/component",
+              {
+                  "component": project_key,
+                  "metricKeys": (
+                      "bugs,vulnerabilities,code_smells,security_hotspots,coverage,"
+                      "duplicated_lines_density,ncloc,alert_status"
+                  ),
+              },
+          )
+
+          if not qg and not metrics:
+              return "Status: SKIPPED or unavailable\n\nSonarQube report could not be fetched.", "unknown"
+
+          qg_status = "UNKNOWN"
+          if qg:
+              qg_status = qg.get("projectStatus", {}).get("status", "UNKNOWN")
+
+          metric_map = {}
+          if metrics:
+              for measure in metrics.get("component", {}).get("measures", []):
+                  metric_map[measure.get("metric", "")] = measure.get("value", "n/a")
+
+          conditions = []
+          if qg:
+              for condition in qg.get("projectStatus", {}).get("conditions", []):
+                  status_icon = "OK" if condition.get("status") == "OK" else "FAIL"
+                  metric = condition.get("metricKey", "metric")
+                  actual = condition.get("actualValue", "n/a")
+                  threshold = condition.get("errorThreshold", "n/a")
+                  op = condition.get("comparator", "")
+                  conditions.append(f"  [{status_icon}] {metric}: {actual} (threshold {op} {threshold})")
+
+          dashboard = os.environ.get("SONAR_HOST_URL", "").rstrip("/")
+          dashboard_link = f"{dashboard}/dashboard?id={service}" if dashboard else "n/a"
+
+          lines = [
+              f"Quality Gate : {qg_status}",
+              f"Dashboard    : {dashboard_link}",
+              "",
+              "Metrics:",
+              f"  Bugs               : {metric_map.get('bugs', 'n/a')}",
+              f"  Vulnerabilities    : {metric_map.get('vulnerabilities', 'n/a')}",
+              f"  Code Smells        : {metric_map.get('code_smells', 'n/a')}",
+              f"  Security Hotspots  : {metric_map.get('security_hotspots', 'n/a')}",
+              f"  Coverage           : {metric_map.get('coverage', 'n/a')}%",
+              f"  Duplicated Lines   : {metric_map.get('duplicated_lines_density', 'n/a')}%",
+              f"  Lines of Code      : {metric_map.get('ncloc', 'n/a')}",
+          ]
+
+          if conditions:
+              lines.extend(["", "Gate Conditions:"] + conditions)
+
+          status_key = "ok" if qg_status == "OK" else "alert" if qg_status == "ERROR" else "unknown"
+          return "\n".join(lines), status_key
+
+      def format_trivy(path, label):
+          content = read_text(path).strip()
+          if not content:
+              return f"Status: SKIPPED or no report\n\nNo {label} output was produced.", "unknown"
+
+          normalized = re.sub(r"\n{3,}", "\n\n", content)
+          has_findings = bool(re.search(r"\bCRITICAL\b", normalized, re.IGNORECASE))
+          if not has_findings and re.search(r"Total:\s*0", normalized, re.IGNORECASE):
+              has_findings = False
+
+          status = "ALERT — CRITICAL findings present" if has_findings else "CLEAN — no CRITICAL findings"
+          status_key = "alert" if has_findings else "clean"
+          return f"Status: {status}\n\n{normalized}", status_key
+
+      trufflehog_body, trufflehog_status = format_trufflehog()
+      sonar_body, sonar_status = format_sonarqube()
+      trivy_fs_body, trivy_fs_status = format_trivy("trivy_fs_report.txt", "filesystem scan")
+      trivy_image_body, trivy_image_status = format_trivy("trivy_image_report.txt", "image scan")
+
+      status_icons = {"clean": ":white_check_mark:", "ok": ":white_check_mark:", "alert": ":warning:", "unknown": ":grey_question:"}
+      overall = "alert" if "alert" in {trufflehog_status, sonar_status, trivy_fs_status, trivy_image_status} else "ok"
+
+      header_text = f"{status_icons[overall]} Security scan report — {service}:{image_tag}"
+      context_lines = [
+          f"*Service*   `{service}`",
+          f"*Image tag* `{image_tag}`",
+          f"*Branch*   `{branch}`",
+          f"*Commit*   `{commit}`",
+      ]
+      if pipeline_url:
+          context_lines.append(f"*Pipeline*  <{pipeline_url}|#{pipeline_id}>")
+      if project_url:
+          context_lines.append(f"*Project*   <{project_url}|{os.environ.get('CI_PROJECT_NAME', 'repo')}>")
+
+      blocks = [
+          {"type": "header", "text": {"type": "plain_text", "text": header_text, "emoji": True}},
+          {"type": "section", "text": {"type": "mrkdwn", "text": "\n".join(context_lines)}},
+          {"type": "divider"},
+          {
+              "type": "section",
+              "text": {
+                  "type": "mrkdwn",
+                  "text": slack_escape(
+                      fit_section(
+                          f"{status_icons.get(trufflehog_status, ':grey_question:')} *TruffleHog — Secret Scan*",
+                          trufflehog_body,
+                      )
+                  ),
+              },
+          },
+          {"type": "divider"},
+          {
+              "type": "section",
+              "text": {
+                  "type": "mrkdwn",
+                  "text": slack_escape(
+                      fit_section(
+                          f"{status_icons.get(sonar_status, ':grey_question:')} *SonarQube — Code Quality*",
+                          sonar_body,
+                      )
+                  ),
+              },
+          },
+          {"type": "divider"},
+          {
+              "type": "section",
+              "text": {
+                  "type": "mrkdwn",
+                  "text": slack_escape(
+                      fit_section(
+                          f"{status_icons.get(trivy_fs_status, ':grey_question:')} *Trivy — Filesystem Scan (CRITICAL)*",
+                          trivy_fs_body,
+                      )
+                  ),
+              },
+          },
+          {"type": "divider"},
+          {
+              "type": "section",
+              "text": {
+                  "type": "mrkdwn",
+                  "text": slack_escape(
+                      fit_section(
+                          f"{status_icons.get(trivy_image_status, ':grey_question:')} *Trivy — Container Image Scan (CRITICAL)*",
+                          trivy_image_body,
+                      )
+                  ),
+              },
+          },
+      ]
+
+      payload = {
+          "channel": "#deployments",
+          "text": f"Security scan report for {service}:{image_tag}",
+          "blocks": blocks,
+      }
+
+      data = json.dumps(payload).encode("utf-8")
+      request = urllib.request.Request(
+          webhook,
+          data=data,
+          headers={"Content-Type": "application/json"},
+          method="POST",
+      )
+      try:
+          with urllib.request.urlopen(request, timeout=30) as response:
+              print(f"Slack notification sent (HTTP {response.status})")
+      except urllib.error.HTTPError as exc:
+          body = exc.read().decode("utf-8", errors="replace")
+          print(f"Slack webhook failed (HTTP {exc.code}): {body}", file=sys.stderr)
+          sys.exit(1)
+      except urllib.error.URLError as exc:
+          print(f"Slack webhook failed: {exc.reason}", file=sys.stderr)
+          sys.exit(1)
+      PYEOF
+  when: always
+  allow_failure: true
+  only: *deploy_branches
