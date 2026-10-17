@@ -18,9 +18,14 @@ test.describe('Image Preview & Fallback Verification Across App Pages', () => {
       const img = images.nth(i);
       await expect(img).toBeVisible();
 
-      // Check image loaded properly in DOM (complete and naturalWidth > 0)
-      const isLoaded = await img.evaluate((el) => {
-        return el.complete && el.naturalWidth > 0;
+      await img.scrollIntoViewIfNeeded();
+      // Check image loaded properly in DOM (complete and naturalWidth > 0, allowing for onerror fallback load)
+      const isLoaded = await img.evaluate(async (el) => {
+        if (el.complete && el.naturalWidth > 0) return true;
+        return new Promise((resolve) => {
+          el.addEventListener('load', () => resolve(el.naturalWidth > 0), { once: true });
+          setTimeout(() => resolve(el.complete && el.naturalWidth > 0), 2000);
+        });
       });
       expect(isLoaded).toBe(true);
     }
@@ -114,7 +119,7 @@ test.describe('Image Preview & Fallback Verification Across App Pages', () => {
       ),
     });
 
-    await page.locator('form button[type="submit"]:has-text("Save")').click();
+    await page.locator('form[action*="products"] button[type="submit"]').click();
     await expect(page).toHaveURL(/\/products/);
 
     // Verify product exists by name_ar in the table
@@ -124,8 +129,19 @@ test.describe('Image Preview & Fallback Verification Across App Pages', () => {
     const rowImg = uploadedRow.locator('img');
     await expect(rowImg).toBeVisible();
 
-    const isLoaded = await rowImg.evaluate((el) => el.complete && el.naturalWidth > 0);
-    expect(isLoaded).toBe(true);
+    await rowImg.scrollIntoViewIfNeeded();
+    const imgInfo = await rowImg.evaluate(async (el) => {
+      if (!el.complete) {
+        await new Promise((r) => {
+          el.onload = r;
+          el.onerror = r;
+          setTimeout(r, 4000);
+        });
+      }
+      return { src: el.src, complete: el.complete, naturalWidth: el.naturalWidth, naturalHeight: el.naturalHeight };
+    });
+    expect(imgInfo.complete).toBe(true);
+    expect(imgInfo.naturalWidth).toBeGreaterThan(0);
   });
 
 });

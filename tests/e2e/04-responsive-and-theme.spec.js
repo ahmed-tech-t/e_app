@@ -20,7 +20,7 @@ test.describe('Responsive Viewports, Dark Mode & RTL Locale Edge Cases', () => {
     await page.goto('/');
 
     // Find the dark mode toggle button in the topbar
-    const themeBtn = page.locator('.h-16 button').last();
+    const themeBtn = page.locator('button[aria-label="Toggle theme"]');
     await expect(themeBtn).toBeVisible();
 
     // In initial light mode, moon icon is visible, sun icon is hidden
@@ -375,8 +375,9 @@ test.describe('Responsive Viewports, Dark Mode & RTL Locale Edge Cases', () => {
     expect(isOpen).toBe(true);
     await expect(backdrop).toBeVisible();
 
-    // 3. Close via backdrop click
-    await backdrop.click({ position: { x: 350, y: 300 } });
+    // 3. Close via backdrop click (click empty area outside drawer)
+    const isRtl = await page.evaluate(() => document.documentElement.dir === 'rtl');
+    await backdrop.click({ position: isRtl ? { x: 20, y: 300 } : { x: 350, y: 300 } });
     await expect(aside).not.toHaveClass(/!translate-x-0/);
     await page.waitForTimeout(350);
     isHidden = await page.evaluate(() => {

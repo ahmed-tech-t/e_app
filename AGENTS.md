@@ -69,9 +69,11 @@ Follow the project's layered Clean Architecture / DDD conventions:
 
 ## 6. Mandatory Automated Testing & Verification Gate (Strict Rule)
 
-- **Mandatory Test Execution After Every Build/Change**: After building, modifying, or refactoring ANY code (services, controllers, models, migrations, views, or Livewire components), you **MUST ALWAYS** run the automated test suite (`php artisan test`) and verify 100% green status with zero failures before finishing your turn or reporting completion.
-- **Never Deliver Untested Code**: No feature, refactor, or bugfix is considered complete until actively proven by running tests (`php artisan test`).
-- **Comprehensive Test Coverage**: Every newly created or modified workflow (POS transaction, stock movement, pricing calculation, API endpoint, Livewire component, or validation rule) must have corresponding test coverage in `tests/Feature/` or `tests/Unit/`.
+- **Mandatory Pre-Commit & Pre-Push Verification**: Before executing ANY `git commit` or `git push` (and before reporting completion), you **MUST ALWAYS** run and verify 100% green status with zero failures on:
+  1. **Unit & Feature Test Suite**: `php artisan test` (must achieve 100% green with 0 failures).
+  2. **UI & E2E Browser Test Suite**: `npm run test:e2e` / `npx playwright test` (all browser UI tests for CRUD, wizards, live search, responsive layouts, theme toggle, and localization).
+- **Never Deliver or Commit Untested Code**: No commit or push is permitted until actively proven green by running both test suites (`php artisan test` and `npm run test:e2e`).
+- **Comprehensive Test Coverage**: Every newly created or modified workflow (POS transaction, stock movement, pricing calculation, API endpoint, Livewire component, or validation rule) must have corresponding test coverage in `tests/Feature/`, `tests/Unit/`, or `tests/e2e/`.
 - **Isolation & Mocking for Heavy Algorithms**: Test complex business calculations in isolation by mocking repository and external service dependencies (`$this->createMock(...)`) under `tests/Unit/`.
 - **Comprehensive Edge-Case Scenarios**:
   - Empty / null inputs and collections.

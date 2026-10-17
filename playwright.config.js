@@ -13,15 +13,23 @@ export default defineConfig({
   },
   projects: [
     {
+      name: 'setup',
+      testMatch: /.*\.setup\.js/,
+    },
+    {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: {
+        ...devices['Desktop Chrome'],
+        storageState: 'playwright/.auth/user.json',
+      },
+      dependencies: ['setup'],
     },
   ],
   webServer: {
     command: 'php artisan serve --port=8000',
     url: 'http://127.0.0.1:8000',
     reuseExistingServer: true,
-    timeout: 30000,
+    timeout: 60000,
   },
 });
 

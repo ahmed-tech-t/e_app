@@ -3,6 +3,10 @@
 @section('content')
     <x-layout.breadcrumb :items="[['label' => __('app.purchases.title'), 'url' => route('purchases.index')], ['label' => __('app.common.create')]]" />
 
+    <script type="application/json" id="products-json">
+        @json(collect($products)->map(fn($p) => ['id' => $p->id, 'code' => $p->code]))
+    </script>
+
     <div class="max-w-5xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6"
          x-data="{
              step: 1,
@@ -11,7 +15,7 @@
              discount: 0,
              tax: 0,
              items: [{ product_id: '', quantity: 1, price: 0 }],
-             products: @json(collect($products)->map(fn($p) => ['id' => $p->id, 'code' => $p->code])),
+             products: JSON.parse(document.getElementById('products-json')?.textContent || '[]'),
              getProductCode(id) {
                  const p = this.products.find(x => x.id == id);
                  return p ? p.code : id;
