@@ -15,7 +15,6 @@
     "type": "module",
     "scripts": {
         "build": "vite build",
-        "vercel-build": "vite build",
         "dev": "vite",
         "test:e2e": "playwright test"
     },
