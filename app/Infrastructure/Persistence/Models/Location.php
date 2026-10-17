@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 class Location extends Model
 {
     use SoftDeletes;
-
+    //comment
     protected $fillable = [
         'code',
         'name',
