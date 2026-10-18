@@ -78,6 +78,7 @@ laravel_test:
     - sed -i 's/DB_PASSWORD=root/DB_PASSWORD=test/' .env
     - php artisan key:generate
     - php artisan migrate --force
+    - mkdir -p public/build && echo '{}' > public/build/manifest.json
     - php artisan test
   only: *test_branches
 

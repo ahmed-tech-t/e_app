@@ -15,6 +15,8 @@ abstract class TestCase extends BaseTestCase
     {
         parent::setUp();
 
+        $this->withoutVite();
+
         if ($this->authenticateUser) {
             try {
                 $user = $this->createUser();
