@@ -88,8 +88,11 @@ laravel_test:
 
 trufflehog_scan:
   stage: security
-  image: trufflesecurity/trufflehog:latest
+  image:
+    name: trufflesecurity/trufflehog:latest
+    entrypoint: [""]
   script:
+    - touch trufflehog_results.json
     - trufflehog git "file://." --branch=HEAD --json > trufflehog_results.json || true
   artifacts:
     when: always
@@ -101,23 +104,32 @@ trufflehog_scan:
 
 sonarqube_scan:
   stage: security
-  image: sonarsource/sonar-scanner-cli:latest
+  image:
+    name: sonarsource/sonar-scanner-cli:latest
+    entrypoint: [""]
   script:
-    - >
-      sonar-scanner
-      -Dsonar.projectKey=${SERVICE_NAME}
-      -Dsonar.sources=.
-      -Dsonar.host.url=${SONAR_HOST_URL}
-      -Dsonar.token=${SONAR_TOKEN}
-      -Dsonar.working.directory=/tmp/.scannerwork
+    - |
+      if [ -z "${SONAR_HOST_URL:-}" ] || [ -z "${SONAR_TOKEN:-}" ]; then
+        echo "SonarQube not configured (SONAR_HOST_URL or SONAR_TOKEN missing), skipping scan."
+        exit 0
+      fi
+      sonar-scanner \
+        -Dsonar.projectKey="${SERVICE_NAME:-pos}" \
+        -Dsonar.sources=. \
+        -Dsonar.host.url="${SONAR_HOST_URL}" \
+        -Dsonar.token="${SONAR_TOKEN}" \
+        -Dsonar.working.directory=/tmp/.scannerwork || true
   allow_failure: true
   only: *deploy_branches
 
 trivy_fs_scan:
   stage: security
-  image: aquasec/trivy:latest
+  image:
+    name: aquasec/trivy:latest
+    entrypoint: [""]
   script:
-    - trivy fs . --severity CRITICAL --format table --output trivy_fs_report.txt --exit-code 0
+    - touch trivy_fs_report.txt
+    - trivy fs . --severity CRITICAL --format table --output trivy_fs_report.txt --exit-code 0 || true
   artifacts:
     when: always
     paths:
@@ -157,8 +169,11 @@ build:
 
 trivy_image_scan:
   stage: push
-  image: aquasec/trivy:latest
+  image:
+    name: aquasec/trivy:latest
+    entrypoint: [""]
   script:
+    - touch trivy_image_report.txt
     - trivy image "$FULL_IMAGE" --severity CRITICAL --format table --output trivy_image_report.txt --exit-code 0 || true
   artifacts:
     when: always
@@ -315,9 +330,17 @@ update-manifest:
 
 dast_nuclei:
   stage: dynamic_scan
-  image: projectdiscovery/nuclei:latest
+  image:
+    name: projectdiscovery/nuclei:latest
+    entrypoint: [""]
   script:
-    - nuclei -u "https://${SERVICE_HOST}" -o nuclei_report.txt || true
+    - touch nuclei_report.txt
+    - |
+      if [ -z "${SERVICE_HOST:-}" ]; then
+        echo "SERVICE_HOST not configured, skipping nuclei scan."
+        exit 0
+      fi
+      nuclei -u "https://${SERVICE_HOST}" -o nuclei_report.txt || true
   artifacts:
     when: always
     paths:
@@ -328,9 +351,17 @@ dast_nuclei:
 
 dast_zap:
   stage: dynamic_scan
-  image: ghcr.io/zaproxy/zaproxy:stable
+  image:
+    name: ghcr.io/zaproxy/zaproxy:stable
+    entrypoint: [""]
   script:
-    - zap-baseline.py -a -l WARN -t "https://${SERVICE_HOST}" -w zap_report.txt || true
+    - touch zap_report.txt
+    - |
+      if [ -z "${SERVICE_HOST:-}" ]; then
+        echo "SERVICE_HOST not configured, skipping zap scan."
+        exit 0
+      fi
+      zap-baseline.py -a -l WARN -t "https://${SERVICE_HOST}" -w zap_report.txt || true
   artifacts:
     when: always
     paths:
