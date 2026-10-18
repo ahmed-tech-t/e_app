@@ -15,6 +15,10 @@ use App\Interfaces\Http\Controllers\Web\SupplierController;
 use Illuminate\Support\Facades\Route;
 
 // Public routes
+Route::get('/healthz', function () {
+    return response()->json(['status' => 'healthy'], 200);
+})->name('healthz');
+
 Route::post('/locale/{locale}', function ($locale) {
     session(['locale' => in_array($locale, ['en', 'ar']) ? $locale : 'en']);
     return back();
