@@ -12,36 +12,44 @@ use RuntimeException;
 
 class CloudflareImageService
 {
-    private Cloudinary $cloudinary;
+    private ?Cloudinary $cloudinary = null;
     private string $folder;
     private bool $isProduction;
 
     public function __construct()
     {
         $this->isProduction = (bool) app()->isProduction();
+        $this->folder = (string) config('services.cloudinary.folder', 'products');
+    }
 
-      $cloudinaryUrl = config('services.cloudinary.url') ?: env('CLOUDINARY_URL');
+    private function getCloudinary(): Cloudinary
+    {
+        if ($this->cloudinary !== null) {
+            return $this->cloudinary;
+        }
+
+        $cloudinaryUrl = config('services.cloudinary.url') ?: env('CLOUDINARY_URL');
+        $cloudName = config('services.cloudinary.cloud_name') ?: env('CLOUDINARY_CLOUD_NAME');
 
         if (!empty($cloudinaryUrl)) {
-            // Initialize directly from the URL string, then apply HTTP/HTTPS settings
             $this->cloudinary = new Cloudinary($cloudinaryUrl);
             $this->cloudinary->configuration->url->secure($this->isProduction);
-            
-        } else {
-            // Pass the configuration array directly to the constructor
+        } elseif (!empty($cloudName)) {
             $this->cloudinary = new Cloudinary([
                 'cloud' => [
-                    'cloud_name' => config('services.cloudinary.cloud_name'),
+                    'cloud_name' => $cloudName,
                     'api_key'    => config('services.cloudinary.api_key'),
                     'api_secret' => config('services.cloudinary.api_secret'),
                 ],
                 'url' => [
                     'secure' => $this->isProduction,
-                ]
+                ],
             ]);
+        } else {
+            throw new RuntimeException('Cloudinary credentials are not configured.');
         }
 
-        $this->folder = (string) config('services.cloudinary.folder', 'products');
+        return $this->cloudinary;
     }
 
     /**
@@ -62,7 +70,7 @@ class CloudflareImageService
             $options['verify'] = false;
         }
 
-        $result = $this->cloudinary->uploadApi()->upload($image->filePath, $options);
+        $result = $this->getCloudinary()->uploadApi()->upload($image->filePath, $options);
 
         $publicId = (string) ($result['public_id'] ?? '');
 
@@ -101,15 +109,23 @@ class CloudflareImageService
             $options['verify'] = false;
         }
 
-        $result = $this->cloudinary->uploadApi()->destroy($publicId, $options);
+        try {
+            $result = $this->getCloudinary()->uploadApi()->destroy($publicId, $options);
 
-        return ($result['result'] ?? '') === 'ok';
+            return ($result['result'] ?? '') === 'ok';
+        } catch (\Throwable) {
+            return false;
+        }
     }
 
     private function extractPublicId(string $identifier): string
     {
-        // If it's a full Cloudinary URL extract public_id (path without extension)
+        // If it's a full URL, ensure it's a Cloudinary URL before attempting extraction
         if (str_starts_with($identifier, 'http://') || str_starts_with($identifier, 'https://')) {
+            if (!str_contains($identifier, 'cloudinary.com')) {
+                return '';
+            }
+
             // e.g. https://res.cloudinary.com/dcgewtlhs/image/upload/v123/products/abc.jpg
             // public_id = products/abc
             $path = parse_url($identifier, PHP_URL_PATH) ?? '';
