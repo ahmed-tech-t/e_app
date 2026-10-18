@@ -5,11 +5,8 @@ namespace App\Domain\Entities;
 use App\Infrastructure\Persistence\utils\PriceType;
 use Carbon\Carbon;
 
-use function Symfony\Component\Clock\now;
-
 class ProductPriceEntity
 {
-
     public function __construct(
         public int $productId,
         public float $price,
@@ -17,8 +14,7 @@ class ProductPriceEntity
         public Carbon $validFrom,
         public ?int $id = null,
         public ?Carbon $validTo = null,
-    ) {
-    }
+    ) {}
 
     public static function create(array $data)
     {
@@ -34,6 +30,7 @@ class ProductPriceEntity
     {
         $this->validTo = Carbon::now();
     }
+
     public function toArray()
     {
         return [

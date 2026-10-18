@@ -1,10 +1,9 @@
 <?php
 
-
 namespace App\Utils;
+
 class ValidationRules
 {
-
     public static function phone(bool $required = true): string
     {
         return self::base(
@@ -20,6 +19,7 @@ class ValidationRules
             required: $required
         );
     }
+
     public static function supplier(bool $required = true): string
     {
         return self::base(
@@ -27,6 +27,7 @@ class ValidationRules
             required: $required
         );
     }
+
     public static function percentage(bool $required = true): string
     {
         return self::base(
@@ -42,6 +43,7 @@ class ValidationRules
             required: $required
         );
     }
+
     public static function code(bool $required = true): string
     {
         return self::base(
@@ -65,7 +67,6 @@ class ValidationRules
             required: $required
         );
     }
-
 
     public static function productBatchId(bool $required = true): string
     {
@@ -126,8 +127,9 @@ class ValidationRules
     private static function base(bool $required, $validation): string
     {
         if ($required) {
-            return 'required|' . $validation;
+            return 'required|'.$validation;
         }
-        return 'nullable|' . $validation;
+
+        return 'nullable|'.$validation;
     }
 }

@@ -82,10 +82,10 @@ class ProductCatalogService
             $resolvedPath = Storage::disk('public')->path($normalized);
         } elseif (file_exists(public_path($normalized)) && is_file(public_path($normalized))) {
             $resolvedPath = public_path($normalized);
-        } elseif (file_exists(public_path('storage/' . ltrim($normalized, '/'))) && is_file(public_path('storage/' . ltrim($normalized, '/')))) {
-            $resolvedPath = public_path('storage/' . ltrim($normalized, '/'));
-        } elseif (file_exists(storage_path('app/public/' . ltrim($normalized, '/'))) && is_file(storage_path('app/public/' . ltrim($normalized, '/')))) {
-            $resolvedPath = storage_path('app/public/' . ltrim($normalized, '/'));
+        } elseif (file_exists(public_path('storage/'.ltrim($normalized, '/'))) && is_file(public_path('storage/'.ltrim($normalized, '/')))) {
+            $resolvedPath = public_path('storage/'.ltrim($normalized, '/'));
+        } elseif (file_exists(storage_path('app/public/'.ltrim($normalized, '/'))) && is_file(storage_path('app/public/'.ltrim($normalized, '/')))) {
+            $resolvedPath = storage_path('app/public/'.ltrim($normalized, '/'));
         }
 
         if (! $resolvedPath || ! file_exists($resolvedPath) || ! is_file($resolvedPath)) {
@@ -112,8 +112,8 @@ class ProductCatalogService
             @mkdir($cacheDir, 0755, true);
         }
 
-        $hash = md5($imagePath . (string) filemtime($imagePath));
-        $cachedJpg = $cacheDir . '/' . $hash . '.jpg';
+        $hash = md5($imagePath.(string) filemtime($imagePath));
+        $cachedJpg = $cacheDir.'/'.$hash.'.jpg';
 
         if (file_exists($cachedJpg)) {
             return str_replace('\\', '/', $cachedJpg);
@@ -170,7 +170,7 @@ class ProductCatalogService
         @ini_set('memory_limit', '512M');
         @set_time_limit(300);
 
-        $arabic = new Arabic();
+        $arabic = new Arabic;
 
         $catalogItems = [];
         foreach ($products as $product) {

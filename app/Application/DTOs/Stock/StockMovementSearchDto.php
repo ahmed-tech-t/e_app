@@ -12,8 +12,8 @@ class StockMovementSearchDto implements StockSearchInterfaceDto
         public ?StockMovementType $type,
         public ?string $bill_number,
         public ?int $product_batch_id = null,
-    ) {
-    }
+    ) {}
+
     public function toArray()
     {
         return [
@@ -21,7 +21,7 @@ class StockMovementSearchDto implements StockSearchInterfaceDto
             'location_id' => $this->location_id,
             'product_batch_id' => $this->product_batch_id,
             'type' => $this->type,
-            'bill_number' => $this->bill_number
+            'bill_number' => $this->bill_number,
         ];
     }
 }

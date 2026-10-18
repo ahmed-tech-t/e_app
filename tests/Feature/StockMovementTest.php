@@ -4,8 +4,6 @@ namespace Tests\Feature;
 
 use App\Application\DTOs\TransferProductDto;
 use App\Application\Services\StockService;
-use App\Infrastructure\Persistence\Models\ProductBatch;
-use App\Infrastructure\Persistence\Models\StockMovement;
 use App\Infrastructure\Persistence\utils\StockMovementType;
 use App\Utils\Constants;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -17,13 +15,14 @@ class StockMovementTest extends TestCase
     use RefreshDatabase;
 
     private string $transferApiUrl;
+
     private string $searchApiUrl;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->transferApiUrl = Constants::BASE_API_URL . '/v1/stock/transfer';
-        $this->searchApiUrl = Constants::BASE_API_URL . '/v1/stock/search';
+        $this->transferApiUrl = Constants::BASE_API_URL.'/v1/stock/transfer';
+        $this->searchApiUrl = Constants::BASE_API_URL.'/v1/stock/search';
     }
 
     public function test_transfers_product_between_locations_successfully(): void
@@ -126,7 +125,7 @@ class StockMovementTest extends TestCase
         $product = $this->createProduct();
         $batch = $this->createBatch($product, $store, quantity: 15);
 
-        $response = $this->getJson($this->searchApiUrl . '?product_id=' . $product->id);
+        $response = $this->getJson($this->searchApiUrl.'?product_id='.$product->id);
         $response->assertStatus(200);
 
         $items = $response->json('data.items') ?? $response->json('data');

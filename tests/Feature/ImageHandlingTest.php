@@ -22,7 +22,7 @@ class ImageHandlingTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->baseUrl = Constants::BASE_API_URL . '/v1';
+        $this->baseUrl = Constants::BASE_API_URL.'/v1';
     }
 
     public function test_uploads_small_image_under_3mb_to_cloudflare_and_saves_to_database(): void

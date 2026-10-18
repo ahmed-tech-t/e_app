@@ -34,6 +34,7 @@ class CreateLocationRequest extends FormRequest
     public function toDto()
     {
         $data = $this->validated();
+
         return new LocationDto(
             name: $data['name'],
             address: $data['address'] ?? null,

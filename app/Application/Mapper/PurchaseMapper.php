@@ -28,7 +28,7 @@ class PurchaseMapper
             grand_total: $model['grand_total'],
             created_at: $model['created_at'],
             items: collect($model->relationLoaded('items') ? $model->items : [])->map(
-                fn($item) => PurchaseItemMapper::modelToEntity($item)
+                fn ($item) => PurchaseItemMapper::modelToEntity($item)
             )->all(),
             supplier: $supplierEntity,
             store: $storeEntity,

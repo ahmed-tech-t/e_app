@@ -9,7 +9,7 @@ class LocationService extends BaseService
 {
     protected string $entityClass = LocationEntity::class;
 
-    protected $defaultCodeChar = "LOC";
+    protected $defaultCodeChar = 'LOC';
 
     public function __construct(LocationRepo $repo)
     {

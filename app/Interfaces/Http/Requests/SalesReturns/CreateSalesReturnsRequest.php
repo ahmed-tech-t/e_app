@@ -10,7 +10,6 @@ use App\Utils\ValidationRules;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-
 class CreateSalesReturnsRequest extends FormRequest
 {
     /**
@@ -39,7 +38,7 @@ class CreateSalesReturnsRequest extends FormRequest
                 'required',
                 'array',
                 'min:1',
-                new CheckReturnQuantity($this->sales_id)
+                new CheckReturnQuantity($this->sales_id),
             ],
         ];
     }
@@ -68,13 +67,13 @@ class CreateSalesReturnsRequest extends FormRequest
     public function toDto(): SalesReturnsDto
     {
         $data = $this->validated();
+
         return new SalesReturnsDto(
             sales_id: $data['sales_id'],
             store_id: $data['store_id'],
             items: collect($data['items'])
-                ->map(fn($item) => SalesReturnItemDto::create($item))
+                ->map(fn ($item) => SalesReturnItemDto::create($item))
                 ->toArray(),
         );
     }
-
 }

@@ -3,12 +3,12 @@
 namespace App\Interfaces\Http\Controllers\Web;
 
 use App\Application\Services\CategoryService;
+use App\Application\Services\CloudflareImageService;
+use App\Application\Services\ImageCompressionService;
 use App\Application\Services\ProductCatalogService;
 use App\Application\Services\ProductPriceService;
 use App\Application\Services\ProductService;
 use App\Application\Services\SaleUnitService;
-use App\Application\Services\ImageCompressionService;
-use App\Application\Services\CloudflareImageService;
 use App\Exports\ProductsExport;
 use App\Imports\ProductsImport;
 use App\Infrastructure\Persistence\Models\Product;
@@ -29,8 +29,7 @@ class ProductController extends Controller
         private SaleUnitService $saleUnitService,
         private ProductPriceService $productPriceService,
         private ProductCatalogService $productCatalogService
-    ) {
-    }
+    ) {}
 
     public function index()
     {
@@ -61,6 +60,7 @@ class ProductController extends Controller
         if ($compressed && $compressed->isTemporary && file_exists($compressed->filePath)) {
             @unlink($compressed->filePath);
         }
+
         return redirect()->route('products.index')->with('success', 'Product created successfully.');
     }
 
@@ -68,7 +68,7 @@ class ProductController extends Controller
     {
         $product = $this->productService->findById($id);
         $priceHistory = $this->productPriceService->getProductPriceHistory($id, null);
-        Log::info('Price history for product ID ' . $id, ['priceHistory' => $priceHistory]);
+        Log::info('Price history for product ID '.$id, ['priceHistory' => $priceHistory]);
 
         return view('products.show', compact('product', 'priceHistory'));
     }
@@ -103,6 +103,7 @@ class ProductController extends Controller
         if ($compressed && $compressed->isTemporary && file_exists($compressed->filePath)) {
             @unlink($compressed->filePath);
         }
+
         return redirect()->route('products.index')->with('success', 'Product updated successfully.');
     }
 
@@ -114,6 +115,7 @@ class ProductController extends Controller
             $this->cloudflareService->delete($image);
         }
         $this->productService->destroy($id);
+
         return redirect()->route('products.index')->with('success', 'Product deleted successfully.');
     }
 
@@ -142,13 +144,14 @@ class ProductController extends Controller
         Excel::import($import, $request->file('file'));
 
         $failures = $import->failures();
-        if (!empty($failures)) {
-            $shown   = array_slice($failures, 0, 2);
-            $rest    = count($failures) - count($shown);
+        if (! empty($failures)) {
+            $shown = array_slice($failures, 0, 2);
+            $rest = count($failures) - count($shown);
             $message = implode("\n", $shown);
             if ($rest > 0) {
                 $message .= "\n(and {$rest} more skipped row(s))";
             }
+
             return back()->with('error', $message);
         }
 
@@ -207,7 +210,7 @@ class ProductController extends Controller
         }
 
         $pdf = $this->productCatalogService->generatePdf($products, $priceType);
-        $filename = 'catalog_' . date('Y-m-d_His') . '.pdf';
+        $filename = 'catalog_'.date('Y-m-d_His').'.pdf';
 
         return $pdf->download($filename);
     }

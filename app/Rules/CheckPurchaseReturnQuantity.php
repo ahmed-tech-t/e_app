@@ -30,7 +30,7 @@ class CheckPurchaseReturnQuantity implements ValidationRule
 
         $requestedTotals = collect($items)
             ->groupBy('product_id')
-            ->map(fn($group) => $group->sum('quantity'));
+            ->map(fn ($group) => $group->sum('quantity'));
 
         foreach ($requestedTotals as $pid => $requestedQty) {
             $original = $originalQuantities[$pid] ?? 0;
@@ -42,6 +42,7 @@ class CheckPurchaseReturnQuantity implements ValidationRule
 
             if ($requestedQty > $available) {
                 $fail("The return quantity for product '{$name}' cannot exceed the available quantity of {$available}.");
+
                 return;
             }
 
@@ -49,6 +50,7 @@ class CheckPurchaseReturnQuantity implements ValidationRule
                 $physicalStock = (int) $productBatchRepo->getProductQuantityInLocation($pid, $this->storeId);
                 if ($requestedQty > $physicalStock) {
                     $fail("The return quantity for product '{$name}' cannot exceed current physical stock in store ({$physicalStock}).");
+
                     return;
                 }
             }

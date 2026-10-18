@@ -22,7 +22,7 @@ class PurchaseReturnMapper
             total: $model['total'],
             created_at: $model['created_at'],
             items: collect($model->relationLoaded('items') ? $model->items : [])->map(
-                fn($item) => PurchaseReturnItemMapper::modelToEntity($item)
+                fn ($item) => PurchaseReturnItemMapper::modelToEntity($item)
             )->all(),
         );
     }

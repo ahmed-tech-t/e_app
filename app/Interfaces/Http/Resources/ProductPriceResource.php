@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Interfaces\Http\Resources;
+
 use App\Interfaces\Http\Resources\utils\TimeFormate;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -22,5 +23,4 @@ class ProductPriceResource extends JsonResource
             'valid_from' => $this->validFrom?->format(TimeFormate::formate()),
         ];
     }
-
 }

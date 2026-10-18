@@ -4,10 +4,8 @@ namespace App\Domain\Entities;
 
 use Carbon\Carbon;
 
-
 class LocationEntity
 {
-
     public function __construct(
         public string $name,
         public ?int $id = null,
@@ -18,8 +16,7 @@ class LocationEntity
         public ?int $quantity = null,
         public ?Carbon $created_at = null,
         public ?Carbon $updated_at = null
-    ) {
-    }
+    ) {}
 
     public static function create(array $data)
     {
@@ -30,6 +27,7 @@ class LocationEntity
             type: $data['type']
         );
     }
+
     public function update(array $data)
     {
         $this->name = $data['name'] ?? $this->name;

@@ -2,10 +2,9 @@
 
 namespace App\Traits;
 
-
 trait HttpResponses
 {
-    public function success($data = [], $message = "Success", $meta = null, $code = 200)
+    public function success($data = [], $message = 'Success', $meta = null, $code = 200)
     {
 
         $response = [
@@ -14,11 +13,11 @@ trait HttpResponses
             'message' => $message,
         ];
 
-        if (!empty($data)) {
+        if (! empty($data)) {
             if ($meta) {
                 $response['data'] = [
                     'items' => $data,
-                    'meta' => $meta
+                    'meta' => $meta,
                 ];
             } else {
                 $response['data'] = $data;
@@ -36,7 +35,7 @@ trait HttpResponses
             'code' => $code,
             'status' => 'Error has occurred...',
             'message' => $message,
-            'data' => $data
+            'data' => $data,
         ], $code);
     }
 }

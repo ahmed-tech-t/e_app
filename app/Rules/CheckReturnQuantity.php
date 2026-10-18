@@ -10,13 +10,13 @@ use Illuminate\Contracts\Validation\ValidationRule;
 
 class CheckReturnQuantity implements ValidationRule
 {
-
     protected $saleId;
 
     public function __construct($saleId)
     {
         $this->saleId = $saleId;
     }
+
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         $salesItemRepo = app(SalesItemRepo::class);
@@ -31,7 +31,7 @@ class CheckReturnQuantity implements ValidationRule
 
         $requestedTotals = collect($items)
             ->groupBy('product_id')
-            ->map(fn($group) => $group->sum('quantity'));
+            ->map(fn ($group) => $group->sum('quantity'));
 
         foreach ($requestedTotals as $pid => $requestedQty) {
             $original = $originalQuantities[$pid] ?? 0;
@@ -42,6 +42,7 @@ class CheckReturnQuantity implements ValidationRule
                 $product = $productRepo->findById($pid);
                 $name = $product->name_ar ?? $product->name_en ?? $product->code;
                 $fail("The return quantity for product ID { $name } cannot exceed the available quantity of {$available}.");
+
                 return;
             }
         }

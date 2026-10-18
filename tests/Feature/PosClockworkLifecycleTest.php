@@ -8,7 +8,6 @@ use App\Infrastructure\Persistence\Models\Purchase;
 use App\Infrastructure\Persistence\Models\Sales;
 use App\Infrastructure\Persistence\Models\StockMovement;
 use App\Infrastructure\Persistence\utils\PriceType;
-use App\Infrastructure\Persistence\utils\StockMovementType;
 use App\Utils\Constants;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
@@ -20,7 +19,7 @@ class PosClockworkLifecycleTest extends TestCase
 
     public function test_full_pos_lifecycle_works_like_clockwork(): void
     {
-        $baseUrl = Constants::BASE_API_URL . '/v1';
+        $baseUrl = Constants::BASE_API_URL.'/v1';
 
         // 1. SETUP CATALOG & LOCATIONS
         $storeA = $this->createLocation(['name' => 'Store Alpha']);
@@ -125,7 +124,7 @@ class PosClockworkLifecycleTest extends TestCase
         $this->assertEquals(7, $batch->fresh()->remaining_quantity);
 
         // 7. SUPPLIER PURCHASE RETURN FROM STORE A (Store A returns 2 units to Supplier)
-        $purchaseReturnResponse = $this->post("/purchase-returns", [
+        $purchaseReturnResponse = $this->post('/purchase-returns', [
             'purchase_id' => $purchase->id,
             'store_id' => $storeA->id,
             'reason' => 'Returning defective items to supplier',

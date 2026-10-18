@@ -25,7 +25,7 @@ class CreateProductRequest extends FormRequest
     {
         return [
             'category_id' => ValidationRules::categoryId(),
-            'original_code' => ValidationRules::name(false) . '|unique:products,original_code',
+            'original_code' => ValidationRules::name(false).'|unique:products,original_code',
             'name_ar' => ValidationRules::name(),
             'name_en' => ValidationRules::name(false),
             'origin' => ValidationRules::name(false),

@@ -15,11 +15,12 @@ class SupplierFactory extends Factory
      *
      * @return array<string, mixed>
      */
-
     protected $model = Supplier::class;
+
     public function definition(): array
     {
         $code = $this->faker->ean13();
+
         return [
             'code' => substr($code, 0, 5),
             'name' => $this->faker->name(),

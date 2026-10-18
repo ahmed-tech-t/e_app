@@ -11,20 +11,20 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class ProductsExport implements FromCollection, WithHeadings, WithMapping, ShouldAutoSize, WithStyles
+class ProductsExport implements FromCollection, ShouldAutoSize, WithHeadings, WithMapping, WithStyles
 {
     const COLUMNS = [
-        'code'             => 'Code',
-        'original_code'    => 'Original Code',
-        'name_ar'          => 'Name (AR)',
-        'name_en'          => 'Name (EN)',
-        'brand'            => 'Brand',
-        'origin'           => 'Origin',
-        'description'      => 'Description',
+        'code' => 'Code',
+        'original_code' => 'Original Code',
+        'name_ar' => 'Name (AR)',
+        'name_en' => 'Name (EN)',
+        'brand' => 'Brand',
+        'origin' => 'Origin',
+        'description' => 'Description',
         'units_per_carton' => 'Units Per Carton',
-        'category'         => 'Category',
-        'sale_unit'        => 'Sale Unit',
-        'size'             => 'Size',
+        'category' => 'Category',
+        'sale_unit' => 'Sale Unit',
+        'size' => 'Size',
     ];
 
     public function __construct(private array $columns = [], private bool $templateOnly = false) {}
@@ -65,18 +65,18 @@ class ProductsExport implements FromCollection, WithHeadings, WithMapping, Shoul
     private function value(Product $product, string $column): mixed
     {
         return match ($column) {
-            'code'             => $product->code,
-            'original_code'    => $product->original_code,
-            'name_ar'          => $product->name_ar,
-            'name_en'          => $product->name_en,
-            'brand'            => $product->brand,
-            'origin'           => $product->origin,
-            'description'      => $product->description,
+            'code' => $product->code,
+            'original_code' => $product->original_code,
+            'name_ar' => $product->name_ar,
+            'name_en' => $product->name_en,
+            'brand' => $product->brand,
+            'origin' => $product->origin,
+            'description' => $product->description,
             'units_per_carton' => $product->units_per_carton,
-            'category'         => $product->category?->name_ar,
-            'sale_unit'        => $product->saleUnit?->name_ar,
-            'size'             => $product->size,
-            default            => null,
+            'category' => $product->category?->name_ar,
+            'sale_unit' => $product->saleUnit?->name_ar,
+            'size' => $product->size,
+            default => null,
         };
     }
 }

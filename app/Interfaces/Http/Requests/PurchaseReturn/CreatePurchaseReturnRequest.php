@@ -20,13 +20,13 @@ class CreatePurchaseReturnRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'purchase_id'              => 'required|integer|exists:purchases,id',
-            'store_id'                 => ValidationRules::locationId(),
-            'items.*.product_id'       => ValidationRules::productId(),
-            'items.*.quantity'         => ValidationRules::quantity(),
-            'items.*.reason'           => 'nullable|string',
-            'items.*.restock_status'   => ['required', Rule::enum(ReturnedItemStatus::class)],
-            'items'                    => [
+            'purchase_id' => 'required|integer|exists:purchases,id',
+            'store_id' => ValidationRules::locationId(),
+            'items.*.product_id' => ValidationRules::productId(),
+            'items.*.quantity' => ValidationRules::quantity(),
+            'items.*.reason' => 'nullable|string',
+            'items.*.restock_status' => ['required', Rule::enum(ReturnedItemStatus::class)],
+            'items' => [
                 'required',
                 'array',
                 'min:1',
@@ -64,7 +64,7 @@ class CreatePurchaseReturnRequest extends FormRequest
             purchase_id: $data['purchase_id'],
             store_id: $data['store_id'],
             items: collect($data['items'])
-                ->map(fn($item) => PurchaseReturnItemDto::create($item))
+                ->map(fn ($item) => PurchaseReturnItemDto::create($item))
                 ->toArray(),
         );
     }

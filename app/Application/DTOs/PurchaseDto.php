@@ -2,22 +2,17 @@
 
 namespace App\Application\DTOs;
 
-
-
 class PurchaseDto
 {
-
     public function __construct(
-        public ?int $supplier_id = null,
-        public ?int $store_id = null,
-        public float $discount = 0,
-        public float $tax = 0,
+        public ?int $supplier_id,
+        public ?int $store_id,
+        public float $discount,
+        public float $tax,
         /** @var PurchaseItemDto[] */
         public ?array $items,
         public float $paper_total
-    ) {
-    }
-
+    ) {}
 
     public function toArray()
     {

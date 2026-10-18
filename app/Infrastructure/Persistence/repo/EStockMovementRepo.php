@@ -20,8 +20,7 @@ class EStockMovementRepo implements StockMovementRepo
 {
     public function __construct(
         private ProductBatchRepo $productBatchRepo
-    ) {
-    }
+    ) {}
 
     public function transfer($batchId, $fromLocationId, $toLocationId, $quantity, $billNumber = null)
     {
@@ -37,7 +36,7 @@ class EStockMovementRepo implements StockMovementRepo
     public function findAll()
     {
         return StockMovement::paginate()->through(
-            fn($item) => StockMovementMapper::modelToEntity($item)
+            fn ($item) => StockMovementMapper::modelToEntity($item)
         );
     }
 
@@ -81,7 +80,7 @@ class EStockMovementRepo implements StockMovementRepo
             ->orderBy('created_at', 'desc')
             ->paginate($perPage)
             ->through(
-                fn($item) => StockMovementMapper::modelToEntity($item)
+                fn ($item) => StockMovementMapper::modelToEntity($item)
 
             );
 

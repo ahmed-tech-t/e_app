@@ -5,13 +5,13 @@ namespace Database\Seeders;
 use App\Infrastructure\Persistence\Models\Product;
 use App\Infrastructure\Persistence\Models\ProductBatch;
 use App\Traits\CodeGenerator;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Database\Seeder;
 
 class ProductBatchSeeder extends Seeder
 {
     use CodeGenerator;
+
     /**
      * Run the database seeds.
      */
@@ -27,8 +27,8 @@ class ProductBatchSeeder extends Seeder
 
             ProductBatch::factory(2)
                 ->state(new Sequence(
-                    fn($sequence) => [
-                        'product_id' => $products[$sequence->index]->id
+                    fn ($sequence) => [
+                        'product_id' => $products[$sequence->index]->id,
                     ]
                 ))
                 ->create([
@@ -36,8 +36,4 @@ class ProductBatchSeeder extends Seeder
                 ]);
         }
     }
-
-
-
-
 }

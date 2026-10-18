@@ -1,6 +1,5 @@
 <?php
 
-use App\Support\Scrample\BaseControllerHook;
 use Dedoc\Scramble\Http\Middleware\RestrictedDocsAccess;
 
 return [
@@ -134,7 +133,6 @@ return [
     ],
 
     'extensions' => [
-
 
     ],
 ];

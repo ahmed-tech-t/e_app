@@ -10,10 +10,13 @@ use Illuminate\Support\Facades\DB;
 class EPurchaseReturnItemRepo extends BaseERepo implements PurchaseReturnItemRepo
 {
     protected $modelClass = PurchaseReturnItem::class;
+
     protected $mapper = PurchaseReturnItemMapper::class;
 
     protected array $searchFilters = [];
+
     protected array $withForPaginate = [];
+
     protected array $defaultRelationships = [];
 
     public function getReturnedItemsQuantitiesInBill(int $purchaseId, array $productIds): array

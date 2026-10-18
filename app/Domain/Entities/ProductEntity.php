@@ -1,8 +1,8 @@
 <?php
+
 namespace App\Domain\Entities;
 
 use Carbon\Carbon;
-
 
 class ProductEntity
 {
@@ -27,8 +27,7 @@ class ProductEntity
         public ?SaleUnitEntity $sale_unit = null,
         public ?CategoryEntity $category = null,
         public ?string $size = null,
-    ) {
-    }
+    ) {}
 
     public static function create(array $data): self
     {
@@ -48,6 +47,7 @@ class ProductEntity
             size: $data['size'] ?? null,
         );
     }
+
     public function update(array $data)
     {
         $this->category_id = $data['category_id'] ?? $this->category_id;
@@ -89,14 +89,17 @@ class ProductEntity
             'sale_unit_id' => $this->sale_unit_id,
 
         ];
-        if ($this->image)
+        if ($this->image) {
             $data['image'] = $this->image;
+        }
 
-        if ($this->origin)
+        if ($this->origin) {
             $data['origin'] = $this->origin;
+        }
 
-        if ($this->size !== null)
+        if ($this->size !== null) {
             $data['size'] = $this->size;
+        }
 
         return $data;
     }

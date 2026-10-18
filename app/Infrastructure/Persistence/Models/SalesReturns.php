@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class SalesReturns extends Model
 {
-
     protected $fillable = [
         'code',
         'location_id',

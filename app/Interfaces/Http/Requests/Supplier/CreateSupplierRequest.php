@@ -34,6 +34,7 @@ class CreateSupplierRequest extends FormRequest
     public function toDto()
     {
         $data = $this->validated();
+
         return new SupplierDto(
             name: $data['name'],
             phone: $data['phone'] ?? null,

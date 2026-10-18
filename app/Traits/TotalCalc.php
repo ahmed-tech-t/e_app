@@ -12,6 +12,7 @@ trait TotalCalc
         foreach ($items as $item) {
             $total += $item->total;
         }
+
         return round($total, 2);
     }
 
@@ -20,6 +21,7 @@ trait TotalCalc
         $discount = $discount * $total;
 
         $tax = ($taxValue / 100) * $total;
+
         return round($total - ($discount / 100) + $tax, 2);
     }
 }

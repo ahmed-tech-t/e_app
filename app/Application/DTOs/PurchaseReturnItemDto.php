@@ -16,9 +16,9 @@ class PurchaseReturnItemDto
     public function toArray()
     {
         return [
-            'product_id'     => $this->product_id,
-            'quantity'       => $this->quantity,
-            'reason'         => $this->reason,
+            'product_id' => $this->product_id,
+            'quantity' => $this->quantity,
+            'reason' => $this->reason,
             'restock_status' => $this->restock_status->value,
         ];
     }

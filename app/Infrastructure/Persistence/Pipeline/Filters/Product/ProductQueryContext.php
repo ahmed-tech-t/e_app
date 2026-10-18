@@ -5,15 +5,13 @@ namespace App\Infrastructure\Persistence\Pipeline\Filters\Product;
 use App\Application\DTOs\ProductSearchDto;
 use App\Infrastructure\Persistence\Pipeline\Filters\QueryContext;
 use Illuminate\Database\Eloquent\Builder;
-use League\Uri\Contracts\QueryInterface;
 
 class ProductQueryContext implements QueryContext
 {
     private function __construct(
         public Builder $query,
         public ProductSearchDto $dto
-    ) {
-    }
+    ) {}
 
     public static function create(
         Builder $query,

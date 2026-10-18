@@ -4,8 +4,6 @@ namespace App\Application\Mapper;
 
 use App\Domain\Entities\ProductEntity;
 
-use Illuminate\Support\Facades\Log;
-
 class ProductMapper
 {
     public static function modelToEntity($model)

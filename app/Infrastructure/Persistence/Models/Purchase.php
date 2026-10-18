@@ -17,7 +17,7 @@ class Purchase extends Model
         'supplier_id',
         'discount',
         'tax',
-        'grand_total'
+        'grand_total',
     ];
 
     public function items()

@@ -1,11 +1,10 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      */
@@ -69,8 +68,6 @@ return new class extends Migration {
         DB::unprepared('DROP TRIGGER IF EXISTS trk_check_batch_limit_update');
     }
 };
-
-
 
 // CREATE TRIGGER [trigger_name]
 // [BEFORE/AFTER] [INSERT/UPDATE/DELETE] ON [table_name]

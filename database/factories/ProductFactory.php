@@ -14,10 +14,10 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class ProductFactory extends Factory
 {
-
     use CodeGenerator;
 
     protected $model = Product::class;
+
     /**
      * Define the model's default state.
      *
@@ -35,7 +35,6 @@ class ProductFactory extends Factory
             $originalCode = $this->faker->ean13();
         } while (Product::where('original_code', $originalCode)->exists());
 
-
         return [
             'category_id' => $category->id,
             'name_ar' => $name,
@@ -46,7 +45,7 @@ class ProductFactory extends Factory
             'brand' => $this->faker->company(),
             'origin' => $this->faker->country(),
             'units_per_carton' => $this->faker->numberBetween(1, 10),
-            'sale_unit_id' => SaleUnit::get()->random()->id
+            'sale_unit_id' => SaleUnit::get()->random()->id,
         ];
     }
 

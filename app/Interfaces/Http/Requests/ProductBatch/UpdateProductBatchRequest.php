@@ -5,6 +5,7 @@ namespace App\Interfaces\Http\Requests\ProductBatch;
 use App\Application\DTOs\ProductBatchDto;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Log;
+
 class UpdateProductBatchRequest extends FormRequest
 {
     /**
@@ -33,6 +34,7 @@ class UpdateProductBatchRequest extends FormRequest
     public function toDto(): ProductBatchDto
     {
         $data = $this->validated();
+
         //        Log::info("UpdateProductBatchRequest", ['data' => $data]);
         return new ProductBatchDto(
             initialQuantity: $data['initial_quantity'] ?? null,

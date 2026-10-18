@@ -1,15 +1,15 @@
 <?php
-namespace App\Infrastructure\Persistence\repo;
 
+namespace App\Infrastructure\Persistence\repo;
 
 use App\Application\Mapper\SalesReturnsMapper;
 use App\Domain\Repo\SalesReturnsRepo;
 use App\Infrastructure\Persistence\Models\SalesReturns;
 
-
 class ESalesReturnsRepo extends BaseERepo implements SalesReturnsRepo
 {
     protected $modelClass = SalesReturns::class;
+
     protected $mapper = SalesReturnsMapper::class;
 
     // protected $queryContext = ;
@@ -17,10 +17,11 @@ class ESalesReturnsRepo extends BaseERepo implements SalesReturnsRepo
     protected array $searchFilters = [];
 
     protected array $withForPaginate = ['items.product', 'sale'];
+
     protected array $defaultRelationships = ['items.product', 'sale'];
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function findByOriginalBillId(int $id)
     {
@@ -28,10 +29,10 @@ class ESalesReturnsRepo extends BaseERepo implements SalesReturnsRepo
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function isThisFirstReturn(int $salesId): bool
     {
-        return !$this->modelClass::where('original_bill_id', $salesId)->exists();
+        return ! $this->modelClass::where('original_bill_id', $salesId)->exists();
     }
 }

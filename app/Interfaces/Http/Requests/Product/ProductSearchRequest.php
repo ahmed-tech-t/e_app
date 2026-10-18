@@ -46,5 +46,4 @@ class ProductSearchRequest extends FormRequest
             $data['location_id'] ?? null
         );
     }
-
 }

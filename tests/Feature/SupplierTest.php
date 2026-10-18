@@ -16,7 +16,7 @@ class SupplierTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->supplierApiUrl = Constants::BASE_API_URL . '/v1/suppliers';
+        $this->supplierApiUrl = Constants::BASE_API_URL.'/v1/suppliers';
     }
 
     public function test_supplier_crud_operations(): void

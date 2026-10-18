@@ -3,15 +3,15 @@
 namespace App\Application\Mapper;
 
 use App\Domain\Entities\ProductBatchEntity;
-use Illuminate\Support\Facades\Log;
 
 class ProductBatchMapper
 {
     public static function modelToEntity($model)
     {
-        if (!$model) {
+        if (! $model) {
             return;
         }
+
         return new ProductBatchEntity(
             id: $model['id'],
             batch_code: $model['batch_code'],
@@ -22,15 +22,13 @@ class ProductBatchMapper
             product: $model->relationLoaded('product')
             ? self::mapProduct($model->product) : null,
 
-
             locations: $model->relationLoaded('locations')
-            ? $model->locations->map(fn($loc) => self::mapLocation($loc))->toArray() : null,
+            ? $model->locations->map(fn ($loc) => self::mapLocation($loc))->toArray() : null,
 
             created_at: $model['created_at'],
             updated_at: $model['updated_at']
         );
     }
-
 
     private static function mapProduct($product)
     {
@@ -40,6 +38,7 @@ class ProductBatchMapper
             'product_name' => $product->name_ar,
         ];
     }
+
     private static function mapLocation($location)
     {
         return [

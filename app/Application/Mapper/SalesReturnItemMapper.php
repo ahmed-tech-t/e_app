@@ -5,10 +5,7 @@ namespace App\Application\Mapper;
 use App\Application\DTOs\SalesReturnItemDto;
 use App\Domain\Entities\SalesItemEntity;
 use App\Domain\Entities\SalesReturnItemEntity;
-use App\Domain\Utils\ReturnedItemStatus;
-use App\Infrastructure\Persistence\Models\Sales;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Log;
 
 class SalesReturnItemMapper
 {
@@ -45,6 +42,7 @@ class SalesReturnItemMapper
     {
         return collect($dtoItems)->map(function ($item) use ($originalItems) {
             $originalItem = collect($originalItems)->firstWhere('product_id', $item->product_id);
+
             return self::dtoToEntity($item, $originalItem);
         })->all();
     }

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Infrastructure\Persistence\utils;
 
 enum StockMovementType: string

@@ -42,13 +42,13 @@ class PurchaseReturnEntity
     public function toArray()
     {
         return [
-            'code'             => $this->code,
-            'location_id'      => $this->store_id,
+            'code' => $this->code,
+            'location_id' => $this->store_id,
             'original_bill_id' => $this->purchase_id,
-            'total'            => $this->total,
-            'discount'         => $this->discount,
-            'tax'              => $this->tax,
-            'grand_total'      => $this->grand_total,
+            'total' => $this->total,
+            'discount' => $this->discount,
+            'tax' => $this->tax,
+            'grand_total' => $this->grand_total,
         ];
     }
 }

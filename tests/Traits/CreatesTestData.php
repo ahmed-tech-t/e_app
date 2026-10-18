@@ -20,8 +20,8 @@ trait CreatesTestData
     public function createUser(array $overrides = []): User
     {
         return User::create(array_merge([
-            'name' => 'Test User ' . uniqid(),
-            'email' => 'user_' . uniqid() . '@example.com',
+            'name' => 'Test User '.uniqid(),
+            'email' => 'user_'.uniqid().'@example.com',
             'password' => Hash::make('password'),
         ], $overrides));
     }
@@ -30,8 +30,8 @@ trait CreatesTestData
     {
         return Category::create(array_merge([
             'name_ar' => 'تصنيف تجريبي',
-            'name_en' => 'Test Category ' . uniqid(),
-            'code' => 'CAT-' . strtoupper(uniqid()),
+            'name_en' => 'Test Category '.uniqid(),
+            'code' => 'CAT-'.strtoupper(uniqid()),
             'description' => 'Test Category Description',
         ], $overrides));
     }
@@ -39,19 +39,19 @@ trait CreatesTestData
     public function createSaleUnit(array $overrides = []): SaleUnit
     {
         return SaleUnit::create(array_merge([
-            'name_ar' => 'قطعة ' . uniqid(),
-            'name_en' => 'Piece ' . uniqid(),
-            'code' => 'PC-' . strtoupper(uniqid()),
+            'name_ar' => 'قطعة '.uniqid(),
+            'name_en' => 'Piece '.uniqid(),
+            'code' => 'PC-'.strtoupper(uniqid()),
         ], $overrides));
     }
 
     public function createLocation(array $overrides = []): Location
     {
         return Location::create(array_merge([
-            'name' => 'Main Store ' . uniqid(),
-            'code' => 'LOC-' . strtoupper(uniqid()),
+            'name' => 'Main Store '.uniqid(),
+            'code' => 'LOC-'.strtoupper(uniqid()),
             'address' => 'Store Address',
-            'phone' => '010' . rand(10000000, 99999999),
+            'phone' => '010'.rand(10000000, 99999999),
             'type' => 'store',
         ], $overrides));
     }
@@ -59,11 +59,11 @@ trait CreatesTestData
     public function createSupplier(array $overrides = []): Supplier
     {
         return Supplier::create(array_merge([
-            'name' => 'Supplier ' . uniqid(),
-            'code' => 'SUP-' . strtoupper(uniqid()),
+            'name' => 'Supplier '.uniqid(),
+            'code' => 'SUP-'.strtoupper(uniqid()),
             'contact_person' => 'John Doe',
-            'phone' => '010' . rand(10000000, 99999999),
-            'email' => 'supplier_' . uniqid() . '@example.com',
+            'phone' => '010'.rand(10000000, 99999999),
+            'email' => 'supplier_'.uniqid().'@example.com',
             'address' => 'Supplier Address',
         ], $overrides));
     }
@@ -77,9 +77,9 @@ trait CreatesTestData
             'category_id' => $category?->id,
             'sale_unit_id' => $saleUnit?->id,
             'name_ar' => 'منتج تجريبي',
-            'name_en' => 'Test Product ' . uniqid(),
-            'code' => 'PRD-' . strtoupper(uniqid()),
-            'original_code' => 'BAR-' . strtoupper(uniqid()),
+            'name_en' => 'Test Product '.uniqid(),
+            'code' => 'PRD-'.strtoupper(uniqid()),
+            'original_code' => 'BAR-'.strtoupper(uniqid()),
             'description' => 'Product description',
             'brand' => 'Brand Test',
             'origin' => 'Local',
@@ -110,7 +110,7 @@ trait CreatesTestData
     {
         $batch = ProductBatch::create([
             'product_id' => $product->id,
-            'batch_code' => 'BATCH-' . strtoupper(uniqid()),
+            'batch_code' => 'BATCH-'.strtoupper(uniqid()),
             'initial_quantity' => 0,
             'remaining_quantity' => 0,
             'cost_price' => $costPrice,
@@ -121,7 +121,7 @@ trait CreatesTestData
             'location_id' => $location->id,
             'quantity' => $quantity,
             'type' => StockMovementType::ENTRY->value,
-            'bill_number' => 'INIT-' . strtoupper(uniqid()),
+            'bill_number' => 'INIT-'.strtoupper(uniqid()),
         ]);
 
         return $batch->fresh();

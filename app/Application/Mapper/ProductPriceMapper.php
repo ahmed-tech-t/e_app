@@ -3,9 +3,7 @@
 namespace App\Application\Mapper;
 
 use App\Domain\Entities\ProductPriceEntity;
-use App\Infrastructure\Persistence\utils\PriceType;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
 
 class ProductPriceMapper
 {

@@ -4,7 +4,6 @@ namespace App\Infrastructure\Persistence\Pipeline\Filters\Product;
 
 use Closure;
 
-
 class FilterByNameAr
 {
     public function handle(ProductQueryContext $context, Closure $next)
@@ -13,10 +12,11 @@ class FilterByNameAr
             $context->query->where(
                 'name_ar',
                 'LIKE',
-                '%' . $context->dto->name_ar . '%'
+                '%'.$context->dto->name_ar.'%'
 
             );
         }
+
         return $next($context);
     }
 }

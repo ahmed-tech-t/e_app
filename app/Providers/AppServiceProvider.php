@@ -4,7 +4,6 @@ namespace App\Providers;
 
 use App\Infrastructure\Persistence\Models\ProductPrice;
 use App\Infrastructure\Persistence\Models\StockMovement;
-
 use App\Observers\ProductPriceObserver;
 use App\Observers\StockMovementObserver;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -31,7 +30,7 @@ class AppServiceProvider extends ServiceProvider
         ProductPrice::observe(ProductPriceObserver::class);
         Factory::guessFactoryNamesUsing(function (string $modelName) {
             // Return the path to your factory based on the model name
-            return 'Database\\Factories\\' . class_basename($modelName) . 'Factory';
+            return 'Database\\Factories\\'.class_basename($modelName).'Factory';
         });
     }
 }

@@ -20,7 +20,7 @@ class SalesMapper
             grand_total: $model['grand_total'],
             created_at: $model['created_at'],
             items: collect($model->relationLoaded('items') ? $model->items : [])->map(
-                fn($item) => SalesItemMapper::modelToEntity($item)
+                fn ($item) => SalesItemMapper::modelToEntity($item)
             )->all(),
         );
     }

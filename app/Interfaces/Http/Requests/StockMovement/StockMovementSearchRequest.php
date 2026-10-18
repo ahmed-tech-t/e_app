@@ -7,7 +7,6 @@ use App\Infrastructure\Persistence\utils\StockMovementType;
 use App\Utils\ValidationRules;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
-use Spatie\LaravelData\Support\Validation\ValidationRule;
 
 class StockMovementSearchRequest extends FormRequest
 {
@@ -23,13 +22,14 @@ class StockMovementSearchRequest extends FormRequest
             'location_id' => ValidationRules::locationId(false),
             'product_batch_id' => ValidationRules::productBatchId(false),
             'type' => ['sometimes', new Enum(StockMovementType::class)],
-            'bill_number' => ValidationRules::name(false)
+            'bill_number' => ValidationRules::name(false),
         ];
     }
 
     public function toDto()
     {
         $data = $this->validated();
+
         return new StockMovementSearchDto(
             product_id: $data['product_id'] ?? null,
             location_id: $data['location_id'] ?? null,

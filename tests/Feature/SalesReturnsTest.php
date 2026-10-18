@@ -23,13 +23,14 @@ class SalesReturnsTest extends TestCase
     use RefreshDatabase;
 
     private string $salesApiUrl;
+
     private string $returnsApiUrl;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->salesApiUrl = Constants::BASE_API_URL . '/v1/sales';
-        $this->returnsApiUrl = Constants::BASE_API_URL . '/v1/sales/returns';
+        $this->salesApiUrl = Constants::BASE_API_URL.'/v1/sales';
+        $this->returnsApiUrl = Constants::BASE_API_URL.'/v1/sales/returns';
     }
 
     public function test_creates_sales_return_successfully_and_restocks_batch_and_location(): void
@@ -518,7 +519,7 @@ class SalesReturnsTest extends TestCase
 
         $sale = Sales::first();
 
-        $previewUrl = Constants::BASE_API_URL . '/v1/sales/returns/preview';
+        $previewUrl = Constants::BASE_API_URL.'/v1/sales/returns/preview';
         $payload = [
             'sales_id' => $sale->id,
             'store_id' => $store->id,
@@ -531,7 +532,7 @@ class SalesReturnsTest extends TestCase
             ],
         ];
 
-        $response = $this->getJson($previewUrl . '?' . http_build_query($payload));
+        $response = $this->getJson($previewUrl.'?'.http_build_query($payload));
         $response->assertStatus(200);
 
         $this->assertEquals(100.0, (float) $response->json('data.total'));
@@ -592,4 +593,3 @@ class SalesReturnsTest extends TestCase
         $this->assertEquals(5, $batch2->fresh()->remaining_quantity);
     }
 }
-

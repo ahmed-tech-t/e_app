@@ -34,6 +34,7 @@ class ProductBatchResource extends JsonResource
         if ($this->locations) {
             $data['locations'] = $this->locations;
         }
+
         return $data;
     }
 }

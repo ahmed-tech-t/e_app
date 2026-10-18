@@ -11,8 +11,7 @@ class StockMovementQueryContext implements QueryContext
     public function __construct(
         public Builder $query,
         public StockSearchInterfaceDto $dto
-    ) {
-    }
+    ) {}
 
     public static function create(
         Builder $query,

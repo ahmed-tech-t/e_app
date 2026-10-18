@@ -3,12 +3,9 @@
 namespace App\Domain\Entities;
 
 use App\Domain\Utils\ReturnedItemStatus;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
 
 class SalesReturnItemEntity
 {
-
     public function __construct(
         public ?int $product_id,
         public ?int $quantity,
@@ -21,12 +18,12 @@ class SalesReturnItemEntity
         public ?float $total = null,
         public ?ProductEntity $product = null,
         public ?string $product_code = null,
-    ) {
+    ) {}
 
-    }
     public static function create(array $data, float $price)
     {
         $total = round($data['quantity'] * $price, 2);
+
         return new self(
             product_id: $data['product_id'],
             quantity: $data['quantity'],
@@ -36,7 +33,6 @@ class SalesReturnItemEntity
             total: $total,
         );
     }
-
 
     public function toArray()
     {

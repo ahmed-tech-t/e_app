@@ -97,7 +97,7 @@ class SalesReturnsServiceTest extends TestCase
 
         // 2. Expect (Must come BEFORE the method call)
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage("returned quantity is more than sale quantity");
+        $this->expectExceptionMessage('returned quantity is more than sale quantity');
 
         // 3. Act
         $this->service->updateQuantity($saleItems, $returnedItems);

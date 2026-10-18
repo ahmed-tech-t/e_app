@@ -2,23 +2,26 @@
 
 namespace App\Interfaces\Http\Controllers;
 
-use App\Application\Services\ProductService;
-use App\Application\Services\ImageCompressionService;
 use App\Application\Services\CloudflareImageService;
+use App\Application\Services\ImageCompressionService;
+use App\Application\Services\ProductService;
 use App\Domain\PaginatorMeta;
 use App\Infrastructure\Persistence\utils\Constants;
 use App\Interfaces\Http\Requests\Product\CreateProductRequest;
 use App\Interfaces\Http\Requests\Product\ProductSearchRequest;
 use App\Interfaces\Http\Requests\Product\UpdateProductRequest;
 use App\Interfaces\Http\Resources\ProductResource;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class ProductController extends BaseController
 {
     protected string $resourceClass = ProductResource::class;
+
     protected string $searchRequest = ProductSearchRequest::class;
+
     protected string $storeRequest = CreateProductRequest::class;
+
     protected string $updateRequest = UpdateProductRequest::class;
 
     public function __construct(
@@ -47,6 +50,7 @@ class ProductController extends BaseController
         if ($compressed && $compressed->isTemporary && file_exists($compressed->filePath)) {
             @unlink($compressed->filePath);
         }
+
         return $this->success(ProductResource::make($entity));
     }
 
@@ -73,6 +77,7 @@ class ProductController extends BaseController
         if ($compressed && $compressed->isTemporary && file_exists($compressed->filePath)) {
             @unlink($compressed->filePath);
         }
+
         return $this->success(ProductResource::make($entity));
     }
 
@@ -85,6 +90,7 @@ class ProductController extends BaseController
             $this->cloudflareService->delete($image);
         }
         $message = $this->productService->destroy($id);
+
         return $this->success($message);
     }
 
@@ -92,6 +98,7 @@ class ProductController extends BaseController
     public function index(Request $request)
     {
         $items = $this->service->findAll($request->all());
+
         return $this->success(data: ($this->resourceClass)::collection($items));
     }
 
@@ -100,12 +107,14 @@ class ProductController extends BaseController
         $perPage = $request->input('per_page', Constants::DEFAULT_PER_PAGE);
         $items = $this->service->findAllByLocation($locationId, $perPage);
         $meta = new PaginatorMeta($items);
+
         return $this->success(data: ($this->resourceClass)::collection($items), meta: $meta->toArray());
     }
 
     public function findByLocation(int $productId, int $locationId)
     {
         $product = $this->service->findByLocation($productId, $locationId);
+
         return $this->success(data: ($this->resourceClass)::make($product));
     }
 }

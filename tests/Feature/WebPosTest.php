@@ -173,4 +173,3 @@ class WebPosTest extends TestCase
             ->assertSee($supplier->code);
     }
 }
-

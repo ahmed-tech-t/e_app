@@ -59,12 +59,12 @@ class ImageCompressionService
             default => false,
         };
 
-        if (!$sourceImage) {
+        if (! $sourceImage) {
             $raw = (string) @file_get_contents($sourcePath);
             $sourceImage = @imagecreatefromstring($raw);
         }
 
-        if (!$sourceImage) {
+        if (! $sourceImage) {
             // If raw bytes could not be decoded (e.g. artificial random bytes test fixture),
             // synthesize a truecolor image to ensure robust compression
             $sourceImage = imagecreatetruecolor(1200, 1200);
@@ -72,7 +72,7 @@ class ImageCompressionService
             imagefill($sourceImage, 0, 0, $color);
         }
 
-        $tempPath = tempnam(sys_get_temp_dir(), 'cmp_') . '.jpg';
+        $tempPath = tempnam(sys_get_temp_dir(), 'cmp_').'.jpg';
         $quality = 85;
         $width = imagesx($sourceImage);
         $height = imagesy($sourceImage);
@@ -116,7 +116,7 @@ class ImageCompressionService
         }
         imagedestroy($sourceImage);
 
-        $outFilename = pathinfo($filename, PATHINFO_FILENAME) . '.jpg';
+        $outFilename = pathinfo($filename, PATHINFO_FILENAME).'.jpg';
 
         return new CompressedImageResult(
             filePath: $tempPath,
@@ -135,7 +135,7 @@ class ImageCompressionService
         $quality = 85;
         $imagick->setImageCompressionQuality($quality);
 
-        $tempPath = tempnam(sys_get_temp_dir(), 'cmp_') . '.jpg';
+        $tempPath = tempnam(sys_get_temp_dir(), 'cmp_').'.jpg';
         $imagick->writeImage($tempPath);
         clearstatcache(true, $tempPath);
         $currentSize = filesize($tempPath);
@@ -158,7 +158,7 @@ class ImageCompressionService
         $imagick->clear();
         $imagick->destroy();
 
-        $outFilename = pathinfo($filename, PATHINFO_FILENAME) . '.jpg';
+        $outFilename = pathinfo($filename, PATHINFO_FILENAME).'.jpg';
 
         return new CompressedImageResult(
             filePath: $tempPath,

@@ -4,7 +4,6 @@ namespace App\Infrastructure\Persistence\Pipeline\Filters\Product;
 
 use Closure;
 
-
 class FilterBySaleUnitId
 {
     public function handle(ProductQueryContext $context, Closure $next)
@@ -13,10 +12,11 @@ class FilterBySaleUnitId
             $context->query->where(
                 'sale_unit_id',
                 'LIKE',
-                '%' . $context->dto->saleUnitId . '%'
+                '%'.$context->dto->saleUnitId.'%'
 
             );
         }
+
         return $next($context);
     }
 }

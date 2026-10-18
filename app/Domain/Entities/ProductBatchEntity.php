@@ -5,10 +5,8 @@ namespace App\Domain\Entities;
 use App\Infrastructure\Persistence\utils\StockMovementType;
 use Carbon\Carbon;
 
-
 class ProductBatchEntity
 {
-
     public function __construct(
         public int $product_id,
         public string $batch_code,
@@ -20,8 +18,7 @@ class ProductBatchEntity
         public ?array $product = null,
         public ?Carbon $created_at = null,
         public ?Carbon $updated_at = null,
-    ) {
-    }
+    ) {}
 
     public static function create(array $data)
     {
@@ -33,6 +30,7 @@ class ProductBatchEntity
             cost_price: $data['cost_price'],
         );
     }
+
     public function update(array $data)
     {
         $this->cost_price = $data['cost_price'] ?? $this->cost_price;
@@ -53,7 +51,7 @@ class ProductBatchEntity
         return [
             'batch_code' => $this->batch_code,
             'product_id' => $this->product_id,
-            'cost_price' => $this->cost_price
+            'cost_price' => $this->cost_price,
         ];
     }
 }

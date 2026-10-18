@@ -21,6 +21,7 @@ Route::get('/healthz', function () {
 
 Route::post('/locale/{locale}', function ($locale) {
     session(['locale' => in_array($locale, ['en', 'ar']) ? $locale : 'en']);
+
     return back();
 })->name('locale.set');
 
@@ -47,8 +48,8 @@ Route::middleware('auth:web')->group(function () {
     Route::get('/products', [ProductController::class, 'index'])->name('products.index');
     Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
     Route::post('/products', [ProductController::class, 'store'])->name('products.store');
-    Route::get('/products/export',  [ProductController::class, 'exportPage'])     ->name('products.export');
-    Route::post('/products/export', [ProductController::class, 'exportDownload']) ->name('products.export.download');
+    Route::get('/products/export', [ProductController::class, 'exportPage'])->name('products.export');
+    Route::post('/products/export', [ProductController::class, 'exportDownload'])->name('products.export.download');
     Route::get('/products/export-template', [ProductController::class, 'exportTemplate'])->name('products.export-template');
     Route::post('/products/import', [ProductController::class, 'import'])->name('products.import');
     Route::get('/products/catalog', [ProductController::class, 'catalogPage'])->name('products.catalog');

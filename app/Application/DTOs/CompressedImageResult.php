@@ -12,7 +12,5 @@ class CompressedImageResult
         public string $mimeType,
         public string $filename,
         public bool $isTemporary = false,
-    ) {
-    }
+    ) {}
 }
-

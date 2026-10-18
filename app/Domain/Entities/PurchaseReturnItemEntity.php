@@ -37,12 +37,12 @@ class PurchaseReturnItemEntity
     {
         return [
             'purchase_return_id' => $this->purchase_return_id,
-            'product_id'         => $this->product_id,
-            'quantity'           => $this->quantity,
-            'reason'             => $this->reason,
-            'restock_status'     => $this->restock_status?->value,
-            'price'              => $this->price,
-            'total'              => $this->total,
+            'product_id' => $this->product_id,
+            'quantity' => $this->quantity,
+            'reason' => $this->reason,
+            'restock_status' => $this->restock_status?->value,
+            'price' => $this->price,
+            'total' => $this->total,
         ];
     }
 }

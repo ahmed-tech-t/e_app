@@ -2,9 +2,4 @@
 
 namespace App\Domain\Repo;
 
-
-
-interface CategoryRepo extends BaseRepo
-{
-
-}
+interface CategoryRepo extends BaseRepo {}

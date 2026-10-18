@@ -7,13 +7,14 @@ namespace App\Application\Services;
 use App\Application\DTOs\CloudflareImageUploadResult;
 use App\Application\DTOs\CompressedImageResult;
 use Cloudinary\Cloudinary;
-use Cloudinary\Configuration\Configuration;
 use RuntimeException;
 
 class CloudflareImageService
 {
     private ?Cloudinary $cloudinary = null;
+
     private string $folder;
+
     private bool $isProduction;
 
     public function __construct()
@@ -31,14 +32,14 @@ class CloudflareImageService
         $cloudinaryUrl = config('services.cloudinary.url') ?: env('CLOUDINARY_URL');
         $cloudName = config('services.cloudinary.cloud_name') ?: env('CLOUDINARY_CLOUD_NAME');
 
-        if (!empty($cloudinaryUrl)) {
+        if (! empty($cloudinaryUrl)) {
             $this->cloudinary = new Cloudinary($cloudinaryUrl);
             $this->cloudinary->configuration->url->secure($this->isProduction);
-        } elseif (!empty($cloudName)) {
+        } elseif (! empty($cloudName)) {
             $this->cloudinary = new Cloudinary([
                 'cloud' => [
                     'cloud_name' => $cloudName,
-                    'api_key'    => config('services.cloudinary.api_key'),
+                    'api_key' => config('services.cloudinary.api_key'),
                     'api_secret' => config('services.cloudinary.api_secret'),
                 ],
                 'url' => [
@@ -58,15 +59,15 @@ class CloudflareImageService
     public function upload(CompressedImageResult $image): CloudflareImageUploadResult
     {
         $options = [
-            'folder'          => $this->folder,
-            'resource_type'   => 'image',
-            'use_filename'    => true,
+            'folder' => $this->folder,
+            'resource_type' => 'image',
+            'use_filename' => true,
             'unique_filename' => true,
         ];
 
-        // Optional: Disable Guzzle SSL verification in non-production environments 
+        // Optional: Disable Guzzle SSL verification in non-production environments
         // if you are getting cURL error 60 (SSL certificate problem) locally.
-        if (!$this->isProduction) {
+        if (! $this->isProduction) {
             $options['verify'] = false;
         }
 
@@ -105,7 +106,7 @@ class CloudflareImageService
             'resource_type' => 'image',
         ];
 
-        if (!$this->isProduction) {
+        if (! $this->isProduction) {
             $options['verify'] = false;
         }
 
@@ -122,7 +123,7 @@ class CloudflareImageService
     {
         // If it's a full URL, ensure it's a Cloudinary URL before attempting extraction
         if (str_starts_with($identifier, 'http://') || str_starts_with($identifier, 'https://')) {
-            if (!str_contains($identifier, 'cloudinary.com')) {
+            if (! str_contains($identifier, 'cloudinary.com')) {
                 return '';
             }
 
@@ -131,6 +132,7 @@ class CloudflareImageService
             $path = parse_url($identifier, PHP_URL_PATH) ?? '';
             // strip /image/upload/vXXX/ prefix
             $path = preg_replace('#^/[^/]+/image/upload/(v\d+/)?#', '', $path) ?? $path;
+
             // strip extension
             return (string) preg_replace('/\.[^.]+$/', '', $path);
         }

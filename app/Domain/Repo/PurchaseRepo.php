@@ -1,8 +1,5 @@
 <?php
+
 namespace App\Domain\Repo;
 
-interface PurchaseRepo extends BaseRepo
-{
-   
-}
-
+interface PurchaseRepo extends BaseRepo {}

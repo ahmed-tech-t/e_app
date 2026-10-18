@@ -11,8 +11,6 @@ use App\Application\Services\SalesService;
 use App\Domain\Utils\ReturnedItemStatus;
 use App\Infrastructure\Persistence\Models\ProductBatch;
 use App\Infrastructure\Persistence\Models\Purchase;
-use App\Infrastructure\Persistence\Models\PurchaseReturn;
-use App\Infrastructure\Persistence\Models\StockMovement;
 use App\Infrastructure\Persistence\utils\StockMovementType;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
@@ -363,4 +361,3 @@ class PurchaseReturnsTest extends TestCase
         $this->assertEquals(10, $batch2->remaining_quantity);
     }
 }
-

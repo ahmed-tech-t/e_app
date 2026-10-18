@@ -4,7 +4,6 @@ namespace App\Infrastructure\Persistence\Models;
 
 use App\Application\DTOs\Stock\web\StockMovementSearchDto;
 use App\Infrastructure\Persistence\Pipeline\Filters\StockMovement\FilterByLocationId;
-
 use App\Infrastructure\Persistence\Pipeline\Filters\StockMovement\FilterByType;
 use App\Infrastructure\Persistence\Pipeline\Filters\StockMovement\StockMovementQueryContext;
 use App\Infrastructure\Persistence\utils\StockMovementType;
@@ -14,14 +13,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Pipeline\Pipeline;
 
-
 class StockMovement extends Model
 {
+    use HasFactory, SoftDeletes;
 
-    use SoftDeletes, HasFactory;
     protected $casts = [
-        'type' => StockMovementType::class
+        'type' => StockMovementType::class,
     ];
+
     protected $fillable = [
         'product_batch_id',
         'location_id',
@@ -34,16 +33,16 @@ class StockMovement extends Model
     {
         return $this->belongsTo(ProductBatch::class, 'product_batch_id');
     }
+
     public function location()
     {
         return $this->belongsTo(Location::class, 'location_id');
     }
 
-
     public function productId(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->batch?->product_id,
+            get: fn () => $this->batch?->product_id,
         );
     }
 
@@ -57,21 +56,25 @@ class StockMovement extends Model
 
                 if (str_starts_with($this->bill_number, 'PUR-')) {
                     $id = Purchase::where('code', $this->bill_number)->value('id');
+
                     return $id ? route('purchases.show', $id) : null;
                 }
 
                 if (str_starts_with($this->bill_number, 'SAL-')) {
                     $id = Sales::where('code', $this->bill_number)->value('id');
+
                     return $id ? route('sales.show', $id) : null;
                 }
 
                 if (str_starts_with($this->bill_number, 'RPU-')) {
                     $id = PurchaseReturn::where('code', $this->bill_number)->value('id');
+
                     return $id ? route('purchase-returns.show', $id) : null;
                 }
 
                 if (str_starts_with($this->bill_number, 'RSA-')) {
                     $id = SalesReturns::where('code', $this->bill_number)->value('id');
+
                     return $id ? route('sales-returns.show', $id) : null;
                 }
 
@@ -85,20 +88,19 @@ class StockMovement extends Model
         return $query->with('location')->where('type', $type);
     }
 
-
     public function scopeWithProductName($query, $productName)
     {
 
         $query->whereHas('batch.product', function ($q) use ($productName) {
             $q->withTrashed();
-            $q->where('name_ar', 'like', '%' . $productName . '%')
-                ->orWhere('name_en', 'like', '%' . $productName . '%');
+            $q->where('name_ar', 'like', '%'.$productName.'%')
+                ->orWhere('name_en', 'like', '%'.$productName.'%');
         });
     }
 
     public function scopeWithBillNumber($query, $billNumber)
     {
-        return $query->where('bill_number', 'like', '%' . $billNumber . '%');
+        return $query->where('bill_number', 'like', '%'.$billNumber.'%');
     }
 
     public function scopeWithSearch($query, StockMovementSearchDto $dto)
@@ -106,7 +108,7 @@ class StockMovement extends Model
         $query->withTrashed();
         $context = StockMovementQueryContext::create($query, $dto);
 
-        $query->when($dto->search, fn($q) => $q->applySmartSearch($dto->search));
+        $query->when($dto->search, fn ($q) => $q->applySmartSearch($dto->search));
 
         $context = app(Pipeline::class)
             ->send($context)
@@ -118,8 +120,8 @@ class StockMovement extends Model
 
         return $context->query
             ->with([
-                'location' => fn($q) => $q->withTrashed(),
-                'batch.product' => fn($q) => $q->withTrashed()
+                'location' => fn ($q) => $q->withTrashed(),
+                'batch.product' => fn ($q) => $q->withTrashed(),
             ])
             ->orderBy('created_at', 'desc');
 

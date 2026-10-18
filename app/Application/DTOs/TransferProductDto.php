@@ -4,15 +4,12 @@ namespace App\Application\DTOs;
 
 class TransferProductDto
 {
-
-
     public function __construct(
         public int $productId,
         public int $fromLocationId,
         public int $toLocationId,
         public int $quantity
-    ) {
-    }
+    ) {}
 
     public function toArray()
     {

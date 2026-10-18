@@ -4,7 +4,6 @@ namespace App\Interfaces\Http\Controllers;
 
 use App\Domain\PaginatorMeta;
 use App\Infrastructure\Persistence\utils\Constants;
-use App\Interfaces\Http\Utils\RequestInterface;
 use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -13,18 +12,21 @@ abstract class BaseController extends Controller
 {
     use HttpResponses;
 
-    // These must be defined in the child 
+    // These must be defined in the child
     protected $service;
+
     protected string $resourceClass;
+
     protected string $storeRequest;
+
     protected string $updateRequest;
 
     protected string $searchRequest;
 
-
     public function index(Request $request)
     {
         $items = $this->service->findAll();
+
         return $this->success(($this->resourceClass)::collection($items));
     }
 
@@ -50,6 +52,7 @@ abstract class BaseController extends Controller
         $perPage = $request->input('per_page', Constants::DEFAULT_PER_PAGE);
         $items = $this->service->search($dto, $perPage);
         $meta = new PaginatorMeta($items);
+
         return $this->success(data: ($this->resourceClass)::collection($items), meta: $meta->toArray());
     }
 
@@ -59,15 +62,16 @@ abstract class BaseController extends Controller
         // We assume the Request has a toDto() method
         $dto = $request->toDto();
         $entity = $this->service->create($dto);
+
         return $this->success(($this->resourceClass)::make($entity));
     }
 
     public function show(int $id)
     {
         $item = $this->service->findById($id);
+
         return $this->success(($this->resourceClass)::make($item));
     }
-
 
     public function update(int $id)
     {
@@ -75,12 +79,14 @@ abstract class BaseController extends Controller
         $dto = $request->toDto();
         //   Log::info("BaseController", ['dto' => $dto]);
         $item = $this->service->update($dto, $id);
+
         return $this->success(($this->resourceClass)::make($item));
     }
 
     public function destroy(int $id)
     {
         $message = $this->service->destroy($id);
+
         return $this->success($message);
     }
 }

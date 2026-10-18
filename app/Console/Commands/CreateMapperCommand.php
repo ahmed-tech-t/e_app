@@ -6,7 +6,6 @@ use Illuminate\Console\GeneratorCommand;
 
 class CreateMapperCommand extends GeneratorCommand
 {
-
     protected $signature = 'make:mapper {name}';
 
     protected function getStub()
@@ -16,20 +15,20 @@ class CreateMapperCommand extends GeneratorCommand
 
     protected function getDefaultNamespace($rootNamespace)
     {
-        return $rootNamespace . '\Application\Mapper';
+        return $rootNamespace.'\Application\Mapper';
     }
 
     protected function getNameInput()
     {
         $name = trim($this->argument('name'));
-        return str_ends_with($name, 'Mapper') ? $name : $name . 'Mapper';
+
+        return str_ends_with($name, 'Mapper') ? $name : $name.'Mapper';
     }
 
-    function modelName()
+    public function modelName()
     {
         return trim($this->argument('name'));
     }
-
 
     protected function buildClass($name)
     {
@@ -41,6 +40,7 @@ class CreateMapperCommand extends GeneratorCommand
         $stub = str_replace('{{ name }}', $nameInput, $stub);
 
         $stub = str_replace('{{ model }}', $model, $stub);
+
         return $stub;
     }
 }

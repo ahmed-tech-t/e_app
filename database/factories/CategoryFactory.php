@@ -17,6 +17,7 @@ class CategoryFactory extends Factory
     public function definition(): array
     {
         $fullEan = $this->faker->ean13();
+
         return [
             'code' => substr($fullEan, 0, 5),
             'name' => $this->faker->name(),

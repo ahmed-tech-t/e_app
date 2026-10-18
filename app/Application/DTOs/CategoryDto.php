@@ -7,8 +7,7 @@ class CategoryDto
     public function __construct(
         public ?string $name_ar = null,
         public ?string $name_en = null,
-    ) {
-    }
+    ) {}
 
     public function toArray()
     {

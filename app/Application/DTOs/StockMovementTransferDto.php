@@ -4,15 +4,12 @@ namespace App\Application\DTOs;
 
 class StockMovementTransferDto
 {
-
     public function __construct(
         public ?int $productId = null,
         public ?int $fromLocationId = null,
         public ?int $toLocationId = null,
         public ?int $quantity = null,
-    ) {
-    }
-
+    ) {}
 
     public function toArray()
     {

@@ -3,15 +3,13 @@
 namespace App\Observers;
 
 use App\Application\Services\StockService;
-use App\Domain\Repo\StockMovementRepo;
 use App\Infrastructure\Persistence\Models\StockMovement;
 use Illuminate\Support\Facades\Log;
 
 class StockMovementObserver
 {
-    public function __construct(private StockService $stockService)
-    {
-    }
+    public function __construct(private StockService $stockService) {}
+
     /**
      * Handle the StockMovement "created" event.
      */

@@ -1,10 +1,8 @@
 <?php
 
-
 namespace App\Infrastructure\Persistence\Pipeline\Filters\Product;
 
 use Closure;
-
 
 class FilterByCategoryId
 {
@@ -14,10 +12,11 @@ class FilterByCategoryId
             $context->query->where(
                 'category_id',
                 'LIKE',
-                '%' . $context->dto->categoryId . '%'
+                '%'.$context->dto->categoryId.'%'
 
             );
         }
+
         return $next($context);
     }
 }

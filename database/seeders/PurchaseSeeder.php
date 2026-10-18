@@ -103,4 +103,3 @@ class PurchaseSeeder extends Seeder
         }
     }
 }
-

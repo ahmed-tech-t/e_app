@@ -7,10 +7,7 @@ use App\Infrastructure\Persistence\Models\ProductPrice;
 
 class ProductPriceObserver
 {
-    public function __construct(private ProductPriceRepo $repo)
-    {
-
-    }
+    public function __construct(private ProductPriceRepo $repo) {}
 
     public function creating(ProductPrice $productPrice): bool
     {

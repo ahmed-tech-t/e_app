@@ -4,7 +4,6 @@ namespace App\Infrastructure\Persistence\Pipeline\Filters\Product;
 
 use Closure;
 
-
 class FilterByBrand
 {
     public function handle(ProductQueryContext $context, Closure $next)
@@ -13,10 +12,11 @@ class FilterByBrand
             $context->query->where(
                 'brand',
                 'LIKE',
-                '%' . $context->dto->brand . '%'
+                '%'.$context->dto->brand.'%'
 
             );
         }
+
         return $next($context);
     }
 }

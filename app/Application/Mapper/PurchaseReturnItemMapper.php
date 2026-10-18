@@ -41,6 +41,7 @@ class PurchaseReturnItemMapper
     {
         return collect($dtoItems)->map(function ($item) use ($originalItems) {
             $originalItem = collect($originalItems)->firstWhere('product_id', $item->product_id);
+
             return self::dtoToEntity($item, $originalItem);
         })->all();
     }

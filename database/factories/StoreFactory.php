@@ -17,6 +17,7 @@ class StoreFactory extends Factory
     public function definition(): array
     {
         $code = $this->faker->ean13();
+
         return [
             'code' => substr($code, 0, 5),
             'name' => ucfirst($this->faker->word()),

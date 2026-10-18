@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Domain;
 
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -6,7 +7,9 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class PaginatorMeta
 {
     private $total;
+
     private $current_page;
+
     private $last_page;
 
     public function __construct(LengthAwarePaginator $paginator)
@@ -16,7 +19,6 @@ class PaginatorMeta
         $this->last_page = $paginator->lastPage();
     }
 
-
     public function toArray()
     {
         return [
@@ -25,5 +27,4 @@ class PaginatorMeta
             'last_page' => $this->last_page,
         ];
     }
-
 }

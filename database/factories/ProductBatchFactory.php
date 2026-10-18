@@ -3,7 +3,6 @@
 namespace Database\Factories;
 
 use App\Infrastructure\Persistence\Models\Location;
-use App\Infrastructure\Persistence\Models\Product;
 use App\Infrastructure\Persistence\Models\ProductBatch;
 use App\Infrastructure\Persistence\Models\StockMovement;
 use App\Infrastructure\Persistence\utils\StockMovementType;
@@ -16,42 +15,42 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 class ProductBatchFactory extends Factory
 {
     use CodeGenerator;
+
     /**
      * Define the model's default state.
      *
      * @return array<string, mixed>
      */
     protected $model = ProductBatch::class;
+
     public function definition(): array
     {
         $quantity = $this->faker->numberBetween(1, 10);
-
 
         return [
             'product_id' => null,
             'batch_code' => null,
             'initial_quantity' => $quantity,
             'remaining_quantity' => $quantity,
-            'cost_price' => $this->faker->randomFloat(2, 1, 100)
+            'cost_price' => $this->faker->randomFloat(2, 1, 100),
         ];
     }
 
     public function configure()
     {
 
-
         return $this->afterCreating(function (ProductBatch $productBatch) {
 
             $location = Location::inRandomOrder()->first();
             $productBatch->locations()->attach($location, [
-                'remaining_quantity' => $productBatch->initial_quantity
+                'remaining_quantity' => $productBatch->initial_quantity,
             ]);
 
             StockMovement::factory()->create([
                 'product_batch_id' => $productBatch->id,
                 'location_id' => $location->id,
                 'quantity' => $productBatch->initial_quantity,
-                'type' => StockMovementType::ENTRY
+                'type' => StockMovementType::ENTRY,
             ]);
         });
     }

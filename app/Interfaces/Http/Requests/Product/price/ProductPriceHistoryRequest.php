@@ -9,7 +9,6 @@ use Illuminate\Validation\Rules\Enum;
 
 class ProductPriceHistoryRequest extends FormRequest
 {
-
     public function authorize()
     {
         return true;
@@ -18,7 +17,7 @@ class ProductPriceHistoryRequest extends FormRequest
     public function prepareForValidation()
     {
         $this->merge([
-            'product_id' => $this->route('id')
+            'product_id' => $this->route('id'),
         ]);
     }
 

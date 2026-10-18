@@ -6,7 +6,6 @@ use Illuminate\Console\GeneratorCommand;
 
 class CreateServiceCommand extends GeneratorCommand
 {
-
     protected $signature = 'make:service {name}';
 
     protected function getStub()
@@ -16,20 +15,20 @@ class CreateServiceCommand extends GeneratorCommand
 
     protected function getDefaultNamespace($rootNamespace)
     {
-        return $rootNamespace . '\Application\Services';
+        return $rootNamespace.'\Application\Services';
     }
 
     protected function getNameInput()
     {
         $name = trim($this->argument('name'));
-        return str_ends_with($name, 'Service') ? $name : $name . 'Service';
+
+        return str_ends_with($name, 'Service') ? $name : $name.'Service';
     }
 
-    function modelName()
+    public function modelName()
     {
         return trim($this->argument('name'));
     }
-
 
     protected function buildClass($name)
     {
@@ -41,6 +40,7 @@ class CreateServiceCommand extends GeneratorCommand
         $stub = str_replace('{{ name }}', $nameInput, $stub);
 
         $stub = str_replace('{{ model }}', $model, $stub);
+
         return $stub;
     }
 }

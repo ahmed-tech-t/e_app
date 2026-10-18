@@ -2,10 +2,8 @@
 
 namespace App\Domain\Entities;
 
-use App\Infrastructure\Persistence\utils\Constants;
 use App\Traits\TotalCalc;
 use Carbon\Carbon;
-
 
 class PurchaseEntity
 {
@@ -28,8 +26,7 @@ class PurchaseEntity
         public ?LocationEntity $location = null,
         public ?string $supplier_code = null,
         public ?string $store_code = null
-    ) {
-    }
+    ) {}
 
     public static function create(array $data, $items)
     {
@@ -42,6 +39,7 @@ class PurchaseEntity
         if (isset($data['paper_total']) && abs($data['paper_total'] - $grandTotal) > 0.01) {
             throw new \DomainException("Error: The paper invoice total does not match the system calculations. the system total is {$grandTotal} and the paper total is {$data['paper_total']}");
         }
+
         return new self(
             store_id: $data['store_id'],
             supplier_id: $data['supplier_id'],
@@ -53,10 +51,8 @@ class PurchaseEntity
         );
 
     }
-    public function update(array $data)
-    {
 
-    }
+    public function update(array $data) {}
 
     public function toArray()
     {

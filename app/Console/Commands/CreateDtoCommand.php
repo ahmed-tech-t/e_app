@@ -6,7 +6,6 @@ use Illuminate\Console\GeneratorCommand;
 
 class CreateDtoCommand extends GeneratorCommand
 {
-
     protected $signature = 'make:dto {name}';
 
     protected function getStub()
@@ -16,13 +15,14 @@ class CreateDtoCommand extends GeneratorCommand
 
     protected function getDefaultNamespace($rootNamespace)
     {
-        return $rootNamespace . '\Application\DTOs';
+        return $rootNamespace.'\Application\DTOs';
     }
 
     protected function getNameInput()
     {
         $name = trim($this->argument('name'));
-        return $name . 'Dto';
+
+        return $name.'Dto';
     }
 
     protected function buildClass($name)

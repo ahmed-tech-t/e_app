@@ -9,8 +9,7 @@ class CategoryEntity
         public string $name_en,
         public ?int $id = null,
         public ?string $code = null
-    ) {
-    }
+    ) {}
 
     public function toArray()
     {
@@ -33,6 +32,7 @@ class CategoryEntity
     {
         $this->name_ar = $data['name_ar'] ?? $this->name_ar;
         $this->name_en = $data['name_en'] ?? $this->name_en;
+
         return $this;
     }
 }

@@ -8,6 +8,7 @@ use Tests\TestCase;
 class DarkModeCookieTest extends TestCase
 {
     use RefreshDatabase;
+
     public function test_dark_mode_cookie_renders_dark_class(): void
     {
         $response = $this->withUnencryptedCookie('dark_mode', 'true')->get('/');
@@ -25,4 +26,3 @@ class DarkModeCookieTest extends TestCase
         $this->assertStringContainsString('background-color: #f9fafb; color-scheme: light;', $response->getContent());
     }
 }
-

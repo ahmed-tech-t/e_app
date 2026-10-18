@@ -27,7 +27,7 @@ class CreateProductBatchRequest extends FormRequest
             'batch_code' => 'required|string|max:255',
             'product_id' => 'required|exists:products,id',
             'initial_quantity' => 'required|integer|min:1',
-            'cost_price' => 'required|numeric|regex:/^\d+(\.\d{1,2})?$/'
+            'cost_price' => 'required|numeric|regex:/^\d+(\.\d{1,2})?$/',
         ];
     }
 

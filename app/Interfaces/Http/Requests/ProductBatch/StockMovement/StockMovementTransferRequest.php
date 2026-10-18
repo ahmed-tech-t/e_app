@@ -5,14 +5,13 @@ namespace App\Interfaces\Http\Requests\ProductBatch\StockMovement;
 use App\Application\DTOs\StockMovementTransferDto;
 use Illuminate\Foundation\Http\FormRequest;
 
-
 class StockMovementTransferRequest extends FormRequest
 {
-
     public function authorize()
     {
         return true;
     }
+
     public function rules(): array
     {
         return [

@@ -11,7 +11,5 @@ class CloudflareImageUploadResult
         public string $url,
         public array $variants = [],
         public ?string $filename = null,
-    ) {
-    }
+    ) {}
 }
-

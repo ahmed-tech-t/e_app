@@ -2,9 +2,7 @@
 
 namespace App\Infrastructure\Persistence\Pipeline\Filters\ProductBatch;
 
-
 use Closure;
-
 
 class FilterByCode
 {

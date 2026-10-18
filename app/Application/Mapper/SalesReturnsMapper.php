@@ -2,11 +2,9 @@
 
 namespace App\Application\Mapper;
 
-
 use App\Application\DTOs\SalesReturnsDto;
 use App\Domain\Entities\SalesEntity;
 use App\Domain\Entities\SalesReturnsEntity;
-
 
 class SalesReturnsMapper
 {
@@ -24,7 +22,7 @@ class SalesReturnsMapper
             total: $model['total'],
             created_at: $model['created_at'],
             items: collect($model->relationLoaded('items') ? $model->items : [])->map(
-                fn($item) => SalesReturnItemMapper::modelToEntity($item)
+                fn ($item) => SalesReturnItemMapper::modelToEntity($item)
             )->all(),
         );
     }

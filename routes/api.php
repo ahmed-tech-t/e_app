@@ -1,6 +1,5 @@
 <?php
 
-use App\utils\Constants;
 use App\Interfaces\Http\Controllers\CategoryController;
 use App\Interfaces\Http\Controllers\ImageController;
 use App\Interfaces\Http\Controllers\LocationController;
@@ -12,6 +11,7 @@ use App\Interfaces\Http\Controllers\SalesReturnsController;
 use App\Interfaces\Http\Controllers\SaleUnitController;
 use App\Interfaces\Http\Controllers\StockMovementController;
 use App\Interfaces\Http\Controllers\SupplierController;
+use App\utils\Constants;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix(Constants::BASE_API_URL)->group(function () {
@@ -22,13 +22,10 @@ Route::prefix(Constants::BASE_API_URL)->group(function () {
             [ProductPriceController::class, 'setNewPrice']
         )->name('products.setNewPrice');
 
-
-
         Route::get(
             'products/{id}/price',
             [ProductPriceController::class, 'getProductPriceHistory']
         )->name('products.prices.history');
-
 
         Route::get(
             'products/search',
@@ -54,7 +51,6 @@ Route::prefix(Constants::BASE_API_URL)->group(function () {
         Route::put('categories/{id}', [CategoryController::class, 'update']);
         Route::delete('categories/{id}', [CategoryController::class, 'destroy']);
 
-
         Route::get('sale-units', [SaleUnitController::class, 'index']);
         Route::post('sale-units', [SaleUnitController::class, 'store']);
         Route::get('sale-units/{id}', [SaleUnitController::class, 'show']);
@@ -65,7 +61,7 @@ Route::prefix(Constants::BASE_API_URL)->group(function () {
             'locations/products/{code}',
             [
                 LocationController::class,
-                'productLocations'
+                'productLocations',
             ]
         );
 
@@ -75,20 +71,16 @@ Route::prefix(Constants::BASE_API_URL)->group(function () {
         Route::put('locations/{id}', [LocationController::class, 'update']);
         Route::delete('locations/{id}', [LocationController::class, 'destroy']);
 
-
         Route::get('suppliers', [SupplierController::class, 'index']);
         Route::post('suppliers', [SupplierController::class, 'store']);
         Route::get('suppliers/{id}', [SupplierController::class, 'show']);
         Route::put('suppliers/{id}', [SupplierController::class, 'update']);
         Route::delete('suppliers/{id}', [SupplierController::class, 'destroy']);
 
-
-
         Route::post(
             'stock/transfer',
             [StockMovementController::class, 'transfer']
         );
-
 
         Route::get(
             'stock/search',

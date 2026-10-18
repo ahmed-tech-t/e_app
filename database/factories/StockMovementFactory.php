@@ -15,8 +15,8 @@ class StockMovementFactory extends Factory
      *
      * @return array<string, mixed>
      */
-
     protected $model = StockMovement::class;
+
     public function definition(): array
     {
         return [
@@ -24,7 +24,7 @@ class StockMovementFactory extends Factory
             'location_id' => null,
             'quantity' => null,
             'type' => null,
-            'bill_number' => null
+            'bill_number' => null,
         ];
     }
 }

@@ -5,12 +5,10 @@ namespace Tests\Feature;
 use App\Domain\Utils\ReturnedItemStatus;
 use App\Infrastructure\Persistence\Models\Category;
 use App\Infrastructure\Persistence\Models\Location;
-use App\Infrastructure\Persistence\Models\Product;
 use App\Infrastructure\Persistence\Models\Purchase;
 use App\Infrastructure\Persistence\Models\PurchaseReturn;
 use App\Infrastructure\Persistence\Models\Sales;
 use App\Infrastructure\Persistence\Models\SalesReturns;
-use App\Infrastructure\Persistence\Models\SaleUnit;
 use App\Infrastructure\Persistence\Models\StockMovement;
 use App\Infrastructure\Persistence\Models\Supplier;
 use App\Infrastructure\Persistence\utils\PriceType;
@@ -115,7 +113,7 @@ class LivewirePosUiTest extends TestCase
         $product = $this->createProduct();
         $this->createBatch($product, $store, quantity: 20);
 
-        $salesApiUrl = Constants::BASE_API_URL . '/v1/sales';
+        $salesApiUrl = Constants::BASE_API_URL.'/v1/sales';
 
         $this->postJson($salesApiUrl, [
             'customer_name' => 'Tariq Ziyad',
@@ -148,7 +146,7 @@ class LivewirePosUiTest extends TestCase
         $store = $this->createLocation();
         $product = $this->createProduct();
 
-        $purchaseApiUrl = Constants::BASE_API_URL . '/v1/purchases';
+        $purchaseApiUrl = Constants::BASE_API_URL.'/v1/purchases';
 
         $this->postJson($purchaseApiUrl, [
             'supplier_id' => $supplier->id,
@@ -175,7 +173,7 @@ class LivewirePosUiTest extends TestCase
         $product = $this->createProduct([], retailPrice: 100.0);
         $this->createBatch($product, $store, quantity: 10);
 
-        $this->postJson(Constants::BASE_API_URL . '/v1/sales', [
+        $this->postJson(Constants::BASE_API_URL.'/v1/sales', [
             'customer_name' => 'Return Customer',
             'store_id' => $store->id,
             'bill_type' => PriceType::RETAIL->value,
@@ -184,7 +182,7 @@ class LivewirePosUiTest extends TestCase
 
         $sale = Sales::first();
 
-        $this->postJson(Constants::BASE_API_URL . '/v1/sales/returns', [
+        $this->postJson(Constants::BASE_API_URL.'/v1/sales/returns', [
             'sales_id' => $sale->id,
             'store_id' => $store->id,
             'items' => [
@@ -212,7 +210,7 @@ class LivewirePosUiTest extends TestCase
         $store = $this->createLocation();
         $product = $this->createProduct();
 
-        $this->postJson(Constants::BASE_API_URL . '/v1/purchases', [
+        $this->postJson(Constants::BASE_API_URL.'/v1/purchases', [
             'supplier_id' => $supplier->id,
             'store_id' => $store->id,
             'tax' => 0,

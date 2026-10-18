@@ -10,7 +10,7 @@ class CreateRepoImpCommand extends GeneratorCommand
     protected $signature = 'make:repoImpl {name}';
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     protected function getStub()
     {
@@ -20,23 +20,21 @@ class CreateRepoImpCommand extends GeneratorCommand
     // بنحدد الفولدر اللي الملفات هتروح فيه أوتوماتيك
     protected function getDefaultNamespace($rootNamespace)
     {
-        return $rootNamespace . '\Infrastructure\Persistence\repo';
+        return $rootNamespace.'\Infrastructure\Persistence\repo';
     }
-
 
     protected function getNameInput()
     {
         $name = trim($this->argument('name'));
-        $formattedName = str_ends_with($name, 'Repo') ? $name : $name . 'Repo';
-        return 'E' . $formattedName;
+        $formattedName = str_ends_with($name, 'Repo') ? $name : $name.'Repo';
+
+        return 'E'.$formattedName;
     }
 
-
-    function modelName()
+    public function modelName()
     {
         return trim($this->argument('name'));
     }
-
 
     protected function buildClass($name)
     {
@@ -48,6 +46,7 @@ class CreateRepoImpCommand extends GeneratorCommand
         $stub = str_replace('{{ name }}', $nameInput, $stub);
 
         $stub = str_replace('{{ model }}', $model, $stub);
+
         return $stub;
     }
 }

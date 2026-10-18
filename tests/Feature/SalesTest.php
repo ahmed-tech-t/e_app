@@ -7,7 +7,6 @@ use App\Application\DTOs\SalesItemDto;
 use App\Application\Services\SalesService;
 use App\Infrastructure\Persistence\Models\ProductBatch;
 use App\Infrastructure\Persistence\Models\Sales;
-use App\Infrastructure\Persistence\Models\StockMovement;
 use App\Infrastructure\Persistence\utils\PriceType;
 use App\Infrastructure\Persistence\utils\StockMovementType;
 use App\Utils\Constants;
@@ -24,7 +23,7 @@ class SalesTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->salesApiUrl = Constants::BASE_API_URL . '/v1/sales';
+        $this->salesApiUrl = Constants::BASE_API_URL.'/v1/sales';
     }
 
     public function test_creates_sale_successfully_and_deducts_stock(): void
@@ -501,7 +500,7 @@ class SalesTest extends TestCase
         $product = $this->createProduct([], retailPrice: 100.0);
         $batch = $this->createBatch($product, $store, quantity: 10);
 
-        $previewUrl = Constants::BASE_API_URL . '/v1/sales/preview';
+        $previewUrl = Constants::BASE_API_URL.'/v1/sales/preview';
         $payload = [
             'customer_name' => 'Preview Customer',
             'store_id' => $store->id,
@@ -512,7 +511,7 @@ class SalesTest extends TestCase
             ],
         ];
 
-        $response = $this->getJson($previewUrl . '?' . http_build_query($payload));
+        $response = $this->getJson($previewUrl.'?'.http_build_query($payload));
         $response->assertStatus(200);
 
         $data = $response->json('data');

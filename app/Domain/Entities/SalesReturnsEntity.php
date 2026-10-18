@@ -5,11 +5,10 @@ namespace App\Domain\Entities;
 use App\Traits\TotalCalc;
 use Carbon\Carbon;
 
-
 class SalesReturnsEntity
 {
-
     use TotalCalc;
+
     public function __construct(
         public ?int $id = null,
         public ?string $code = null,
@@ -23,8 +22,7 @@ class SalesReturnsEntity
         public ?array $items = [],
 
         public ?Carbon $created_at = null,
-    ) {
-    }
+    ) {}
 
     public static function create(array $data, array $items, float $discount, float $tax)
     {
@@ -54,10 +52,7 @@ class SalesReturnsEntity
             'total' => $this->total,
             'discount' => $this->discount,
             'tax' => $this->tax,
-            'grand_total' => $this->grand_total
+            'grand_total' => $this->grand_total,
         ];
     }
-
-
-
 }

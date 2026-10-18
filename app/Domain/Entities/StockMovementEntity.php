@@ -2,10 +2,8 @@
 
 namespace App\Domain\Entities;
 
-
 use App\Infrastructure\Persistence\utils\StockMovementType;
 use Carbon\Carbon;
-
 
 class StockMovementEntity
 {
@@ -19,9 +17,7 @@ class StockMovementEntity
         public ?LocationEntity $location = null,
         public ?ProductBatchEntity $product_batch = null,
         public ?string $bill_number = null,
-    ) {
-
-    }
+    ) {}
 
     public function toArray()
     {
@@ -31,7 +27,7 @@ class StockMovementEntity
             'location_id' => $this->location_id,
             'quantity' => $this->quantity,
             'type' => $this->type,
-            'bill_number' => $this->bill_number
+            'bill_number' => $this->bill_number,
         ];
     }
 }

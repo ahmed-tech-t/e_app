@@ -3,11 +3,9 @@
 namespace App\Application\Services;
 
 use App\Application\DTOs\UpdateProductPriceDto;
-use App\Application\DTOs\UpdateProductPriceDtoDto;
 use App\Domain\Entities\ProductPriceEntity;
 use App\Domain\Repo\ProductPriceRepo;
 use App\Infrastructure\Persistence\utils\PriceType;
-use Illuminate\Support\Facades\Log;
 
 class ProductPriceService extends BaseService
 {

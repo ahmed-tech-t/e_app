@@ -34,6 +34,7 @@ class UpdateSupplierRequest extends FormRequest
     public function toDto(): SupplierDto
     {
         $data = $this->validated();
+
         return new SupplierDto(
             name: $data['name'] ?? '',
             email: $data['email'] ?? null,

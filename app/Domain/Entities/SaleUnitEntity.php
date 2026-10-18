@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Domain\Entities;
 
 class SaleUnitEntity
@@ -8,8 +9,7 @@ class SaleUnitEntity
         public ?int $id = null,
         public ?string $name_en = null,
         public ?string $code = null
-    ) {
-    }
+    ) {}
 
     public static function create(array $data)
     {
@@ -23,6 +23,7 @@ class SaleUnitEntity
     {
         $this->name_ar = $data['name_ar'] ?? $this->name_ar;
         $this->name_en = $data['name_en'] ?? $this->name_en;
+
         return $this;
     }
 

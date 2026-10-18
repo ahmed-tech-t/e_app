@@ -15,7 +15,7 @@ class SalesItem extends Model
         'product_id',
         'quantity',
         'price',
-        'total'
+        'total',
     ];
 
     public function bill()

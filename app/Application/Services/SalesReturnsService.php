@@ -52,7 +52,6 @@ class SalesReturnsService extends BaseService
                     $this->salesReturnItemRepo->create($item);
                 }
 
-
                 foreach ($entity->items as $item) {
                     $saleHistory = $this
                         ->stockService
@@ -93,15 +92,15 @@ class SalesReturnsService extends BaseService
     public function getTodayReturnsCount(): int
     {
         return collect($this->repo->findAll())
-            ->filter(fn($r) => $r->created_at?->isToday() ?? false)
+            ->filter(fn ($r) => $r->created_at?->isToday() ?? false)
             ->count();
     }
 
     public function getTodayReturnsTotal(): float
     {
         return collect($this->repo->findAll())
-            ->filter(fn($r) => $r->created_at?->isToday() ?? false)
-            ->sum(fn($r) => $r->grand_total ?? 0);
+            ->filter(fn ($r) => $r->created_at?->isToday() ?? false)
+            ->sum(fn ($r) => $r->grand_total ?? 0);
     }
 
     public function getRecentReturns(int $limit = 5): array
@@ -119,7 +118,7 @@ class SalesReturnsService extends BaseService
     ) {
 
         $totalReturns = $returnedArray->groupBy('product_batch_id')
-            ->map(fn($group) => $group->sum('quantity'));
+            ->map(fn ($group) => $group->sum('quantity'));
 
         return $saleArray->map(function ($item) use ($totalReturns) {
             $batchId = $item->product_batch_id;
@@ -132,6 +131,6 @@ class SalesReturnsService extends BaseService
             }
 
             return $item;
-        })->filter(fn($item) => $item->quantity > 0)->values();
+        })->filter(fn ($item) => $item->quantity > 0)->values();
     }
 }

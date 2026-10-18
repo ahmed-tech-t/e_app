@@ -1,8 +1,8 @@
 <?php
+
 namespace App\Infrastructure\Persistence\Pipeline\Filters\Product;
 
 use Closure;
-
 
 class FilterByOriginalCode
 {
@@ -12,10 +12,11 @@ class FilterByOriginalCode
             $context->query->where(
                 'original_code',
                 'LIKE',
-                '%' . $context->dto->original_code . '%'
+                '%'.$context->dto->original_code.'%'
 
             );
         }
+
         return $next($context);
     }
 }

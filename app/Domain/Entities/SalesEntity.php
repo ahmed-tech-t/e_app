@@ -6,10 +6,10 @@ use App\Infrastructure\Persistence\utils\Constants;
 use App\Traits\TotalCalc;
 use Carbon\Carbon;
 
-
 class SalesEntity
 {
     use TotalCalc;
+
     public function __construct(
         public string $customer_name,
         public ?float $total,
@@ -24,8 +24,7 @@ class SalesEntity
         public ?string $code = null,
         public ?LocationEntity $store = null,
         public ?int $store_id = null,
-    ) {
-    }
+    ) {}
 
     public static function create(array $data, $items)
     {
@@ -48,7 +47,6 @@ class SalesEntity
 
     }
 
-
     public function toArray()
     {
         return [
@@ -62,5 +60,4 @@ class SalesEntity
             'grand_total' => $this->grand_total,
         ];
     }
-
 }

@@ -87,15 +87,15 @@ class PurchaseReturnService extends BaseService
     public function getTodayReturnsCount(): int
     {
         return collect($this->repo->findAll())
-            ->filter(fn($r) => $r->created_at?->isToday() ?? false)
+            ->filter(fn ($r) => $r->created_at?->isToday() ?? false)
             ->count();
     }
 
     public function getTodayReturnsTotal(): float
     {
         return collect($this->repo->findAll())
-            ->filter(fn($r) => $r->created_at?->isToday() ?? false)
-            ->sum(fn($r) => $r->grand_total ?? 0);
+            ->filter(fn ($r) => $r->created_at?->isToday() ?? false)
+            ->sum(fn ($r) => $r->grand_total ?? 0);
     }
 
     public function getRecentReturns(int $limit = 5): array
@@ -110,7 +110,7 @@ class PurchaseReturnService extends BaseService
     private function updateQuantity($entryArray, $returnedArray)
     {
         $totalReturns = $returnedArray->groupBy('product_batch_id')
-            ->map(fn($group) => $group->sum('quantity'));
+            ->map(fn ($group) => $group->sum('quantity'));
 
         return $entryArray->map(function ($item) use ($totalReturns) {
             $batchId = $item->product_batch_id;
@@ -123,6 +123,6 @@ class PurchaseReturnService extends BaseService
             }
 
             return $item;
-        })->filter(fn($item) => $item->quantity > 0)->values();
+        })->filter(fn ($item) => $item->quantity > 0)->values();
     }
 }

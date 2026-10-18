@@ -21,8 +21,8 @@ class RepositoryServiceProvider extends ServiceProvider
 
             foreach ($files as $file) {
                 $interfaceName = $file->getBasename('.php');
-                $interfaceNamespace = 'App\\Domain\\Repo\\' . $interfaceName;
-                $implementationNamespace = $implementationPath . 'E' . $interfaceName;
+                $interfaceNamespace = 'App\\Domain\\Repo\\'.$interfaceName;
+                $implementationNamespace = $implementationPath.'E'.$interfaceName;
 
                 // 3. Bind them if the implementation class actually exists
                 if (class_exists($implementationNamespace)) {

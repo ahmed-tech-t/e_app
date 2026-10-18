@@ -22,4 +22,3 @@ class UploadedImage extends Model
         'size_bytes' => 'integer',
     ];
 }
-

@@ -7,9 +7,7 @@ use App\Application\DTOs\SalesItemDto;
 use App\Infrastructure\Persistence\utils\PriceType;
 use App\Utils\ValidationRules;
 use Illuminate\Foundation\Http\FormRequest;
-
 use Illuminate\Validation\Rules\Enum;
-
 
 class CreateSalesRequest extends FormRequest
 {
@@ -39,15 +37,17 @@ class CreateSalesRequest extends FormRequest
             'discount' => ValidationRules::percentage(false),
         ];
     }
+
     public function toDto(): SalesDto
     {
         $data = $this->validated();
+
         return new SalesDto(
             customer_name: $data['customer_name'],
             store_id: $data['store_id'],
             type: PriceType::tryFrom($data['bill_type']),
             items: collect($data['items'])
-                ->map(fn(array $item) => SalesItemDto::create($item))
+                ->map(fn (array $item) => SalesItemDto::create($item))
                 ->toArray(),
             discount: $data['discount'] ?? 0,
             customer_phone: $data['customer_phone'] ?? null,

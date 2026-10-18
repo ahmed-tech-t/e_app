@@ -14,6 +14,7 @@ class FilterByLocation
             $context->query->withLocationStock($locationId);
 
         }
+
         return $next($context);
     }
 }

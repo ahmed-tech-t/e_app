@@ -4,18 +4,14 @@ namespace App\Application\DTOs;
 
 use App\Domain\Utils\ReturnedItemStatus;
 
-
 class SalesReturnItemDto
 {
-
     public function __construct(
         public int $product_id,
         public int $quantity,
-        public ?string $reason = null,
+        public ?string $reason,
         public ReturnedItemStatus $restock_status,
-    ) {
-    }
-
+    ) {}
 
     public function toArray()
     {
@@ -26,6 +22,7 @@ class SalesReturnItemDto
             'restock_status' => $this->restock_status->value,
         ];
     }
+
     public static function create(array $data): self
     {
         return new self(

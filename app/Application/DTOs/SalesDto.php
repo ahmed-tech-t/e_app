@@ -6,7 +6,6 @@ use App\Infrastructure\Persistence\utils\PriceType;
 
 class SalesDto
 {
-
     public function __construct(
         public string $customer_name,
         public int $store_id,
@@ -15,10 +14,7 @@ class SalesDto
         public PriceType $type,
         public ?float $discount = null,
         public ?string $customer_phone = null,
-    ) {
-
-    }
-
+    ) {}
 
     public function toArray()
     {
@@ -28,7 +24,7 @@ class SalesDto
             'store_id' => $this->store_id,
             'discount' => $this->discount,
             'customer_phone' => $this->customer_phone,
-            'type' => $this->type
+            'type' => $this->type,
         ];
     }
 }

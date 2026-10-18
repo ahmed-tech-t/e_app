@@ -6,7 +6,6 @@ use Illuminate\Console\GeneratorCommand;
 
 class CreateEntityCommand extends GeneratorCommand
 {
-
     protected $signature = 'make:entity {name}';
 
     protected function getStub()
@@ -16,13 +15,14 @@ class CreateEntityCommand extends GeneratorCommand
 
     protected function getDefaultNamespace($rootNamespace)
     {
-        return $rootNamespace . '\Domain\Entities';
+        return $rootNamespace.'\Domain\Entities';
     }
 
     protected function getNameInput()
     {
         $name = trim($this->argument('name'));
-        return $name . 'Entity';
+
+        return $name.'Entity';
     }
 
     protected function buildClass($name)

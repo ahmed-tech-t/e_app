@@ -1,5 +1,7 @@
 <?php
+
 namespace App\Application\DTOs;
+
 class CreateProductDto
 {
     public function __construct(
@@ -16,8 +18,7 @@ class CreateProductDto
         public ?string $description = null,
         public ?string $image = null,
         public ?string $size = null,
-    ) {
-    }
+    ) {}
 
     public function toArray(): array
     {

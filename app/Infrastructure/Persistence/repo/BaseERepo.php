@@ -3,8 +3,6 @@
 namespace App\Infrastructure\Persistence\repo;
 
 use App\Domain\Repo\BaseRepo;
-use App\Infrastructure\Persistence\Pipeline\Filters\QueryContext;
-use App\Infrastructure\Persistence\utils\Constants;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pipeline\Pipeline;
@@ -13,11 +11,12 @@ use Illuminate\Support\Facades\Log;
 
 class BaseERepo implements BaseRepo
 {
-
     protected $modelClass;
+
     protected $mapper;
 
     protected $queryContext;
+
     protected array $defaultRelationships = [];
 
     protected array $withForPaginate = [];
@@ -26,23 +25,21 @@ class BaseERepo implements BaseRepo
 
     protected array $withSearch = [];
 
-
-
     public function getPaginatedItems($perPage): LengthAwarePaginator
     {
         $query = ($this->modelClass)::query();
-        $relations = !empty($this->withForPaginate) ? $this->withForPaginate : $this->defaultRelationships;
-        if (!empty($relations)) {
+        $relations = ! empty($this->withForPaginate) ? $this->withForPaginate : $this->defaultRelationships;
+        if (! empty($relations)) {
             $query->with($relations);
         }
 
         $items = $query->
             orderBy('created_at', 'desc')
-            ->paginate($perPage)
-            ->through(
-                fn($item) =>
-                ($this->mapper)::modelToEntity($item)
-            );
+                ->paginate($perPage)
+                ->through(
+                    fn ($item) => ($this->mapper)::modelToEntity($item)
+                );
+
         return $items;
     }
 
@@ -52,19 +49,20 @@ class BaseERepo implements BaseRepo
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function create($entity)
     {
         return DB::transaction(function () use ($entity) {
-            Log::info("Base repo create entity", ['entity' => $entity]);
+            Log::info('Base repo create entity', ['entity' => $entity]);
             $model = ($this->modelClass)::create($entity->toArray())->refresh();
+
             return ($this->mapper)::modelToEntity($model);
         });
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function destroy(int $id): string
     {
@@ -73,51 +71,55 @@ class BaseERepo implements BaseRepo
         if ($deletedCount === 0) {
             throw new ModelNotFoundException("Item with ID $id not found.");
         }
+
         return 'item deleted successfully';
     }
-
 
     public function findAll()
     {
         $query = ($this->modelClass)::query();
-        if (!empty($this->defaultRelationships)) {
+        if (! empty($this->defaultRelationships)) {
             $query->with($this->defaultRelationships);
         }
-        return $query->get()->map(fn($model) => ($this->mapper)::modelToEntity($model));
+
+        return $query->get()->map(fn ($model) => ($this->mapper)::modelToEntity($model));
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function findById(int $id)
     {
 
         $query = ($this->modelClass)::query();
-        if (!empty($this->defaultRelationships)) {
+        if (! empty($this->defaultRelationships)) {
             $query->with($this->defaultRelationships);
         }
 
         $model = $query->findOrFail($id);
+
         return ($this->mapper)::modelToEntity($model);
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function update($entity)
     {
-        Log::info("Your message here", ['entity' => $entity]);
+        Log::info('Your message here', ['entity' => $entity]);
         $model = ($this->modelClass)::findOrFail($entity->id);
         ($this->modelClass)::where('id', $entity->id)->update($entity->toArray());
+
         return ($this->mapper)::modelToEntity($model->refresh());
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function search($dto, $perPage)
     {
         $context = ($this->queryContext)::create($this->modelClass::query(), $dto);
+
         return app(Pipeline::class)
             ->send($context)
             ->through($this->searchFilters)
@@ -127,16 +129,17 @@ class BaseERepo implements BaseRepo
             ->orderBy('created_at', 'desc')
             ->paginate($perPage)
             ->through(
-                fn($item) => ($this->mapper)::modelToEntity($item)
+                fn ($item) => ($this->mapper)::modelToEntity($item)
             );
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function insert($array)
     {
         $models = ($this->modelClass)::insert($array);
-        return $models->map(fn($model) => ($this->mapper)::modelToEntity($model));
+
+        return $models->map(fn ($model) => ($this->mapper)::modelToEntity($model));
     }
 }

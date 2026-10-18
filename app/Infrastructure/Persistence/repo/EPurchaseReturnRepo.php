@@ -9,10 +9,13 @@ use App\Infrastructure\Persistence\Models\PurchaseReturn;
 class EPurchaseReturnRepo extends BaseERepo implements PurchaseReturnRepo
 {
     protected $modelClass = PurchaseReturn::class;
+
     protected $mapper = PurchaseReturnMapper::class;
 
     protected array $searchFilters = [];
+
     protected array $withForPaginate = ['items.product', 'purchase'];
+
     protected array $defaultRelationships = ['items.product', 'purchase'];
 
     public function findByOriginalBillId(int $id)
@@ -22,6 +25,6 @@ class EPurchaseReturnRepo extends BaseERepo implements PurchaseReturnRepo
 
     public function isThisFirstReturn(int $purchaseId): bool
     {
-        return !$this->modelClass::where('original_bill_id', $purchaseId)->exists();
+        return ! $this->modelClass::where('original_bill_id', $purchaseId)->exists();
     }
 }

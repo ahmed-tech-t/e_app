@@ -2,11 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Infrastructure\Persistence\Models\Category;
-use App\Infrastructure\Persistence\Models\Product;
-use App\Infrastructure\Persistence\Models\ProductPrice;
-use App\Infrastructure\Persistence\Models\SaleUnit;
-use App\Infrastructure\Persistence\utils\PriceType;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 

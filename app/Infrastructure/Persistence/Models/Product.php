@@ -2,31 +2,19 @@
 
 namespace App\Infrastructure\Persistence\Models;
 
-use App\Infrastructure\Persistence\Pipeline\Filters\Product\FilterByBrand;
-use App\Infrastructure\Persistence\Pipeline\Filters\Product\FilterByCategoryId;
-use App\Infrastructure\Persistence\Pipeline\Filters\Product\FilterByCode;
-use App\Infrastructure\Persistence\Pipeline\Filters\Product\FilterByLocation;
-use App\Infrastructure\Persistence\Pipeline\Filters\Product\FilterByNameAr;
-use App\Infrastructure\Persistence\Pipeline\Filters\Product\FilterByNameEn;
-use App\Infrastructure\Persistence\Pipeline\Filters\Product\FilterByOriginalCode;
-use App\Infrastructure\Persistence\Pipeline\Filters\Product\FilterBySaleUnitId;
-use App\Infrastructure\Persistence\Pipeline\Filters\Product\ProductQueryContext;
 use App\Infrastructure\Persistence\utils\PriceType;
 use Database\Factories\ProductFactory;
-use Illuminate\Bus\Batch;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Pipeline\Pipeline;
-use SebastianBergmann\CodeCoverage\Filter;
 
 class Product extends Model
 {
     use HasFactory;
     use SoftDeletes;
+
     protected $fillable = [
         'original_code',
         'category_id',
@@ -48,6 +36,7 @@ class Product extends Model
         'wholesale_price' => 'float',
         'units_per_carton' => 'integer',
     ];
+
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
@@ -57,18 +46,16 @@ class Product extends Model
     {
         return $this->hasMany(ProductBatch::class);
     }
+
     public function saleUnit(): BelongsTo
     {
         return $this->belongsTo(SaleUnit::class);
     }
 
-
     public function prices()
     {
         return $this->hasMany(ProductPrice::class);
     }
-
-
 
     // override factory
     protected static function newFactory()
@@ -76,19 +63,16 @@ class Product extends Model
         return ProductFactory::new();
     }
 
-
     public function scopeWithPrices($query)
     {
         return $query
             ->addSelect([
-                'retail_price' =>
-                ProductPrice::select('price')
+                'retail_price' => ProductPrice::select('price')
                     ->whereColumn('product_id', 'products.id')
                     ->where('type', PriceType::RETAIL)
                     ->whereNull('valid_to')
                     ->limit(1),
-                'wholesale_price' =>
-                ProductPrice::select('price')
+                'wholesale_price' => ProductPrice::select('price')
                     ->whereColumn('product_id', 'products.id')
                     ->where('type', PriceType::WHOLESALE)
                     ->whereNull('valid_to')
@@ -99,12 +83,11 @@ class Product extends Model
     public function scopeWithQuantityAt($query, $locationId)
     {
         return $query->addSelect([
-            'quantity' =>
-            ProductBatch::query()
+            'quantity' => ProductBatch::query()
                 ->join('batch_locations', 'product_batches.id', '=', 'batch_locations.product_batch_id')
                 ->selectRaw('SUM(batch_locations.remaining_quantity)')
                 ->whereColumn('product_batches.product_id', 'products.id')
-                ->where('batch_locations.location_id', $locationId)
+                ->where('batch_locations.location_id', $locationId),
         ]);
     }
 
@@ -128,11 +111,12 @@ class Product extends Model
         $query
             ->allProducts()
             ->withQuantityAt($locationId);
-        if ($filterZeroStock)
+        if ($filterZeroStock) {
             $query->OnlyAvailableAt($locationId);
+        }
+
         return $query;
     }
-
 
     public function scopeSearchWithName($query, $searchTerm)
     {

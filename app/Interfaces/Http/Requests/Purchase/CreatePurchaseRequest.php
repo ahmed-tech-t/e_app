@@ -40,6 +40,7 @@ class CreatePurchaseRequest extends FormRequest
     public function toDto()
     {
         $data = $this->validated();
+
         return new PurchaseDto(
             supplier_id: $data['supplier_id'],
             store_id: $data['store_id'],

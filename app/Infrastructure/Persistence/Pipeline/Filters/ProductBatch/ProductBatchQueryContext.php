@@ -10,8 +10,7 @@ class ProductBatchQueryContext implements QueryContext
     private function __construct(
         public Builder $query,
         public string $code
-    ) {
-    }
+    ) {}
 
     public static function create(
         Builder $query,

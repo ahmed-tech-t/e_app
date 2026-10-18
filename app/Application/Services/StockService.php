@@ -20,8 +20,7 @@ class StockService
         private StockMovementRepo $stockMovementRepo,
         private ProductBatchRepo $productBatchRepo,
         private ProductRepo $productRepo
-    ) {
-    }
+    ) {}
 
     public function search(StockMovementSearchDto $dto)
     {
@@ -36,17 +35,21 @@ class StockService
     public function createProductBatch(ProductBatchEntity $entity, int $locationId)
     {
         Log::info("Creating product batch for product ID {$entity->product_id} with initial quantity {$entity->initial_quantity} at location ID {$locationId}");
+
         return DB::transaction(function () use ($entity, $locationId) {
             $model = ProductBatch::create($entity->toArray());
             $this->stockMovementRepo->adjust(batchId: $model->id, locationId: $locationId, quantity: $entity->initial_quantity, type: StockMovementType::ENTRY);
             $model->refresh();
+
             return ProductBatchMapper::modelToEntity($model);
 
         });
     }
+
     public function transferProduct($dto)
     {
         Log::info("Transferring product ID {$dto->productId} from location ID {$dto->fromLocationId} to location ID {$dto->toLocationId} with quantity {$dto->quantity}");
+
         return DB::transaction(
             function () use ($dto) {
 
@@ -71,7 +74,6 @@ class StockService
             }
         );
     }
-
 
     public function updateInventory(StockMovement $stockMovement)
     {
@@ -119,17 +121,17 @@ class StockService
     {
         Log::info("Checking quantity availability for product ID {$productId} at location ID {$currentLocationId} for requested quantity {$quantity}");
         $inStock = $batches->sum('quantity');
-        if (!$inStock || $inStock <= 0 || $inStock < $quantity) {
+        if (! $inStock || $inStock <= 0 || $inStock < $quantity) {
             $product = $this->productRepo->findById($productId);
             $availableInOtherLocations = $this->productBatchRepo->isAvailableInOtherLocation($productId, $currentLocationId);
 
-            $isOutOfStock = (!$inStock || $inStock <= 0);
+            $isOutOfStock = (! $inStock || $inStock <= 0);
             $statusMessage = $isOutOfStock
                 ? "Product '{$product->name_ar}' is out of stock"
                 : "Product '{$product->name_ar}' has insufficient quantity, available quantity is $inStock";
 
             if ($availableInOtherLocations) {
-                $statusMessage .= ", but available in other locations";
+                $statusMessage .= ', but available in other locations';
             }
 
             throw new \Exception($statusMessage);
@@ -142,14 +144,15 @@ class StockService
     {
         $remainingToTake = $quantity;
         Log::info("Handling batches movement for quantity {$quantity}");
-        Log::info("Batches count: " . count($batches));
+        Log::info('Batches count: '.count($batches));
         foreach ($batches as $batch) {
-            Log::info("Batch quantity: " . $batch->product_batch_id);
+            Log::info('Batch quantity: '.$batch->product_batch_id);
             $canTake = min($batch->quantity, $remainingToTake);
             $callBack($batch, $canTake);
             $remainingToTake -= $canTake;
-            if ($remainingToTake <= 0)
+            if ($remainingToTake <= 0) {
                 break;
+            }
         }
     }
 }

@@ -2,11 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\Application\DTOs\PurchaseDto;
-use App\Application\Services\PurchaseService;
 use App\Infrastructure\Persistence\Models\ProductBatch;
 use App\Infrastructure\Persistence\Models\Purchase;
-use App\Infrastructure\Persistence\Models\StockMovement;
 use App\Infrastructure\Persistence\utils\StockMovementType;
 use App\Utils\Constants;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -22,7 +19,7 @@ class PurchasesTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->purchaseApiUrl = Constants::BASE_API_URL . '/v1/purchases';
+        $this->purchaseApiUrl = Constants::BASE_API_URL.'/v1/purchases';
     }
 
     public function test_creates_purchase_successfully_and_records_batch_and_stock_entry(): void
@@ -160,7 +157,7 @@ class PurchasesTest extends TestCase
         $store = $this->createLocation();
         $product = $this->createProduct();
 
-        $previewUrl = Constants::BASE_API_URL . '/v1/purchases/preview';
+        $previewUrl = Constants::BASE_API_URL.'/v1/purchases/preview';
         $payload = [
             'supplier_id' => $supplier->id,
             'store_id' => $store->id,
@@ -176,7 +173,7 @@ class PurchasesTest extends TestCase
             ],
         ];
 
-        $response = $this->getJson($previewUrl . '?' . http_build_query($payload));
+        $response = $this->getJson($previewUrl.'?'.http_build_query($payload));
         $response->assertStatus(200);
 
         $this->assertEquals(1000.0, (float) $response->json('data.total'));

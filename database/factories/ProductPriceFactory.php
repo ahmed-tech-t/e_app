@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Infrastructure\Persistence\Models\Product;
 use App\Infrastructure\Persistence\Models\ProductPrice;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -17,6 +16,7 @@ class ProductPriceFactory extends Factory
      * @return array<string, mixed>
      */
     protected $model = ProductPrice::class;
+
     public function definition(): array
     {
         return [

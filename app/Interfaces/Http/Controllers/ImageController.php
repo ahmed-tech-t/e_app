@@ -22,8 +22,7 @@ class ImageController extends Controller
     public function __construct(
         private readonly ImageCompressionService $compressionService,
         private readonly CloudflareImageService $cloudflareService,
-    ) {
-    }
+    ) {}
 
     /**
      * List uploaded images.
@@ -83,7 +82,7 @@ class ImageController extends Controller
         } catch (Throwable $e) {
             return $this->error(
                 data: ['error' => $e->getMessage()],
-                message: 'Failed to process and upload image: ' . $e->getMessage(),
+                message: 'Failed to process and upload image: '.$e->getMessage(),
                 code: 500
             );
         } finally {
@@ -99,7 +98,7 @@ class ImageController extends Controller
     public function show(int $id): JsonResponse
     {
         $image = UploadedImage::find($id);
-        if (!$image) {
+        if (! $image) {
             return $this->error(null, 'Image not found', 404);
         }
 
@@ -115,7 +114,7 @@ class ImageController extends Controller
     public function update(UploadImageRequest $request, int $id): JsonResponse
     {
         $image = UploadedImage::find($id);
-        if (!$image) {
+        if (! $image) {
             return $this->error(null, 'Image not found', 404);
         }
 
@@ -138,7 +137,7 @@ class ImageController extends Controller
             });
 
             // Delete previous image from Cloudflare
-            if (!empty($oldCloudflareId)) {
+            if (! empty($oldCloudflareId)) {
                 $this->cloudflareService->delete($oldCloudflareId);
             }
 
@@ -149,7 +148,7 @@ class ImageController extends Controller
         } catch (Throwable $e) {
             return $this->error(
                 data: ['error' => $e->getMessage()],
-                message: 'Failed to update image: ' . $e->getMessage(),
+                message: 'Failed to update image: '.$e->getMessage(),
                 code: 500
             );
         } finally {
@@ -167,14 +166,14 @@ class ImageController extends Controller
     public function destroy(int $id): JsonResponse
     {
         $image = UploadedImage::find($id);
-        if (!$image) {
+        if (! $image) {
             return $this->error(null, 'Image not found', 404);
         }
 
         $cloudflareId = $image->cloudflare_id ?: $image->url;
 
         // Delete from Cloudflare
-        if (!empty($cloudflareId)) {
+        if (! empty($cloudflareId)) {
             $this->cloudflareService->delete($cloudflareId);
         }
 
@@ -186,4 +185,3 @@ class ImageController extends Controller
         );
     }
 }
-

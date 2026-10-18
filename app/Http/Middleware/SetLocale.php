@@ -12,6 +12,7 @@ class SetLocale
     {
         $locale = session('locale', config('app.locale'));
         app()->setLocale(in_array($locale, ['en', 'ar']) ? $locale : 'en');
+
         return $next($request);
     }
 }

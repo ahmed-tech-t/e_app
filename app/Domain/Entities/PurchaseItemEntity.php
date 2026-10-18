@@ -2,11 +2,8 @@
 
 namespace App\Domain\Entities;
 
-
-
 class PurchaseItemEntity
 {
-
     public function __construct(
         public int $product_id,
         public int $quantity,
@@ -16,13 +13,12 @@ class PurchaseItemEntity
         public ?float $total = null,
         public ?ProductEntity $product = null,
         public ?string $product_code = null
-    ) {
-
-    }
+    ) {}
 
     public static function create(array $data)
     {
         $total = round($data['quantity'] * $data['price'], 2);
+
         return new self(
             product_id: $data['product_id'],
             quantity: $data['quantity'],
@@ -31,9 +27,8 @@ class PurchaseItemEntity
         );
 
     }
-    public function update(array $data)
-    {
-    }
+
+    public function update(array $data) {}
 
     public function toArray()
     {

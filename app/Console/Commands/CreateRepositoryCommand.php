@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use Illuminate\Console\GeneratorCommand;
 
 class CreateRepositoryCommand extends GeneratorCommand
@@ -10,9 +9,8 @@ class CreateRepositoryCommand extends GeneratorCommand
     // ده الاسم اللي هتكتبه في الـ Terminal
     protected $signature = 'make:repo {name}';
 
-
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     protected function getStub()
     {
@@ -23,7 +21,7 @@ class CreateRepositoryCommand extends GeneratorCommand
     // بنحدد الفولدر اللي الملفات هتروح فيه أوتوماتيك
     protected function getDefaultNamespace($rootNamespace)
     {
-        return $rootNamespace . '\Domain\Repo';
+        return $rootNamespace.'\Domain\Repo';
     }
 
     // ميثود لتبديل الـ {{ name }} بالاسم اللي هتبعته
@@ -39,7 +37,7 @@ class CreateRepositoryCommand extends GeneratorCommand
 
         // لو أنت كتبت SaleUnit، هيخليها SaleUnitRepo
         // ولو أنت كتبت أصلاً SaleUnitRepo، مش هيكررها
-        return str_ends_with($name, 'Repo') ? $name : $name . 'Repo';
+        return str_ends_with($name, 'Repo') ? $name : $name.'Repo';
     }
 
     // بنعدل الـ buildClass عشان نطبق التغييرات
@@ -48,6 +46,7 @@ class CreateRepositoryCommand extends GeneratorCommand
         $stub = parent::buildClass($name);
         // هنا بنجيب الاسم اللي أنت كتبته في الكومند (مثلاً SaleUnit)
         $nameInput = $this->getNameInput();
+
         return str_replace('{{ name }}', $nameInput, $stub);
     }
 }

@@ -15,8 +15,8 @@ class PurchaseReturnDto
     {
         return [
             'purchase_id' => $this->purchase_id,
-            'store_id'    => $this->store_id,
-            'items'       => $this->items,
+            'store_id' => $this->store_id,
+            'items' => $this->items,
         ];
     }
 }

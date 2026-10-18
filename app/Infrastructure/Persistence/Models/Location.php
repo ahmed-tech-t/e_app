@@ -9,13 +9,14 @@ use Illuminate\Support\Facades\DB;
 class Location extends Model
 {
     use SoftDeletes;
-    //comment
+
+    // comment
     protected $fillable = [
         'code',
         'name',
         'address',
         'phone',
-        'type'
+        'type',
     ];
 
     public function patches()
@@ -27,7 +28,6 @@ class Location extends Model
             ->withPivot('remaining_quantity')
             ->withTimestamps();
     }
-
 
     public function scopeFindProductLocations($query, $productCode)
     {
@@ -42,6 +42,7 @@ class Location extends Model
             )
             ->groupBy('locations.id', 'locations.name')
             ->having('total_qty', '>', 0);
+
         return $query;
     }
 }
